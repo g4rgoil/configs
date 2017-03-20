@@ -5,6 +5,7 @@
 # Some handy aliasses for everyday commands
 alias update='yaourt -Syua'
 alias die='shutdown now'
+alias wheather='curl wttr.in/Karlsruhe'
 
 # Some ls aliasses
 alias ls='ls --color=auto'
