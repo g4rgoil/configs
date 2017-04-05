@@ -19,3 +19,7 @@ set tabstop=4                   " Number of hard-tabsto spaes
 set shiftwidth=4                " Number of auto-indent spaces
 set expandtab                   " Use spaces instead of tabs
 set autoindent
+
+"" File Type options
+autocmd BufNewFile,BufReadPost *.md set filetype=markdown
+let g:markdown_fenced_languages = ['javascript', 'go', 'php']
