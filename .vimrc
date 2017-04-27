@@ -12,7 +12,8 @@ call plug#end()
 if has("autocmd")
     augroup templates
         autocmd BufNewFile *.sh 0r ~/.vim/templates/skeleton.sh
-        autocmd BufNewFile *.py 0r ~/.vim/templates/skeleton.py
+        autocmd BufNewFile *.py,*.pyw 0r ~/.vim/templates/skeleton.py
         autocmd BufNewFile *.java 0r ~/.vim/templates/skeleton.java
+        autocmd BufNewFile *.php 0r ~/.vim/templates/skeleton.php
     augroup End
 endif

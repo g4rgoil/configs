@@ -1,6 +1,6 @@
-# Author:       Pascal Mehnert
-# Date:     
-# Description: 
-# Version:      0.1
+# Pascal Mehnert
+# YYYY/MM/DD
+# <Description>
+# V0.1
 
 
