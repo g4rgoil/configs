@@ -2,16 +2,6 @@ set nocompatible
 packadd! matchit
 set backupext=.bak
 
-"" Plugins
-call plug#begin('/etc/vim/plugged')
-    Plug 'junegunn/goyo.vim'
-    Plug 'junegunn/vim-easy-align'
-    Plug 'tpope/vim-surround'
-    Plug 'bronson/vim-trailing-whitespace'
-    Plug 'ap/vim-css-color'
-    Plug 'slim-template/vim-slim'
-call plug#end()
-
 "" General
 set ruler                       " Show row and column ruler information 
 set number                      " Show line numbers
