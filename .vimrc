@@ -1,9 +1,0 @@
-"" Plugins
-call plug#begin('~/.vim/plugged')
-    Plug 'junegunn/goyo.vim'
-    Plug 'junegunn/vim-easy-align'
-    Plug 'tpope/vim-surround'
-    Plug 'bronson/vim-trailing-whitespace'
-    Plug 'ap/vim-css-color'
-    Plug 'slim-template/vim-slim'
-call plug#end()
