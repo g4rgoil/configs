@@ -4,6 +4,7 @@
 
 # Some handy aliasses for everyday commands
 alias update='yaourt -Syua'
+alias uninstall='yaourt -Rns'
 alias die='shutdown now'
 alias hibernate='systemctl hibernate'
 alias wheather='curl wttr.in/Karlsruhe'
