@@ -10,11 +10,14 @@ alias hibernate='systemctl hibernate'
 alias wheather='curl wttr.in/Karlsruhe'
 
 # Some ls aliasses
-alias ls='ls --color=auto'
-alias la='ls -AF'
-alias l='ls -CF'
-alias ll='ls -alF'
+alias l='ls'
+alias ls='ls -CF --color=auto'
+alias la='ls -A'
+alias ll='ls -al'
 alias lr='ls -R'
+
+alias Xtree='tree -X'
+alias Jtree='tree -J'
 
 # Some random aliases
 alias ping='ping -c 5'
@@ -25,6 +28,11 @@ alias mv='mv -i'
 alias rm='rm -I'
 alias svim='sudo vim'
 alias scat='sudo cat'
+
+alias edit='$VISUAL'
+alias sedit='sudo $VISUAL'
+alias e='edit'
+alias se='sedit'
 
 # Error Tolerance
 alias cd..='cd ..'
