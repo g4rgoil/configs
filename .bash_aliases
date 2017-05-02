@@ -16,6 +16,7 @@ alias la='ls -A'
 alias ll='ls -al'
 alias lr='ls -R'
 
+alias tree='tree -CF -L 5'
 alias Xtree='tree -X'
 alias Jtree='tree -J'
 
@@ -29,6 +30,7 @@ alias rm='rm -I'
 alias svim='sudo vim'
 alias scat='sudo cat'
 
+# Edit commands
 alias edit='$VISUAL'
 alias sedit='sudo $VISUAL'
 alias e='edit'
