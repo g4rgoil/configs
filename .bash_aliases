@@ -4,7 +4,9 @@
 
 # Some handy aliasses for everyday commands
 alias update='yaourt -Syua'
-alias uninstall='yaourt -Rns'
+alias install='sudo pacman -S'
+alias uninstall='sudo pacman -Rns'
+alias uninstall_force='sudo pacman -Rdd'
 alias die='shutdown now'
 alias hibernate='systemctl hibernate'
 alias wheather='curl wttr.in/Karlsruhe'
@@ -24,6 +26,7 @@ alias Jtree='tree -J'
 alias ping='ping -c 5'
 alias openports='ss --all --numeric --processes --ipv4 --ipv6'
 alias ..='cd ..'
+alias q='exit'
 alias cp='cp -i'
 alias mv='mv -i'
 alias rm='rm -I'
