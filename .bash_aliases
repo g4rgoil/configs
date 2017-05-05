@@ -11,6 +11,13 @@ alias die='shutdown now'
 alias hibernate='systemctl hibernate'
 alias wheather='curl wttr.in/Karlsruhe'
 
+# Some Wifi aliases
+alias wifiedit='nm-connection-editor'
+alias wificon='nmcli connection up'
+alias wifistat='nmcli general'
+alias wifion='nmcli radio wifi on'
+alias wifioff='nmcli radio wifi off'
+
 # Some ls aliasses
 alias l='ls'
 alias ls='ls -CF --color=auto'
