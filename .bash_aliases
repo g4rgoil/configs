@@ -15,8 +15,8 @@ alias wheather='curl wttr.in/Karlsruhe'
 alias wifiedit='nm-connection-editor'
 alias wificon='nmcli connection up'
 alias wifistat='nmcli general'
-alias wifion='nmcli radio wifi on'
-alias wifioff='nmcli radio wifi off'
+alias wifion='nmcli radio wifi on && nmcli radio wwan on'
+alias wifioff='nmcli radio wifi off && nmcli radio wwan off'
 
 # Some ls aliasses
 alias l='ls'
@@ -25,6 +25,7 @@ alias la='ls -A'
 alias ll='ls -al'
 alias lr='ls -R'
 
+# Some tree aliasses
 alias tree='tree -CF -L 5'
 alias Xtree='tree -X'
 alias Jtree='tree -J'
