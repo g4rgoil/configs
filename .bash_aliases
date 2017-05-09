@@ -2,11 +2,13 @@
 # ~/.bash_aliases
 #
 
-# Some handy aliasses for everyday commands
+# Some pacman aliasses
 alias update='yaourt -Syua'
 alias install='sudo pacman -S'
 alias uninstall='sudo pacman -Rns'
-alias uninstall_force='sudo pacman -Rdd'
+alias uninstall-force='sudo pacman -Rdd'
+
+# Some handy aliasses for everyday commands
 alias die='shutdown now'
 alias hibernate='systemctl hibernate'
 alias wheather='curl wttr.in/Karlsruhe'
