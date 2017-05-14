@@ -51,9 +51,9 @@ alias e='edit'
 alias se='sedit'
 
 # Some git aliasses
-alias push='git push'
-alias pull='git pull'
-alias commit='git commit'
+alias gpush='git push'
+alias gpull='git pull'
+alias gcommit='git commit'
 
 # Error Tolerance
 alias cd..='cd ..'
