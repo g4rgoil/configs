@@ -50,6 +50,8 @@ call plug#begin('~/.vim/plugged')
     Plug 'tpope/vim-surround'
     Plug 'tpope/vim-fugitive'
 
+    Plug 'scrooloose/nerdtree'
+
     Plug 'bronson/vim-trailing-whitespace'
     Plug 'ap/vim-css-color'
     Plug 'slim-template/vim-slim'
