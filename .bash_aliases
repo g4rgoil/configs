@@ -40,8 +40,9 @@ alias q='exit'
 alias cp='cp -i'
 alias mv='mv -i'
 alias rm='rm -I'
-alias svim='sudo vim'
 alias scat='sudo cat'
+alias vim='echo "Use e you idiot" && vim'
+alias svim='echo "use se you bloody idiot" && sudo vim'
 
 # Edit commands
 alias edit='$VISUAL'
