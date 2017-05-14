@@ -1,4 +1,5 @@
 set nocompatible
+set encoding=utf-8
 packadd! matchit
 set backupext=.bak
 
@@ -20,17 +21,22 @@ set shiftwidth=4                " Number of auto-indent spaces
 set expandtab                   " Use spaces instead of tabs
 set autoindent
 
-"" Status Bar Configuration
+"" Configure split behaviour
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
+
+set splitbelow
+set splitright
+
+"" Airline Configuration
 set laststatus=2                " Always show status bar
 let g:airline#extensions#tabline#enabled = 1
 let g:airline_powerline_fonts = 1
 let g:airline_theme = 'luna'
 
 "let g:airline#extensions#vimtex#enabled = 1
-
-"" File Type options
-autocmd BufNewFile,BufReadPost *.md set filetype=markdown
-let g:markdown_fenced_languages = ['javascript', 'go', 'php']
 
 "" Plugins
 call plug#begin('~/.vim/plugged')
@@ -59,12 +65,7 @@ if has("autocmd")
     augroup End
 endif
 
-"" Configure split behaviour
-nnoremap <C-J> <C-W><C-J>
-nnoremap <C-K> <C-W><C-K>
-nnoremap <C-L> <C-W><C-L>
-nnoremap <C-H> <C-W><C-H>
-
-set splitbelow
-set splitright
+"" File Type options
+autocmd BufNewFile,BufReadPost *.md set filetype=markdown
+let g:markdown_fenced_languages = ['javascript', 'go', 'php']
 
