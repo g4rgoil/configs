@@ -17,10 +17,9 @@ fi
 # Enable git completion
 [ -f /usr/share/git/completion/git-completion.sh ] && source /usr/share/git/completion/git-completion.sh
 
-# Source alias definitions from ~/.bash_aliases
+# Source alias definitions from ~/.bash_alias
 [ -f ~/.bash_aliases ] && source ~/.bash_aliases
 
 export KDEDIRS=$HOME/umbrello:$KDEDIRS
 export PATH=$HOME/umbrello/bin:$PATH
 export VISUAL=vim
-export STUDIUM=$HOME/Dropbox/Studium

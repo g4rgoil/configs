@@ -1,9 +1,9 @@
 
 /**
- * @author: Pascal Mehnert
- * @version: 0.1 YYYY/MM/DD
+ *
+ * @author Pascal Mehnert
+ * @version 0.1
  */
-public class {
+public class ClassName {
 
 }
-

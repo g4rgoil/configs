@@ -2,11 +2,13 @@
 # ~/.bash_aliases
 #
 
-# Some handy aliasses for everyday commands
+# Some pacman aliasses
 alias update='yaourt -Syua'
 alias install='sudo pacman -S'
 alias uninstall='sudo pacman -Rns'
-alias uninstall_force='sudo pacman -Rdd'
+alias uninstall-force='sudo pacman -Rdd'
+
+# Some handy aliasses for everyday commands
 alias die='shutdown now'
 alias hibernate='systemctl hibernate'
 alias wheather='curl wttr.in/Karlsruhe'
@@ -38,14 +40,20 @@ alias q='exit'
 alias cp='cp -i'
 alias mv='mv -i'
 alias rm='rm -I'
-alias svim='sudo vim'
 alias scat='sudo cat'
+alias vim='echo "Use e you idiot" && vim'
+alias svim='echo "use se you bloody idiot" && sudo vim'
 
 # Edit commands
 alias edit='$VISUAL'
 alias sedit='sudo $VISUAL'
 alias e='edit'
 alias se='sedit'
+
+# Some git aliasses
+alias push='git push'
+alias pull='git pull'
+alias commit='git commit'
 
 # Error Tolerance
 alias cd..='cd ..'
