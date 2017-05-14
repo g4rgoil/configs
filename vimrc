@@ -30,8 +30,12 @@ nnoremap <C-H> <C-W><C-H>
 set splitbelow
 set splitright
 
+"" Configure tab behaviour
+map <C-N> :tabp<cr>
+map <C-M> :tabn<cr>
+
 "" Airline Configuration
-set laststatus=2                " Always show status bar
+set laststatus=2                                    " Always show status bar
 let g:airline#extensions#tabline#enabled = 1
 let g:airline_powerline_fonts = 1
 let g:airline_theme = 'luna'
