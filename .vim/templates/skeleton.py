@@ -1,4 +1,4 @@
 # Pascal Mehnert
+# YYYY-MM-DD
 # <Description>
-# YYYY/MM/DD
-# V 0.1
+# V0.1

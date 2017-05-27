@@ -11,7 +11,6 @@ if [ -f /usr/share/git/completion/git-prompt.sh ]; then
 else
     echo "Can't find git-completion.bash"
     PS1='[\u@\h \W]\$ '
-
 fi
 
 # Enable git completion
@@ -20,6 +19,6 @@ fi
 # Source alias definitions from ~/.bash_alias
 [ -f ~/.bash_aliases ] && source ~/.bash_aliases
 
-export KDEDIRS=$HOME/umbrello:$KDEDIRS
-export PATH=$HOME/umbrello/bin:$PATH
 export VISUAL=vim
+
+

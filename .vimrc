@@ -42,6 +42,17 @@ let g:airline_theme = 'luna'
 
 "let g:airline#extensions#vimtex#enabled = 1
 
+"" Vimtex Configuration
+let g:vimtex_compiler_method = 'latexmk'
+" let g:vimtex_compiler_latexmk = {'build_dir' : './latexmk_out/'}
+let g:vimtex_complete_close_braces = 1
+let g:vimtex_fold_enabled = 1
+let g:vimtex_fold_comments = 1
+
+let g:vimtex_view_general_viewer = 'okular'
+let g:vimtex_view_general_options = '--unique file:@pdf\#src:@line@tex'
+let g:vimtex_view_general_options_latexmk = '--unique'
+
 "" Plugins
 call plug#begin('~/.vim/plugged')
     Plug 'junegunn/goyo.vim'

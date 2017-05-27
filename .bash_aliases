@@ -20,9 +20,13 @@ alias wifistat='nmcli general'
 alias wifion='nmcli radio wifi on && nmcli radio wwan on'
 alias wifioff='nmcli radio wifi off && nmcli radio wwan off'
 
+# Some Hardware aliases
+alias dim="xbacklight -dec 10"
+alias brighten="xbacklight -inc 10"
+
 # Some ls aliasses
-alias l='ls'
 alias ls='ls -CF --color=auto'
+alias l='ls'
 alias la='ls -A'
 alias ll='ls -al'
 alias lr='ls -R'
@@ -41,8 +45,10 @@ alias cp='cp -i'
 alias mv='mv -i'
 alias rm='rm -I'
 alias scat='sudo cat'
-alias vim='echo "Use e you idiot" && vim'
-alias svim='echo "use se you bloody idiot" && sudo vim'
+alias vim='echo "Use \"e\" you idiot" && vim'
+alias svim='echo "use \"se\" you bloody idiot" && sudo vim'
+alias v='vim'
+alias sv='svim'
 
 # Edit commands
 alias edit='$VISUAL'
@@ -51,9 +57,11 @@ alias e='edit'
 alias se='sedit'
 
 # Some git aliasses
-alias gpush='git push'
-alias gpull='git pull'
-alias gcommit='git commit'
+alias Gpush='git push'
+alias Gpull='git pull'
+alias Gcommit='git commit'
+alias Gadd='git add'
+alias Gstash='git stash'
 
 # Error Tolerance
 alias cd..='cd ..'
