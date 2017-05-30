@@ -56,6 +56,11 @@ alias sedit='sudo $VISUAL'
 alias e='edit'
 alias se='sedit'
 
+alias gedit='$GRAPHICAL'
+alias sgedit='sudo $GRAPHICAL'
+alias ge='gedit'
+alias sge='sgedit'
+
 # Some git aliasses
 alias Gpush='git push'
 alias Gpull='git pull'

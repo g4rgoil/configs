@@ -20,5 +20,6 @@ fi
 [ -f ~/.bash_aliases ] && source ~/.bash_aliases
 
 export VISUAL=vim
+export GRAPHICAL=gvim
 
 
