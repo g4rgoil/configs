@@ -14,7 +14,7 @@ else
 fi
 
 # Enable git completion
-[ -f /usr/share/git/completion/git-completion.sh ] && source /usr/share/git/completion/git-completion.sh
+[ -f /usr/share/git/completion/git-completion.bash ] && source /usr/share/git/completion/git-completion.bash
 
 # Source alias definitions from ~/.bash_alias
 [ -f ~/.bash_aliases ] && source ~/.bash_aliases
