@@ -21,5 +21,6 @@ fi
 
 export VISUAL=vim
 export GRAPHICAL=gvim
+export PDFVIEW=okular
 
 

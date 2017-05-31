@@ -61,12 +61,15 @@ alias sgedit='sudo $GRAPHICAL'
 alias ge='gedit'
 alias sge='sgedit'
 
+alias pdf='$PDFVIEW'
+
 # Some git aliasses
 alias Gpush='git push'
 alias Gpull='git pull'
 alias Gcommit='git commit'
 alias Gadd='git add'
 alias Gstash='git stash'
+alias Gstat='git status'
 
 # Error Tolerance
 alias cd..='cd ..'
