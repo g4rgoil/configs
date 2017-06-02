@@ -1,7 +1,8 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# Pascal Mehnert
-# YYYY-MM-DD
-# <Description>
-# V0.1
+"""Description"""
+
+
+__version__ = "0.1"
+
