@@ -16,6 +16,9 @@ fi
 # Enable git completion
 [ -f /usr/share/git/completion/git-completion.bash ] && source /usr/share/git/completion/git-completion.bash
 
+# Enable maven completion (github.com/juven/maven-bash-completion)
+[ -f /etc/maven-bash-completion.bash ] && source /etc/maven-bash-completion.bash
+
 # Source alias definitions from ~/.bash_alias
 [ -f ~/.bash_aliases ] && source ~/.bash_aliases
 
