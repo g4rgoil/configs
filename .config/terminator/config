@@ -1,0 +1,28 @@
+[global_config]
+  enabled_plugins = LaunchpadCodeURLHandler, APTURLHandler, MavenPluginURLHandler, LaunchpadBugURLHandler
+  inactive_color_offset = 1.0
+  title_font = Noto Sans 8
+  title_use_system_font = False
+[keybindings]
+[layouts]
+  [[default]]
+    [[[child1]]]
+      parent = window0
+      profile = default
+      type = Terminal
+    [[[window0]]]
+      parent = ""
+      type = Window
+[plugins]
+[profiles]
+  [[default]]
+    background_color = "#292c2e"
+    background_darkness = 0.98
+    background_type = transparent
+    cursor_color = "#aaaaaa"
+    font = Noto Mono for Powerline 10
+    foreground_color = "#eeeeec"
+    palette = "#000000:#aa0000:#00aa00:#aa5500:#0000aa:#aa00aa:#00aaaa:#aaaaaa:#555555:#ff5555:#55ff55:#ffff55:#5555ff:#ff55ff:#55ffff:#ffffff"
+    scrollback_infinite = True
+    scrollbar_position = hidden
+    use_system_font = False
