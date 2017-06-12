@@ -26,3 +26,14 @@
     scrollback_infinite = True
     scrollbar_position = hidden
     use_system_font = False
+  [[hdpi]]
+    background_color = "#292c2e"
+    background_darkness = 0.98
+    background_type = transparent
+    cursor_color = "#aaaaaa"
+    font = Noto Mono for Powerline 11
+    foreground_color = "#eeeeec"
+    palette = "#000000:#aa0000:#00aa00:#aa5500:#0000aa:#aa00aa:#00aaaa:#aaaaaa:#555555:#ff5555:#55ff55:#ffff55:#5555ff:#ff55ff:#55ffff:#ffffff"
+    scrollback_infinite = True
+    scrollbar_position = hidden
+    use_system_font = False

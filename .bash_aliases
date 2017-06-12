@@ -14,7 +14,7 @@ alias hibernate='systemctl hibernate'
 alias wheather='curl wttr.in/Karlsruhe'
 
 # Some Wifi aliases
-alias wifiedit='nm-connection-editor'
+alias wifiedit='kde5-nm-connection-editor'
 alias wificon='nmcli connection up'
 alias wifistat='nmcli general'
 alias wifion='nmcli radio wifi on && nmcli radio wwan on'
@@ -58,8 +58,8 @@ alias se='sedit'
 
 alias gedit='$GRAPHICAL'
 alias sgedit='sudo $GRAPHICAL'
-alias ge='gedit'
-alias sge='sgedit'
+alias g='gedit'
+alias sg='sgedit'
 
 alias pdf='$PDFVIEW'
 
