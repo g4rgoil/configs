@@ -39,6 +39,7 @@ alias Xtree='tree -X'
 alias Jtree='tree -J'
 
 # Some random aliases
+alias ccc="clear"
 alias ping='ping -c 5'
 alias openports='ss --all --numeric --processes --ipv4 --ipv6'
 alias ..='cd ..'

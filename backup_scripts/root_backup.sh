@@ -22,9 +22,9 @@ if ! mountpoint -q /hdd/mybook; then
 fi
 
 if [ "$DEL" = true ]; then
-    rsync -aAXv --delete --exclude={"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/mnt/*","/media/*","/hdd/*","/lost+found"} / /hdd/mybook/Linux_Backups/desktop_arch/ >> $LOG
+    rsync -aAXv --delete --exclude={"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/srv/*","/mnt/*","/media/*","/hdd/*","/lost+found"} / /hdd/mybook/Linux_Backups/desktop_arch/ >> $LOG
 else
-    rsync -aAXv --exclude={"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/mnt/*","/media/*","/hdd/*","/lost+found"} / /hdd/mybook/Linux_Backups/desktop_arch/ >> $LOG
+    rsync -aAXv --exclude={"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/srv/*","/mnt/*","/media/*","/hdd/*","/lost+found"} / /hdd/mybook/Linux_Backups/desktop_arch/ >> $LOG
 fi
 
 echo -en "\n" >> $LOG

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LOG="/var/log/backup_logs/media.log"
+LOG="/var/log/backup_logs/game_saves.log"
 
 echo "$(date)" >> $LOG
 
