@@ -1,5 +1,9 @@
 #!/bin/bash
 
+if [ ! -d /var/log/backup_logs ]; then
+    mkdir /var/log/backup_logs
+fi
+
 LOG="/var/log/backup_logs/media.log"
 
 echo "$(date)" >> $LOG
