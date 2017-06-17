@@ -1,6 +1,5 @@
 #!/bin/bash
 
-LOG_DIRECTORY="/var/log/backup_logs"
 LOG="/var/log/backup_logs/root.log"
 
 function timestamp() {
@@ -19,30 +18,27 @@ function log_output() {
     awk -v date="$(timestamp)" '{print date, $0}' >> $LOG
 }
 
-if [ ! -d ${LOG_DIRECTORY} ]; then
-    mkdir -p ${LOG_DIRECTORY}
+if [ ! -d /var/log/backup_logs ]; then
+    mkdir /var/log/backup_logs
     log "Creating backup log directory"
 fi
 
-DEL=""
+log "Starting backup procedure"
 
-while getopts ":d" opt; do
-    case $opt in
-        d)
-            DEL="--delete"
-            ;;
-        \?)
-            echo "Invalid option: -$OPTARG" >&2
-            ;;
-    esac
-done
+TARGET_HOST="pascal_arch"
+TARGET_DIR="/mybook"
 
-log "Starting update procedure"
+ping -c 1 $TARGET_HOST > /dev/null 2>&1
 
-BACKUP_MOUNT="/hdd/mybook"
+if [ ! $? -eq 0 ]; then
+    log_error "Unable to comunicate with server"
+    exit 1
+fi
+
+BACKUP_MOUNT="/mnt/nfs/mybook"
 
 if [ ! -d ${BACKUP_MOUNT} ]; then
-    log "Creating mount point for backup device"
+    log "Creating backup mount point"
     mkdir -p ${BACKUP_MOUNT}
 fi
 
@@ -60,7 +56,7 @@ if ! mountpoint -q ${BACKUP_MOUNT}; then
     unmount=true
 fi
 
-BACKUP_DIR="${BACKUP_MOUNT}/Linux_Backups/desktop_arch"
+BACKUP_DIR="${BACKUP_MOUNT}/Linux_Backups/xps13_arch"
 
 if [ ! -d ${BACKUP_DIR} ]; then
     log "Creating backup directory on backup device"
@@ -70,10 +66,12 @@ fi
 EXCLUDE='{"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/mnt/*","/media/*","/hdd/*","/lost+found"}'
 INFO="flist,stats2"
 
-rsync -aAX ${DEL} --info=${INFO} --exclude=${EXCLUDE} / ${BACKUP_DIR} | log_output
+# rsync -aAX --info=${INFO} --exclude=${EXCLUDE} / ${BACKUP_DIR} | log_output
+
+# Todo: Make actual backup
 
 if [ "$unmount" = true ]; then
-    log "Unmounting backup device"
+    log "Unmounting the backup device"
     umount ${BACKUP_MOUNT}
 fi
 
