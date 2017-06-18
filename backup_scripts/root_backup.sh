@@ -15,10 +15,6 @@ function log_error() {
     echo -e "$(timestamp) ERROR: $1" >> $LOG
 }
 
-function log_output() {
-    awk -v date="$(timestamp)" '{print date, $0}' >> $LOG
-}
-
 if [ ! -d ${LOG_DIRECTORY} ]; then
     mkdir -p ${LOG_DIRECTORY}
     log "Creating backup log directory"
@@ -67,10 +63,10 @@ if [ ! -d ${BACKUP_DIR} ]; then
     mkdir -p ${BACKUP_DIR}
 fi
 
-EXCLUDE='{"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/mnt/*","/media/*","/hdd/*","/lost+found"}'
+EXCLUDE='"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/mnt/*","/media/*","/hdd/*","/srv/*","/lost+found"'
 INFO="flist,stats2"
 
-rsync -aAX ${DEL} --info=${INFO} --exclude=${EXCLUDE} / ${BACKUP_DIR} | log_output
+rsync -aAX ${DEL} --info=${INFO} --exclude={"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/mnt/*","/media/*","/hdd/*","/srv/*","/lost+found"} / ${BACKUP_DIR} | ts '[%Y-%m-%d %H:%M:%S]' >> $LOG
 
 if [ "$unmount" = true ]; then
     log "Unmounting backup device"
