@@ -1,5 +1,6 @@
 #!/bin/bash
 
+LOG_DIRECTORY="/var/log/backup_logs"
 LOG="/var/log/backup_logs/root.log"
 
 function timestamp() {
@@ -14,14 +15,23 @@ function log_error() {
     echo -e "$(timestamp) ERROR: $1" >> $LOG
 }
 
-function log_output() {
-    awk -v date="$(timestamp)" '{print date, $0}' >> $LOG
-}
-
 if [ ! -d /var/log/backup_logs ]; then
     mkdir /var/log/backup_logs
     log "Creating backup log directory"
 fi
+
+DEL=""
+
+while getopts ":d" opt; do
+    case $opt in
+        d)
+            DEL="--delete"
+            ;;
+        \?)
+            echo "Invalid option: -$OPTARG" >&2
+            ;;
+    esac
+done
 
 log "Starting backup procedure"
 
@@ -38,7 +48,7 @@ fi
 BACKUP_MOUNT="/mnt/nfs/mybook"
 
 if [ ! -d ${BACKUP_MOUNT} ]; then
-    log "Creating backup mount point"
+    log "Creating mount point for backup device"
     mkdir -p ${BACKUP_MOUNT}
 fi
 
@@ -63,10 +73,9 @@ if [ ! -d ${BACKUP_DIR} ]; then
     mkdir -p ${BACKUP_DIR}
 fi
 
-EXCLUDE='{"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/mnt/*","/media/*","/hdd/*","/lost+found"}'
 INFO="flist,stats2"
 
-# rsync -aAX --info=${INFO} --exclude=${EXCLUDE} / ${BACKUP_DIR} | log_output
+rsync -aAX ${DEL} --info=${INFO} --exclude={"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/mnt/*","/media/*","/hdd/*","/srv/*","/lost+found"} / ${BACKUP_DIR} | ts '[%Y-%m-%d %H:%M:%S]' >> $LOG
 
 # Todo: Make actual backup
 

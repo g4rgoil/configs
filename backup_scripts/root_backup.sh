@@ -63,7 +63,6 @@ if [ ! -d ${BACKUP_DIR} ]; then
     mkdir -p ${BACKUP_DIR}
 fi
 
-EXCLUDE='"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/mnt/*","/media/*","/hdd/*","/srv/*","/lost+found"'
 INFO="flist,stats2"
 
 rsync -aAX ${DEL} --info=${INFO} --exclude={"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/mnt/*","/media/*","/hdd/*","/srv/*","/lost+found"} / ${BACKUP_DIR} | ts '[%Y-%m-%d %H:%M:%S]' >> $LOG
