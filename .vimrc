@@ -12,6 +12,7 @@ set showbreak=+++               " Wrap-broken line prefix
 set textwidth=100               " Line wrap (after cols)
 set showmatch                   " Highlight matching braces
 set cmdheight=1                 " Number of lines at bottom of screen
+set tw=0                        " Don't use automatic line breaks
 syntax enable                   " Enable syntax highlighting
 
 "" Indentation
@@ -40,6 +41,7 @@ let g:airline#extensions#tabline#enabled = 1
 let g:airline_powerline_fonts = 1
 let g:airline_theme = 'luna'
 
+let g:airline#extensions#whitespace#enabled = 0
 "let g:airline#extensions#vimtex#enabled = 1
 
 "" Vimtex Configuration
@@ -63,7 +65,7 @@ call plug#begin('~/.vim/plugged')
 
     Plug 'scrooloose/nerdtree'
 
-    Plug 'bronson/vim-trailing-whitespace'
+    "" Plug 'bronson/vim-trailing-whitespace'
     Plug 'ap/vim-css-color'
     Plug 'slim-template/vim-slim'
     Plug 'lervag/vimtex'
