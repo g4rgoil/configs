@@ -39,6 +39,7 @@ alias Xtree='tree -X'
 alias Jtree='tree -J'
 
 # Some random aliases
+alias schleck="slack"
 alias timestamp="date '+%Y-%m-%d %H:%M:%S'"
 alias ccc="clear"
 alias ping='ping -c 5'

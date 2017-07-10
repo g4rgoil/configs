@@ -65,13 +65,14 @@ call plug#begin('~/.vim/plugged')
 
     Plug 'scrooloose/nerdtree'
 
-    "" Plug 'bronson/vim-trailing-whitespace'
     Plug 'ap/vim-css-color'
-    Plug 'slim-template/vim-slim'
     Plug 'lervag/vimtex'
 
     Plug 'vim-airline/vim-airline'
     Plug 'vim-airline/vim-airline-themes'
+    
+    "" Plug 'bronson/vim-trailing-whitespace'
+    "" Plug 'slim-template/vim-slim'
 call plug#end()
 
 "" Templates

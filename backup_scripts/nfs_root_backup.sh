@@ -15,9 +15,13 @@ function log_error() {
     echo -e "$(timestamp) ERROR: $1" >> $LOG
 }
 
-if [ ! -d /var/log/backup_logs ]; then
-    mkdir /var/log/backup_logs
-    log "Creating backup log directory"
+if [ ! -d ${LOG_DIRECTORY} ]; then
+    mkdir ${LOG_DIRECTORY}
+fi
+
+if [ ! -e ${LOG} ]; then
+    touch ${LOG}
+    log "Creating log file for backup"
 fi
 
 DEL=""
@@ -38,10 +42,10 @@ log "Starting backup procedure"
 TARGET_HOST="pascal_arch"
 TARGET_DIR="/mybook"
 
-ping -c 1 $TARGET_HOST > /dev/null 2>&1
+ping -c 1 ${TARGET_HOST} > /dev/null 2>&1
 
 if [ ! $? -eq 0 ]; then
-    log_error "Unable to comunicate with server"
+    log_error "Unable to comunicate with nfs host"
     exit 1
 fi
 

@@ -15,11 +15,13 @@ zstyle ':completion:*' original true
 zstyle ':completion:*' preserve-prefix '//[^/]##/'
 zstyle ':completion:*' select-prompt '%SScrolling active: current selection at %p%s'
 zstyle ':completion:*' verbose true
-zstyle :compinstall filename '/home/pascal/.zshrc'
+zstyle :compinstall filename '/etc/zsh/zshrc'
 
-autoload -Uz compinit
+autoload -Uz compinit promptinit
 compinit
+promptinit
 # End of lines added by compinstall
+
 # Lines configured by zsh-newuser-install
 HISTFILE=~/.zshhistory
 HISTSIZE=1000
@@ -28,3 +30,32 @@ setopt appendhistory autocd extendedglob notify
 unsetopt beep nomatch
 bindkey -v
 # End of lines configured by zsh-newuser-install
+
+# Enable git completion
+zstyle ':completion:*:*:git:*' script /usr/share/git/completion/git-completion.zsh
+
+setopt PROMPT_SUBST
+
+# Set left prompt
+PROMPT="[%n@%m %1~]%# "
+
+# Enable and configure git prompt as right prompt
+if [ -f /usr/share/git/completion/git-prompt.sh ]; then
+    source /usr/share/git/completion/git-prompt.sh
+    RPROMPT='$(__git_ps1 "[%s]")'
+
+    # Indicate (un)staged changes (+ and *)
+    GIT_PS1_SHOWDIRTYSTATE=true
+
+    # Indicate untracked files (%)
+    GIT_PS1_SHOWUNTRACKEDFILES=true
+
+    # Indicate 
+    GIT_PS1_SHOWUPSTREAM="auto"
+fi
+
+# Source global alias definitions from /etc/zsh/zsh_aliases
+[ -f /etc/zsh/zsh_alises ] && source /etc/zsh/zsh_aliases
+
+# Source user specific alias definitions from ~/.zsh_aliases
+[ -f ~/.zsh_aliases ] && source ~/.zsh_aliases
