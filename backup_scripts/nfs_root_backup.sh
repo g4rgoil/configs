@@ -75,7 +75,7 @@ fi
 
 INFO="flist,stats2"
 
-rsync -aAX ${DEL} --info=${INFO} --exclude={"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/mnt/*","/media/*","/hdd/*","/srv/*","/lost+found"} / ${BACKUP_DIR} | ts '[%Y-%m-%d %H:%M:%S]' >> $LOG
+# rsync -aAX ${DEL} --info=${INFO} --exclude={"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/mnt/*","/media/*","/hdd/*","/srv/*","/lost+found"} / ${BACKUP_DIR} | ts '[%Y-%m-%d %H:%M:%S]' >> $LOG
 
 # Todo: Make actual backup
 
