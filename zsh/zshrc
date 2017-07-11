@@ -58,7 +58,7 @@ if [ -f /usr/share/git/completion/git-prompt.sh ]; then
     GIT_PS1_SHOWUPSTREAM="auto"
 
     # Use colors for hints
-    GIT_PS1_SHOWCOLORHINTS=true
+    GIT_PS1_SHOWCOLORHINTS=true  # Todo: Not working as of right now
 fi
 
 # Source global alias definitions from /etc/zsh/zsh_aliases
