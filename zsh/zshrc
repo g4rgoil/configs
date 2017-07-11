@@ -1,3 +1,7 @@
+#
+# /etc/zsh/zshrc
+#
+
 # The following lines were added by compinstall
 
 zstyle ':completion:*' completer _expand _complete _ignored _correct _approximate
@@ -23,7 +27,7 @@ promptinit
 # End of lines added by compinstall
 
 # Lines configured by zsh-newuser-install
-HISTFILE=~/.zshhistory
+HISTFILE=~/.zsh_history
 HISTSIZE=1000
 SAVEHIST=1000
 setopt appendhistory autocd extendedglob notify
@@ -50,12 +54,24 @@ if [ -f /usr/share/git/completion/git-prompt.sh ]; then
     # Indicate untracked files (%)
     GIT_PS1_SHOWUNTRACKEDFILES=true
 
-    # Indicate 
+    # Indicate difference between HEAD and its upstream
     GIT_PS1_SHOWUPSTREAM="auto"
+
+    # Use colors for hints
+    GIT_PS1_SHOWCOLORHINTS=true
 fi
 
 # Source global alias definitions from /etc/zsh/zsh_aliases
-[ -f /etc/zsh/zsh_alises ] && source /etc/zsh/zsh_aliases
+[ -f /etc/zsh/zsh_aliases ] && source /etc/zsh/zsh_aliases
 
 # Source user specific alias definitions from ~/.zsh_aliases
 [ -f ~/.zsh_aliases ] && source ~/.zsh_aliases
+
+# Start the ssh-agent if it is not already running
+if ! pgrep -u "$USER" ssh-agent > /dev/null; then
+    ssh-agent > ~/.ssh-agent-thing
+fi
+
+if [[ "$SSH_AGENT_PID" == "" ]]; then
+    eval "$(<~/.ssh-agent-thing)"
+fi
