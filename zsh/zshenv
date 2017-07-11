@@ -1,0 +1,14 @@
+export ZDOTDIR="$HOME"
+
+export EDITOR=/usr/bin/vim
+export VISUAL=/usr/bin/vim
+export GRAPHICAL=/usr/bin/gvim
+
+export PAGER=/usr/bin/less
+export PDFVIEW=/usr/bin/okular
+
+if [ -n "$DISPLAY" ]; then
+    export BROWSER=/usr/bin/chromium
+else
+    export BROWSER=/usr/bin/links
+fi
