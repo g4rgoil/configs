@@ -1,5 +1,5 @@
 #
-# ~/.bashrc
+# /etc/bash.bashrc
 #
 
 # If not running interactively, don't do anything
@@ -19,9 +19,6 @@ fi
 # Enable maven completion (github.com/juven/maven-bash-completion)
 [ -f /etc/maven-bash-completion.bash ] && source /etc/maven-bash-completion.bash
 
-# Source alias definitions from ~/.bash_alias
-[ -f ~/.bash_aliases ] && source ~/.bash_aliases
-
 # Start the ssh-agent if it is not already running
 if ! pgrep -u "$USER" ssh-agent > /dev/null; then
     ssh-agent > ~/.ssh-agent-thing
@@ -35,4 +32,8 @@ export VISUAL=vim
 export GRAPHICAL=gvim
 export PDFVIEW=okular
 
+# Source global alias definitions from /etc/bash.bash_aliases
+[ -f /etc/bash.bash_aliases ] && source /etc/bash.bash_aliases
 
+# Source alias definitions from ~/.bash_alias
+[ -f ~/.bash_aliases ] && source ~/.bash_aliases
