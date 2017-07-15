@@ -9,11 +9,12 @@ alias uninstall='sudo pacman -Rns'
 alias uninstall-force='sudo pacman -Rdd'
 
 # Some handy aliasses for everyday commands
-alias die='shutdown now'
-alias hibernate='systemctl hibernate'
 alias wheather='curl wttr.in/Karlsruhe'
+alias hibernate='systemctl hibernate'
+alias neofetch='neofetch --config'
 alias cdtemp='cd $(mktemp -d)'
 alias etemp='edit $(mktemp)'
+alias die='shutdown now'
 
 # Some Wifi aliases
 alias wifiedit='kde5-nm-connection-editor'
@@ -70,7 +71,10 @@ alias sg='sgedit'
 
 alias pdf='$PDFVIEW'
 
+# Some aliases to quickly edit certain files
 alias zshrc='edit /etc/zsh/zshrc'
+alias zsh_aliases='edit /etc/zsh/zsh_aliases'
+alias vimrc='edit /etc/vimrc'
 
 # Some git aliasses
 alias Gpush='git push'
