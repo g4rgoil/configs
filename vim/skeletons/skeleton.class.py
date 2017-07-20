@@ -7,4 +7,5 @@
 
 __version__ = "0.1"
 
-${2}
+class ${2:ClassName}(${3:object}):
+    ${4}
