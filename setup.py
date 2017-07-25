@@ -81,16 +81,32 @@ def setup_vim():
 def setup_misc():
     print("Setting up misc files")
 
+    repo_misc_dir = require_repo_dir("misc")
+    usr_home_dir = expanduser("~")
 
-def create_backup(path):
-    backup_path = path + ".old"
-    print_move(path, backup_path)
-    move(path, backup_path)
+    repo_latexmkrc = join(repo_misc_dir, "latexmkrc")
+    usr_latexmkrc = join(usr_home_dir, ".latexmkrc")
+
+    create_backup(usr_latexmkrc)
+    create_link(repo_latexmkrc, usr_latexmkrc)
+
+    repo_yaourtrc = join(repo_misc_dir, "yaourtrc")
+    usr_latexmkrc = join(usr_home_dir, ".yaourtrc")
+
+    create_backup(usr_latexmkrc)
+    create_link(repo_yaourtrc, usr_latexmkrc)
+
+    repo_neofetch_cfg = join(repo_misc_dir, "neofetch_config")
+    usr_neofetch_cfg = join(usr_home_dir, ".neofetch_config")
+
+    create_backup(usr_neofetch_cfg)
+    create_link(repo_neofetch_cfg, usr_neofetch_cfg)
 
 
 def create_link(src, dst):
-    print_link(src, dst)
-    symlink(src, dst)
+    if exists(src):
+        print_link(src, dst)
+        symlink(src, dst)
 
 
 def require_repo_dir(name):
@@ -114,19 +130,23 @@ def print_link(src, dst):
 def print_move(old, new):
     print("{:<14} {} -> {}".format("Moving file:", old, new))
 
+def print_delete(path):
+    print("{:<14} {}".format("Deleting file:", path))
+
 
 def create_arg_parser() -> ArgumentParser:
     arg_parser = ArgumentParser(prog="setup.py", add_help=False)
-    arg_parser.add_argument("--help",    action="help",       help="show this help message and exit")
-    arg_parser.add_argument("--verbose", action="store_true", help="be more verbose")
-    arg_parser.add_argument("--quiet",   action="store_true", help="don't print anything")
+    arg_parser.add_argument("-h", "--help",    action="help",       help="show this help message and exit")
+    arg_parser.add_argument("-v", "--verbose", action="store_true", help="be more verbose")
+    arg_parser.add_argument("-q", "--quiet",   action="store_true", help="don't print anything")
+    arg_parser.add_argument("-d", "--delete",  action="store_true", help="delete old files instead of creating backups")
 
     category_group = arg_parser.add_argument_group("file categories")
-    category_group.add_argument("-a", "--all",  action="store_true", help="setup all files (default)")
-    category_group.add_argument("-z", "--zsh",  action="store_true", help="setup files for zsh")
-    category_group.add_argument("-b", "--bash", action="store_true", help="setup files for bash")
-    category_group.add_argument("-v", "--vim",  action="store_true", help="setup files for vim")
-    category_group.add_argument("-m", "--misc", action="store_true", help="setup miscellaneous files")
+    category_group.add_argument("-A", "--all",  action="store_true", help="setup all files (default)")
+    category_group.add_argument("-Z", "--zsh",  action="store_true", help="setup files for zsh")
+    category_group.add_argument("-B", "--bash", action="store_true", help="setup files for bash")
+    category_group.add_argument("-V", "--vim",  action="store_true", help="setup files for vim")
+    category_group.add_argument("-M", "--misc", action="store_true", help="setup miscellaneous files")
 
     return arg_parser
 
@@ -150,6 +170,16 @@ if __name__ == "__main__":
     
     def is_selected(item):
         return item or not selected_any or parsed_args.all
+
+    def create_backup(path):
+        if exists(path):
+            if parsed_args.delete:
+                print_delete(path)
+                #  TODO: remove file <25-07-17, yourname> # 
+            else:
+                backup_path = path + ".old"
+                print_move(path, backup_path)
+                move(path, backup_path)
 
     if is_selected(parsed_args.zsh):
         setup_zsh()
