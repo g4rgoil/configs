@@ -19,6 +19,7 @@ zstyle ':completion:*' original true
 zstyle ':completion:*' preserve-prefix '//[^/]##/'
 zstyle ':completion:*' select-prompt '%SScrolling active: current selection at %p%s'
 zstyle ':completion:*' verbose true
+zstyle ':completion:*' rehash true
 zstyle :compinstall filename '/etc/zsh/zshrc'
 
 autoload -Uz compinit promptinit
@@ -60,6 +61,9 @@ if [ -f /usr/share/git/completion/git-prompt.sh ]; then
     # Use colors for hints
     GIT_PS1_SHOWCOLORHINTS=true  # Todo: Not working as of right now
 fi
+
+# Enable zsh syntax highlighting
+[ -f /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ] && source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # Source global alias definitions from /etc/zsh/zsh_aliases
 [ -f /etc/zsh/zsh_aliases ] && source /etc/zsh/zsh_aliases
