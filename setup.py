@@ -69,6 +69,12 @@ def setup_vim():
     create_backup(etc_vimrc)
     create_link(repo_vimrc, etc_vimrc)
 
+    repo_gvimrc = join(repo_vim_dir, "gvimrc")
+    etc_gvimrc = "/etc/gvimrc"
+
+    create_backup(etc_gvimrc)
+    create_link(repo_gvimrc, etc_gvimrc)
+
     repo_vim_skel = join(repo_vim_dir, "skeletons")
     etc_vim_skel = join(etc_vim_dir, "skeletons")
 
@@ -130,6 +136,7 @@ def print_link(src, dst):
 def print_move(old, new):
     print("{:<14} {} -> {}".format("Moving file:", old, new))
 
+
 def print_delete(path):
     print("{:<14} {}".format("Deleting file:", path))
 
@@ -175,7 +182,7 @@ if __name__ == "__main__":
         if exists(path):
             if parsed_args.delete:
                 print_delete(path)
-                #  TODO: remove file <25-07-17, yourname> # 
+                rmtree(path)
             else:
                 backup_path = path + ".old"
                 print_move(path, backup_path)
