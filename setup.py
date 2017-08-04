@@ -88,25 +88,26 @@ def setup_misc():
     print("Setting up misc files")
 
     repo_misc_dir = require_repo_dir("misc")
-    usr_home_dir = expanduser("~")
 
     repo_latexmkrc = join(repo_misc_dir, "latexmkrc")
-    usr_latexmkrc = join(usr_home_dir, ".latexmkrc")
+    usr_latexmkrc = expanduser("~/.latexmkrc")
 
     create_backup(usr_latexmkrc)
     create_link(repo_latexmkrc, usr_latexmkrc)
 
     repo_yaourtrc = join(repo_misc_dir, "yaourtrc")
-    usr_latexmkrc = join(usr_home_dir, ".yaourtrc")
+    usr_yaourtrc = expanduser("~/.yaourtrc")
 
-    create_backup(usr_latexmkrc)
-    create_link(repo_yaourtrc, usr_latexmkrc)
+    create_backup(usr_yaourtrc)
+    create_link(repo_yaourtrc, usr_yaourtrc)
 
     repo_neofetch_cfg = join(repo_misc_dir, "neofetch_config")
-    usr_neofetch_cfg = join(usr_home_dir, ".neofetch_config")
+    usr_neofetch_cfg = expanduser("~/.neofetch_config")
 
     create_backup(usr_neofetch_cfg)
     create_link(repo_neofetch_cfg, usr_neofetch_cfg)
+
+    print_important("Succesfully set up misc files")
 
 
 def create_link(src, dst):
@@ -146,7 +147,7 @@ def create_arg_parser() -> ArgumentParser:
     arg_parser.add_argument("-h", "--help",    action="help",       help="show this help message and exit")
     arg_parser.add_argument("-v", "--verbose", action="store_true", help="be more verbose")
     arg_parser.add_argument("-q", "--quiet",   action="store_true", help="don't print anything")
-    arg_parser.add_argument("-d", "--delete",  action="store_true", help="delete old files instead of creating backups")
+    arg_parser.add_argument("-d", "--delete",  action="store_true", help="NOT WORKING: delete old files instead of creating backups")
 
     category_group = arg_parser.add_argument_group("file categories")
     category_group.add_argument("-A", "--all",  action="store_true", help="setup all files (default)")
