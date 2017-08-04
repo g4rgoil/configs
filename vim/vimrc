@@ -17,7 +17,7 @@ syntax enable                   " Enable syntax highlighting
 
 "" Indentation
 filetype plugin indent on       " I don't fucking know, what this does!
-set tabstop=4                   " Number of hard-tabsto spaes
+set tabstop=4                   " Number of hard-tabstop spaces
 set shiftwidth=4                " Number of auto-indent spaces
 set expandtab                   " Use spaces instead of tabs
 set autoindent
