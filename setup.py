@@ -107,6 +107,12 @@ def setup_misc():
     create_backup(usr_neofetch_cfg)
     create_link(repo_neofetch_cfg, usr_neofetch_cfg)
 
+    repo_ssh_cfg = join(repo_misc_dir, "ssh_config")
+    usr_ssh_cfg = expanduser("~/.ssh/config")
+
+    create_backup(usr_ssh_cfg)
+    create_link(repo_ssh_cfg, usr_ssh_cfg)
+
     print_important("Succesfully set up misc files")
 
 
