@@ -72,6 +72,7 @@ fi
 [ -f ~/.zsh_aliases ] && source ~/.zsh_aliases
 
 # Start the ssh-agent if it is not already running
+# !! IMPORTANT: Add "AddKeysToAgent yes" to ~/.ssh/config !!
 if ! pgrep -u "$USER" ssh-agent > /dev/null; then
     ssh-agent > ~/.ssh-agent-thing
 fi
