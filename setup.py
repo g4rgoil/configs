@@ -9,7 +9,7 @@ import sys
 from argparse import ArgumentParser
 from os import *
 from os.path import *
-from shutil import move
+from shutil import move, rmtree
 
 __version__ = "0.1"
 
