@@ -107,6 +107,7 @@ def setup_misc():
     create_backup(usr_neofetch_cfg)
     create_link(repo_neofetch_cfg, usr_neofetch_cfg)
 
+    #  TODO apply proper permissions:  <05-08-17, Pascal> # 
     repo_ssh_cfg = join(repo_misc_dir, "ssh_config")
     usr_ssh_cfg = expanduser("~/.ssh/config")
 
@@ -163,6 +164,13 @@ def create_arg_parser() -> ArgumentParser:
     category_group.add_argument("-M", "--misc", action="store_true", help="setup miscellaneous files")
 
     return arg_parser
+
+
+class SetupArgParser(ArgumentParser):
+    def __init__():
+        super().__init__(prog="setup.py", add_help=False)
+        #  TODO create actual parser:  <05-08-17, Pascal> # 
+
 
 
 if __name__ == "__main__":
