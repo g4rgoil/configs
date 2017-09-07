@@ -10,11 +10,14 @@ alias uninstall-force='sudo pacman -Rdd'
 
 # Some handy aliasses for everyday commands
 alias wheather='curl wttr.in/Karlsruhe'
-alias hibernate='systemctl hibernate'
 alias neofetch='neofetch --config ~/.neofetch_config'
 alias cdtemp='cd $(mktemp -d)'
 alias etemp='edit $(mktemp)'
+
+# Some power aliases
 alias die='shutdown now'
+# alias suspend='systemctl suspend'
+alias hibernate='systemctl hibernate'
 
 # Some Wifi aliases
 alias wifiedit='kde5-nm-connection-editor'
