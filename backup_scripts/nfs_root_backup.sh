@@ -1,7 +1,7 @@
 #!/bin/bash
 
 LOG_DIRECTORY="/var/log/backup_logs"
-LOG="/var/log/backup_logs/root.log"
+LOG="$LOG_DIRECTORY/root.log"
 
 function timestamp() {
     echo [$(date '+%Y-%m-%d %H:%M:%S')]

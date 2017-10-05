@@ -1,7 +1,7 @@
 #!/bin/bash
 
 LOG_DIRECTORY="/var/log/backup_logs"
-LOG="/var/log/backup_logs/game_saves.log"
+LOG="$LOG_DIRECTORY/game_saves.log"
 
 function timestamp() {
     echo [$(date '+%Y-%m-%d %H:%M:%S')]
@@ -52,7 +52,7 @@ fi
 
 INFO="flist,stats2"
 
-rsync -aAX --info=${INFO} /hdd/media/game_saves/ ${BACKUP_DIR} | ts '[%Y-%m-%d %H:%M:%S]' >> $LOG
+rsync -aAX --partial --info=${INFO} /hdd/media/game_saves/ ${BACKUP_DIR} | ts '[%Y-%m-%d %H:%M:%S]' >> $LOG
 
 if [ "$unmount" = true ]; then
     log "Unmounting backup device"
