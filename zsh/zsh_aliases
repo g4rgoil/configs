@@ -79,6 +79,7 @@ alias pdf='$PDFVIEW'
 alias zshrc='edit /etc/zsh/zshrc'
 alias zsh_aliases='edit /etc/zsh/zsh_aliases'
 alias vimrc='edit /etc/vimrc'
+alias fstab='sudo edit /etc/fstab'
 
 # Some git aliasses
 alias Gpush='git push'
