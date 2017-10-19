@@ -1,5 +1,6 @@
 #!/bin/bash
 
+SLACK_URL="https://hooks.slack.com/services/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"
 LOG_DIRECTORY="/var/log/backup_logs"
 LOG="${LOG_DIRECTORY}/mybook.log"
 
@@ -15,6 +16,10 @@ function log_error() {
     echo -e "$(timestamp) ERROR: $1" >> $LOG
 }
 
+function slack_message() {
+    curl -X POST --data-urlencode "payload={\"text\": \"${1}\"}" ${SLACK_URL} > /dev/null 2>&1
+}
+
 if [[ ! -d  ${LOG_DIRECTORY} ]]; then
     mkdir ${LOG_DIRECTORY}
 fi
@@ -25,6 +30,7 @@ if [[ ! -e ${LOG} ]]; then
 fi
 
 log "Beginning backup procedure"
+slack_message "MyBook Backup: Starting Backup"
 TARGET_HOST="wdmycloud"
 
 
@@ -32,6 +38,7 @@ ping -c 1 ${TARGET_HOST} > /dev/null 2>&1
 
 if [[ ! $? -eq 0 ]]; then
     log_error "Unable to communicate with smb host"
+    slack_message "MyBook Backup: Failed due to a connection issue"
     exit 1
 fi
 
@@ -50,6 +57,7 @@ if ! mountpoint -q ${BACKUP_MOUNT}; then
 
     if [[ ! $? -eq 0 ]]; then
         log_error "Unable to mount backup device"
+        slack_message "MyBook Backup: Failed due to not being able to mount smb share"
         exit 2
     fi
 
@@ -72,15 +80,22 @@ if ! mountpoint -q ${BACKUP_SOURCE} ; then
 
     if [[ ! $? -eq 0 ]]; then
         log_error "Unable to mount mybook"
+        slack_message "MyBook Backup: Failed due to not being able to mount mybook"
         exit 3
     fi
 
     unmount_source=true
 fi
 
-INFO="flist,stats2"
+for source_dir in Linux_Backups; do
+    BACKUP_SOURCE_DIR="${BACKUP_SOURCE}/${source_dir}"
 
-rsync -aAX --partial --delete --info=${INFO} ${BACKUP_SOURCE} ${BACKUP_TARGET} | ts '[%Y-%m-%d %H:%M:%S]' >> ${LOG}
+    tar -c --use-compress-program="pigz --best" -f "${BACKUP_TARGET}/${source_dir}.tar.gz" ${BACKUP_SOURCE_DIR}
+done
+
+
+# TODO: Create backup for Linux Backups directory <18-10-17, pascal> #
+# TODO: Create backup for Game Save directory <18-10-17, pascal> #
 
 if [[ "$unmount_source" = true ]]; then
     log "Unmounting mybook"
@@ -93,5 +108,6 @@ if [[ "$unmount_target" = true ]]; then
 fi
 
 log "Finishing backup procedure"
+slack_message "MyBook Backup: Backup succesful"
 echo "" >> ${LOG}
 

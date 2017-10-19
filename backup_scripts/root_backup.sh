@@ -1,5 +1,6 @@
 #!/bin/bash
 
+SLACK_URL="https://hooks.slack.com/services/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"
 LOG_DIRECTORY="/var/log/backup_logs"
 LOG="$LOG_DIRECTORY/root.log"
 
@@ -13,6 +14,10 @@ function log() {
 
 function log_error() {
     echo -e "$(timestamp) ERROR: $1" >> $LOG
+}
+
+function slack_message() {
+    curl -X POST --data-urlencode "payload={\"text\": \"${1}\"}" ${SLACK_URL} > /dev/null 2>&1
 }
 
 if [[ ! -d ${LOG_DIRECTORY} ]]; then
@@ -37,6 +42,7 @@ if ! mountpoint -q ${BACKUP_MOUNT}; then
 
     if [[ ! $? -eq 0 ]]; then
         log_error "Unable to mount backup device"
+        slack_message "$(hostname): Backup failed "
         exit 2
     fi
 
