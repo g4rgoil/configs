@@ -86,8 +86,6 @@ for deprecated_backup in $(ls -1 "${BACKUP_DIR}" | head -n -10); do
     rm -r "${BACKUP_DIR}/${deprecated_backup}"
 done
 
-# TODO: reactivate cronjob (/root/backup.cron) <05-10-17> #
-
 if [[ "$unmount" = true ]]; then
     log "Unmounting backup device"
     umount ${BACKUP_MOUNT}
