@@ -1,1 +1,3 @@
 zsh-syntax-highlighting
+bind-tools
+vimpager
