@@ -74,10 +74,12 @@ alias g='gedit'
 alias sg='sgedit'
 
 alias pdf='$PDFVIEW'
+alias page='$PAGER'
 
 # Some aliases to quickly edit certain files
 alias zshrc='edit /etc/zsh/zshrc'
 alias zsh_aliases='edit /etc/zsh/zsh_aliases'
+alias zshenv='edit /etc/zsh/zshenv'
 alias vimrc='edit /etc/vimrc'
 alias fstab='sudo edit /etc/fstab'
 
