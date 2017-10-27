@@ -19,12 +19,13 @@ alias die='shutdown now'
 # alias suspend='systemctl suspend'
 alias hibernate='systemctl hibernate'
 
-# Some Wifi aliases
+# Some Network aliases
 alias wifiedit='kde5-nm-connection-editor'
 alias wificon='nmcli connection up'
 alias wifistat='nmcli general'
 alias wifion='nmcli radio wifi on && nmcli radio wwan on'
 alias wifioff='nmcli radio wifi off && nmcli radio wwan off'
+alias wanip='dig +short myip.opendns.com @resolver1.opendns.com'
 
 # Some Hardware aliases
 alias dim="xbacklight -dec 10"

@@ -4,7 +4,7 @@ export EDITOR=/usr/bin/vim
 export VISUAL=/usr/bin/vim
 export GRAPHICAL=/usr/bin/gvim
 
-export PAGER=/usr/bin/less
+export PAGER=/usr/bin/vimpager
 export PDFVIEW=/usr/bin/okular
 
 if [ -n "$DISPLAY" ]; then
