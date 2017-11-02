@@ -31,44 +31,44 @@ fi
 
 log "Beginning backup procedure"
 slack_message "MyBook Backup: Starting Backup"
-TARGET_HOST="wdmycloud"
+TARGET_HOST="optiplex"  # 192.168.100.200 
 
 
 ping -c 1 ${TARGET_HOST} > /dev/null 2>&1
 
 if [[ ! $? -eq 0 ]]; then
-    log_error "Unable to communicate with smb host"
-    slack_message "MyBook Backup: Failed due to a connection issue"
+    log_error "Unable to communicate with target host"
+    slack_message "MyBook Backup: Failed, can't connect to target host"
     exit 1
 fi
 
-BACKUP_MOUNT="/mnt/mycloud/pascal"
+BACKUP_MOUNT="/mnt/optiplex"
 
 if [[ ! -d ${BACKUP_MOUNT} ]]; then
-    log "Creating mount point for smb share"
+    log "Creating mount point for target device"
     mkdir -p ${BACKUP_MOUNT}
 fi
 
 unmount_target=false
 
 if ! mountpoint -q ${BACKUP_MOUNT}; then
-    log "Mounting smb share"
+    log "Mounting target device"
     mount ${BACKUP_MOUNT}
 
     if [[ ! $? -eq 0 ]]; then
-        log_error "Unable to mount backup device"
-        slack_message "MyBook Backup: Failed due to not being able to mount smb share"
+        log_error "Unable to mount target device"
+        slack_message "MyBook Backup: Failed, can't mount target device"
         exit 2
     fi
 
     unmount_target=true
 fi
 
-BACKUP_TARGET="${BACKUP_MOUNT}/Backups/mybook_backup"
+BACKUP_TARGET="${BACKUP_MOUNT}/mybook_backup"
 BACKUP_SOURCE="/hdd/mybook/"
 
 if [ ! -d ${BACKUP_TARGET} ]; then
-    log "Creating backup directory on smb share"
+    log "Creating backup directory on target_device"
     mkdir -p ${BACKUP_TARGET}
 fi
 
@@ -80,7 +80,7 @@ if ! mountpoint -q ${BACKUP_SOURCE} ; then
 
     if [[ ! $? -eq 0 ]]; then
         log_error "Unable to mount mybook"
-        slack_message "MyBook Backup: Failed due to not being able to mount mybook"
+        slack_message "MyBook Backup: Failed, can't mount mybook"
         exit 3
     fi
 
@@ -89,8 +89,9 @@ fi
 
 for source_dir in Linux_Backups; do
     BACKUP_SOURCE_DIR="${BACKUP_SOURCE}/${source_dir}"
+    BACKUP_TARGET_ARCHIVE="${BACKUP_TARGET}/${source_dir}.tar.gz"
 
-    tar -c --use-compress-program="pigz --best" -f "${BACKUP_TARGET}/${source_dir}.tar.gz" ${BACKUP_SOURCE_DIR}
+    tar -c --use-compress-program="pigz -2" ${BACKUP_SOURCE_DIR} > ${BACKUP_TARGET_ARCHIVE}
 done
 
 
@@ -103,7 +104,7 @@ if [[ "$unmount_source" = true ]]; then
 fi
 
 if [[ "$unmount_target" = true ]]; then
-    log "Unmounting smb share"
+    log "Unmounting target device"
     umount ${BACKUP_MOUNT}
 fi
 
