@@ -5,7 +5,7 @@ LOG_DIRECTORY="/var/log/backup_logs"
 LOG="${LOG_DIRECTORY}/mybook.log"
 
 function timestamp() {
-    echo [$(date '+%Y-%m-%d %H:%M:%S')]
+    echo ["$(date '+%Y-%m-%d %H:%M:%S')"]
 }
 
 function log() {
@@ -34,9 +34,9 @@ slack_message "MyBook Backup: Starting Backup"
 TARGET_HOST="optiplex"  # 192.168.100.200 
 
 
-ping -c 1 ${TARGET_HOST} > /dev/null 2>&1
 
-if [[ ! $? -eq 0 ]]; then
+
+if ! ping -c 1 ${TARGET_HOST} > /dev/null 2>&1; then
     log_error "Unable to communicate with target host"
     slack_message "MyBook Backup: Failed, can't connect to target host"
     exit 1
@@ -53,9 +53,9 @@ unmount_target=false
 
 if ! mountpoint -q ${BACKUP_MOUNT}; then
     log "Mounting target device"
-    mount ${BACKUP_MOUNT}
+    
 
-    if [[ ! $? -eq 0 ]]; then
+    if ! mount ${BACKUP_MOUNT}; then
         log_error "Unable to mount target device"
         slack_message "MyBook Backup: Failed, can't mount target device"
         exit 2
@@ -76,9 +76,8 @@ unmount_source=false
 
 if ! mountpoint -q ${BACKUP_SOURCE} ; then
     log "Mounting mybook for backup"
-    mount ${BACKUP_SOURCE}
-
-    if [[ ! $? -eq 0 ]]; then
+    
+    if ! mount ${BACKUP_SOURCE}; then
         log_error "Unable to mount mybook"
         slack_message "MyBook Backup: Failed, can't mount mybook"
         exit 3

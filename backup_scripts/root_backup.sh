@@ -5,7 +5,7 @@ LOG_DIRECTORY="/var/log/backup_logs"
 LOG="$LOG_DIRECTORY/root.log"
 
 function timestamp() {
-    echo [$(date '+%Y-%m-%d %H:%M:%S')]
+    echo ["$(date '+%Y-%m-%d %H:%M:%S')"]
 }
 
 function log() {
@@ -38,11 +38,10 @@ unmount=false
 
 if ! mountpoint -q ${BACKUP_MOUNT}; then
     log "Mounting backup device"
-    mount ${BACKUP_MOUNT}
 
-    if [[ ! $? -eq 0 ]]; then
+    if ! mount ${BACKUP_MOUNT}; then
         log_error "Unable to mount backup device"
-        slack_message "$(hostname): Backup failed "
+        slack_message "$(hostname): Backup failed, unable to mount backup target. "
         exit 2
     fi
 
@@ -63,7 +62,7 @@ BACKUP_TARGET="${BACKUP_DIR}/desktop_arch_$(date '+%Y-%m-%d')"
 
 if [[ ! "$(ls -A ${BACKUP_DIR})" ]]; then
     log "Creating initial backup as \"${BACKUP_TARGET}\""
-    rsync -aAHX --partial --info=${INFO} --exclude-from=${EXCLUDE_FILE} / ${BACKUP_TARGET} | ts '[%Y-%m-%d %H:%M:%S]' >> $LOG
+    rsync -aAHX --partial --info=${INFO} --exclude-from=${EXCLUDE_FILE} / "${BACKUP_TARGET}" | ts '[%Y-%m-%d %H:%M:%S]' >> $LOG
 
 else
     if [[ -d ${BACKUP_TARGET} ]]; then
