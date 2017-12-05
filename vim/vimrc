@@ -105,5 +105,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'scrooloose/nerdtree'
     Plug 'ap/vim-css-color'
     Plug 'lervag/vimtex'
-call plug#end()
 
+    Plug 'vim-syntastic/syntastic'
+call plug#end()
