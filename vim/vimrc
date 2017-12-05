@@ -86,6 +86,8 @@ let g:ycm_server_python_interpreter='/bin/python2'
 autocmd BufNewFile,BufReadPost *.md,*.mkd set filetype=markdown
 let g:markdown_fenced_languages = ['javascript', 'go', 'php']
 
+autocmd BufNewFile,BufReadPost *.asm set filetype=mips
+
 "" Plugins
 call plug#begin('~/.vim/plugged')
     Plug 'junegunn/goyo.vim'
@@ -106,5 +108,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'ap/vim-css-color'
     Plug 'lervag/vimtex'
 
+    Plug 'harenome/vim-mipssyntax'
     Plug 'vim-syntastic/syntastic'
 call plug#end()
