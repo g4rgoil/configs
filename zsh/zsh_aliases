@@ -13,6 +13,8 @@ alias wheather='curl wttr.in/Karlsruhe'
 alias neofetch='neofetch --config ~/.neofetch_config'
 alias cdtemp='cd $(mktemp -d)'
 alias etemp='edit $(mktemp)'
+alias cpumonitor='sudo s-tui'
+alias gpumonitor='nvidia-smi -l 5'
 
 # Some power aliases
 alias die='shutdown now'
