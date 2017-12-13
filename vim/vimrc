@@ -107,7 +107,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'scrooloose/nerdtree'
     Plug 'ap/vim-css-color'
     Plug 'lervag/vimtex'
-    
-    Plug 'harenome/vim-mipssyntax'
-call plug#end()
 
+    Plug 'harenome/vim-mipssyntax'
+    Plug 'vim-syntastic/syntastic'
+call plug#end()

@@ -8,7 +8,7 @@ export PAGER=/usr/bin/vimpager
 export PDFVIEW=/usr/bin/okular
 
 if [ -n "$DISPLAY" ]; then
-    export BROWSER=/usr/bin/chromium
+    export BROWSER=/usr/bin/firefox
 else
     export BROWSER=/usr/bin/links
 fi
