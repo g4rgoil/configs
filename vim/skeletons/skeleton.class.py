@@ -8,4 +8,4 @@
 __version__ = "0.1"
 
 class ${2:ClassName}(${3:object}):
-    ${4}
+    ${4:pass}
