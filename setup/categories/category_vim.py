@@ -3,8 +3,6 @@
 
 """Script for setting up vim on this machine"""
 
-import inspect
-
 from pathlib import Path
 
 from categories.category import Category
@@ -36,10 +34,10 @@ class CategoryVim(Category):
         super().set_up()
 
     def back_up(self):
-        pass
+        super().back_up()
 
     def delete(self):
-        pass
+        super().delete()
 
     def _install_linters(self):  # Todo
         pass
