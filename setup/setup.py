@@ -11,14 +11,14 @@ from typing import *
 # noinspection PyUnresolvedReferences
 from categories import *
 
-__version__ = "0.0.1"
+__version__ = "0.1.0"
 
 
 # repo_dir = Path(__file__).absolute().parent.parent
 
 
 class SetupArgParser(argparse.ArgumentParser):
-    usage = "setup.py [-h] [-v] [-b] [-d] <category> [<args>]"
+    usage = "setup.py [-h] [-v] [-b] [-d] <category> [args]"
 
     def __init__(self):
         super().__init__(prog="setup.py", add_help=False, usage=self.usage)
@@ -43,7 +43,7 @@ class SetupArgParser(argparse.ArgumentParser):
     def add_modifiers(self):
         group = self.add_argument_group("global options")
         group.add_argument("-h", "--help", action="help", help="show this help message and exit")
-        group.add_argument("--version", action="store_true", help="show version information")   # Todo
+        group.add_argument("--version", action=VersionAction, nargs=0, help="show version information")
         group.add_argument("-v", "--verbose", action="store_true", help="be more verbose")      # Todo
         group.add_argument("-b", "--backup", action="store_true", help="backup existing files")    # Todo
         group.add_argument("-d", "--delete", action="store_true", help="delete existing files")    # Todo
@@ -59,6 +59,12 @@ class CategorySubParser(argparse.ArgumentParser):
     def __init__(self, **kwargs):
         self.category = None
         super().__init__(**kwargs)
+
+
+class VersionAction(argparse.Action):
+    def __call__(self, *args, **kwargs):
+        print("setup.py version", __version__)
+        sys.exit(0)
 
 
 if __name__ == "__main__":
