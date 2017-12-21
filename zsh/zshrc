@@ -63,7 +63,7 @@ if [ -f /usr/share/git/completion/git-prompt.sh ]; then
 fi
 
 if [[ -n "$SSH_CLIENT" ]] || [[ -n "$SSH_TTY" ]]; then
-    RPROMPT+="[SSH]"
+    RPROMPT+="[SSH=$(hostname)]"
 fi
 
 # Enable zsh syntax highlighting
