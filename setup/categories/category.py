@@ -52,10 +52,22 @@ class Category(ABC):
             dst_dir.symlink_to(src_dir)
 
     def _backup_files(self):
-        pass
+        for file in self.files:
+            dst_file = self.dst_dir / self.files[file]
+
+            if dst_file.is_file():
+                dst_file.unlink()
+            elif  dst_file.is_symlink():    # Handle broken symlinks
+                dst_file.unlink()
+            elif dst_file.is_dir():
+                pass    # Todo handle, exception?
 
     def _backup_directories(self):
-        pass
+        for directory in self.directories:
+            dst_dir = self.dst_dir / self.directories[directory]
+
+            if dst_dir.is_dir():
+                pass    # Todo
 
     def _delete_files(self):
         pass
