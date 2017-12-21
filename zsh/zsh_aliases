@@ -15,6 +15,7 @@ alias cdtemp='cd $(mktemp -d)'
 alias etemp='edit $(mktemp)'
 alias cpumonitor='sudo s-tui'
 alias gpumonitor='nvidia-smi -l 5'
+alias vim2ps='vim -c "hardcopy > output.ps" -c quit'
 
 # Some power aliases
 alias die='shutdown now'
