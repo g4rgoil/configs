@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# TODO: Add variable for location of scripts
+
 SLACK_URL="https://hooks.slack.com/services/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"
 LOG_DIRECTORY="/var/log/backup_logs"
 LOG="$LOG_DIRECTORY/root.log"
@@ -25,7 +27,7 @@ if [[ ! -d ${LOG_DIRECTORY} ]]; then
     log "Creating backup log directory"
 fi
 
-log "Starting update procedure"
+log "Starting backup procedure"
 
 BACKUP_MOUNT="/hdd/mybook"
 
@@ -77,12 +79,12 @@ else
     BACKUP_PARENT="${BACKUP_DIR}/$(ls -r1 "${BACKUP_DIR}" | head -n 1)"
 
     log "Creating incremental backup as \"${BACKUP_TARGET}\" based on \"${BACKUP_PARENT}\""
-    rsync -aAHX --partial --delete --info=${INFO} --exclude-from=${EXCLUDE_FILE} --link-dest=${BACKUP_PARENT} / ${BACKUP_TARGET} | ts '[%Y-%m-%d %H:%M:%S]' >> $LOG
+    rsync -aAHX --partial --delete --info=${INFO} --exclude-from=${EXCLUDE_FILE} --link-dest="${BACKUP_PARENT}" / "${BACKUP_TARGET}" | ts '[%Y-%m-%d %H:%M:%S]' >> $LOG
 fi
 
 for deprecated_backup in $(ls -1 "${BACKUP_DIR}" | head -n -10); do
     log "Deleting deprecated backup \"${deprecated_backup}\""
-    rm -r "${BACKUP_DIR}/${deprecated_backup}"
+    rm -r "${BACKUP_DIR:?}/${deprecated_backup:?}"
 done
 
 if [[ "$unmount" = true ]]; then
