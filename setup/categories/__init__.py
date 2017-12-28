@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf8 -*-
 
-import pathlib
-
 from pathlib import Path
 from os.path import dirname, basename, isfile
 from glob import glob

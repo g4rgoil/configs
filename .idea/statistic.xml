@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Statistic">
+    <option name="excludedDirectories">
+      <list>
+        <option value="$PROJECT_DIR$/backup_scripts" />
+        <option value="$PROJECT_DIR$/bash" />
+        <option value="$PROJECT_DIR$/misc" />
+        <option value="$PROJECT_DIR$/templates" />
+        <option value="$PROJECT_DIR$/vim" />
+        <option value="$PROJECT_DIR$/zsh" />
+      </list>
+    </option>
+  </component>
+</project>
