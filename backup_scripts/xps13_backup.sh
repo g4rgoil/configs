@@ -32,10 +32,11 @@ log "Starting backup procedure"
 TARGET_HOST="pascal_arch"
 TARGET_DIR="/mybook"
 
-ping -c 1 ${TARGET_HOST} > /dev/null 2>&1
+# ping -c 1 ${TARGET_HOST} > /dev/null 2>&1
 
-if [ ! $? -eq 0 ]; then
+if ! ping -c 1 ${TARGET_HOST} > /dev/null 2>&1; then
     log_error "Unable to comunicate with nfs host"
+    slack_message "$(hostname): Backup failed, unable to communicate with target host"
     exit 1
 fi
 
@@ -43,7 +44,7 @@ BACKUP_MOUNT="/mnt/nfs/mybook"
 
 if [[ ! -d ${BACKUP_MOUNT} ]]; then
     log "Creating mount point for backup device"
-    mkdir -p ${BACKUP_MOUNT}
+    mkdir -p "${BACKUP_MOUNT}"
 fi
 
 unmount=false
@@ -59,6 +60,36 @@ if ! mountpoint -q ${BACKUP_MOUNT}; then
 
     unmount=true
 fi
+
+# TODO: Make snapshot, mount snapshot and back it up <14-12-17, pascal> #
+# TODO: Delete snapshot after backup <14-12-17, pascal> #
+# TODO: Map local users to nfs share <14-12-17, pascal> #
+
+VOLUME_GROUP="/dev/volgroup0"
+VOLUME_NAME="root"
+SOURCE_VOLUME="${VOLUME_GROUP}/${VOLUME_NAME}"
+SNAPSHOT_NAME="temp-snap"
+SNAPSHOT_VOLUME="${VOLUME_GROUP}/${SNAPSHOT_NAME}"
+
+if ! lvcreate -L 2G -n "${SNAPSHOT_NAME}" -s ${SOURCE_VOLUME}; then
+    log_error "Unable to create snapshot"
+    slack_message "$(hostname): Backup failed, unable to create snapshot."
+    exit 3
+fi
+
+SNAPSHOT_MOUNT="/mnt/snapshot"
+
+if [[ ! -d ${SNAPSHOT_MOUNT} ]]; then
+    mkdir -p "${SNAPSHOT_MOUNT}"
+fi
+
+if ! mount "${SNAPSHOT_VOLUME}" "${SNAPSHOT_MOUNT}"; then
+    log_error "Unable to mount snapshot"
+    slack_message "$(hostname): Backup failed, unable to mount snapshot"
+    exit 2
+fi
+
+
 
 BACKUP_DIR="${BACKUP_MOUNT}/Linux_Backups/xps13_arch"
 
