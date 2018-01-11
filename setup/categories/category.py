@@ -10,7 +10,7 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Tuple, List, Callable
 
-from categories import __repo_dir__
+__version__ = "1.0.0"
 
 
 class Category(ABC):
@@ -33,7 +33,10 @@ class Category(ABC):
     @abstractmethod
     def set_up(self, namespace=None):
         self.utils = _SetupUtils(namespace)
-        # print(namespace)  # Todo get your shit together dude :D
+
+        self.back_up()
+        self.delete()
+        self.link()
 
     @abstractmethod
     def link(self):
@@ -50,15 +53,6 @@ class Category(ABC):
         for method_tuple in self._get_methods_by_prefix("_delete"):
             method_tuple[1]()
 
-    @staticmethod
-    def _require_repo_dir(name) -> Path:
-        repo_dir = __repo_dir__ / name
-
-        if not repo_dir.is_dir():
-            raise NotADirectoryError()  # Todo error message
-
-        return repo_dir
-
     def _get_methods_by_prefix(self, prefix) -> List[Tuple[str, Callable]]:
         return [m for m in inspect.getmembers(self, predicate=inspect.ismethod) if m[0].startswith(prefix)]
 
@@ -66,65 +60,59 @@ class Category(ABC):
         return self.src_dir / file
 
     def _get_dst_file(self, file):
-        return self.dst_dir / self.files[file]
-
-    def _get_src_dir(self, directory):
-        return self.src_dir / directory
-
-    def _get_dst_dir(self, directory):
-        return self.dst_dir / self.directories[directory]
+        return self.dst_dir / file
 
     def _link_files(self):
-        for file in self.files:
-            src_file, dst_file = self._get_src_file(file), self._get_dst_file(file)
+        for src, dst in self.files.items():
+            src_file, dst_file = self._get_src_file(src), self._get_dst_file(dst)
 
             try:
                 self.utils.symlink(src_file, dst_file)
             except OSError as e:
-                self.utils.print_error(str(e))  # Todo
+                self.utils.print_error(str(e))
 
     def _link_directories(self):
-        for directory in self.directories:
-            src_dir, dst_dir = self._get_src_dir(directory), self._get_dst_dir(directory)
+        for src, dst in self.directories.items():
+            src_dir, dst_dir = self._get_src_file(src), self._get_dst_file(dst)
 
             try:
                 self.utils.symlink(src_dir, dst_dir)
             except OSError as e:
-                self.utils.print_error(str(e))  # Todo
+                self.utils.print_error(str(e))
 
     def _backup_files(self):
         for file in self.files.values():
             dst_file = self._get_dst_file(file)
 
             try:
-                self.utils.backup(dst_file)
+                self.utils.backup_file(dst_file)
             except OSError as e:
                 self.utils.print_error(str(e))
 
     def _backup_directories(self):
         for directory in self.directories.values():
-            dst_dir = self._get_dst_dir(directory)
+            dst_dir = self._get_dst_file(directory)
 
             try:
-                self.utils.backup(dst_dir)
+                self.utils.backup_file(dst_dir)
             except OSError as e:
                 self.utils.print_error(str(e))
 
     def _delete_files(self):
-        for file in self.files:
-            dst_file = self.dst_dir / self.files[file]
+        for file in self.files.values():
+            dst_file = self._get_dst_file(file)
 
             try:
-                self.utils.delete(dst_file)
+                self.utils.delete_file(dst_file)
             except OSError as e:
                 self.utils.print_error(str(e))
 
     def _delete_directories(self):
-        for directory in self.directories:
-            dst_dir = self.dst_dir / self.directories[directory]
+        for directory in self.directories.values():
+            dst_dir = self._get_dst_file(directory)
 
             try:
-                self.utils.delete(dst_dir)
+                self.utils.delete_file(dst_dir)
             except OSError as e:
                 self.utils.print_error(str(e))
 
@@ -138,31 +126,54 @@ class _SetupUtils:
 
         self.link = get_value_or_default(args_dict, "link", True)
 
+        self.dry_run = get_value_or_default(args_dict, "dry_run", False)
+
         dst_handling = get_value_or_default(args_dict, "dst_handling", "keep")
         self.keep = (dst_handling == "keep")
         self.backup = (dst_handling == "backup")
         self.delete = (dst_handling == "delete")
 
         self.verbose = get_value_or_default(args_dict, "verbose", False)
+        self.quiet = get_value_or_default(args_dict, "quiet", False)
 
         if self.verbose:
             self.print = print
 
-        self.suffix = "." + get_value_or_default(args_dict, "suffix", "old").lstrip(".")
+        if self.quiet:
+            self.print_error = lambda *a, **kw: None
 
-    def symlink(self, src: Path, dst: Path):
+        self.suffix = "." + get_value_or_default(args_dict, "suffix", ["old"])[0].lstrip(".")
+
+    def symlink(self, src: Path, dst: Path) -> None:
+        """
+        Create a symlink called dst pointing to src.
+
+        :param src: the target of the symlink
+        :param dst: the name of the symlink
+        """
+        if not self.link:
+            return
+
+        if dst.exists() or dst.is_symlink():
+            if not self.keep:
+                raise FileExistsError("cannot create link '%s': File exists" % str(dst))
+            else:
+                return
+
         if not src.exists() and not src.is_symlink():
             raise FileNotFoundError("cannot link to '%s': No such file exists" % str(src))
 
-        if not self.keep and (dst.exists() or dst.is_symlink()):
-            raise FileExistsError("cannot create link '%s': File exists" % str(dst))
+        self.print_create_symlink(dst, src)
 
-        self.print_create_symlink(src, dst)
-
-        if self.link:
+        if not self.dry_run:
             dst.symlink_to(src)
 
-    def backup(self, src: Path):
+    def backup_file(self, src: Path) -> None:
+        """
+        Move src to src with self.suffix appended
+
+        :param src: the file to move
+        """
         if not self.backup:
             return
 
@@ -172,9 +183,16 @@ class _SetupUtils:
         dst = src.with_suffix(self.suffix)
 
         self.print_move(src, dst)
-        _os.rename(str(src), str(dst))
 
-    def delete(self, file: Path):
+        if not self.dry_run:
+            _os.rename(str(src), str(dst))
+
+    def delete_file(self, file: Path) -> None:
+        """
+        Delete the specified file.
+
+        :param file: the file to delete
+        """
         if not self.delete:
             return
 
@@ -183,16 +201,18 @@ class _SetupUtils:
 
         self.print_delete(file)
 
-        if file.is_file() or file.is_symlink():
-            file.unlink()
-        elif file.is_dir():
-            shutil.rmtree(str(file))
+        if not self.dry_run:
+            if file.is_file() or file.is_symlink():
+                file.unlink()
+            elif file.is_dir():
+                shutil.rmtree(str(file))
 
     def print(self, *args, **kwargs):
-        """ The implementation of this method is assigned in the constructor """
+        """ The implementation of this method might change in the constructor """
         pass
 
-    def print_error(self, *args, **kwargs):  # Todo
+    def print_error(self, *args, **kwargs):
+        """ The implementation of this method might change int he constructor """
         self.print("setup.py:", *args, file=_sys.stderr, **kwargs)
 
     def print_create_symlink(self, src, dst):

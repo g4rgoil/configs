@@ -6,6 +6,7 @@
 from pathlib import Path
 
 from categories.category import Category
+from categories import require_repo_dir
 
 __version__ = "0.1.0"
 
@@ -19,8 +20,8 @@ class CategoryVim(Category):
 
     def __init__(self):
         super().__init__()
-        self.src_dir = self._require_repo_dir(self.directory)
-        self.dst_dir = Path.home()  # Todo user vs global
+        self.src_dir = require_repo_dir(self.directory)
+        self.dst_dir = Path.home()
 
         self.files = {"vimrc": ".vimrc", "gvimrc": ".gvimrc", "ideavimrc": ".ideavimrc"}
         self.directories = {"skeletons": ".vim/skeletons"}

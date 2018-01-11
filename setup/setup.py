@@ -1,21 +1,21 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""Small script for creating symbolic links to the files in this repository"""
+""" Small script for creating symbolic links to the files in this repository """
 
 from typing import *
-from argparse import ArgumentParser, Action
+from argparse import ArgumentParser
 
 # noinspection PyUnresolvedReferences
 from categories import *
 
 
-__version__ = "0.1.0"
+__version__ = "1.0.0"
 
 
 class SetupArgParser(ArgumentParser):
 
-    usage = "setup.py [-h] [-v] [-l | -n] [-b | -d | -k] <category> [args]"
+    usage = "setup.py [-h] [-v | -q] [-l | -n] [-b | -d | -k] [-s <suffix>] <category> [<args>]"
     epilog = None   # Todo
 
     def __init__(self):
@@ -53,10 +53,13 @@ class SetupArgParser(ArgumentParser):
         group = self.add_argument_group("global options")
 
         group.add_argument("-h", "--help", action="help", help="show this help message and exit")
-        group.add_argument("-v", "--verbose", action="store_true", help="be more verbose")  # Todo
         group.add_argument("--version", action="version", version=__version__)
 
-    def add_setup_modifiers(self):  # Todo do properly
+        verbosity = group.add_mutually_exclusive_group(required=False)
+        verbosity.add_argument("-v", "--verbose", action="store_true", help="be more verbose")
+        verbosity.add_argument("-q", "--quiet", action="store_true", help="don't print anything")
+
+    def add_setup_modifiers(self):
         group = self.add_argument_group("setup options")
 
         src_handling = group.add_mutually_exclusive_group(required=False)
@@ -65,6 +68,8 @@ class SetupArgParser(ArgumentParser):
         src_handling.add_argument("-n", "--no-link", action="store_false", dest="link",
                                   help="don't create links to the files in this repository")
         self.set_defaults(link=True)
+
+        group.add_argument("--dry-run", action="store_true", help="don't actually set up anything")
 
         dst_handling = group.add_mutually_exclusive_group(required=False)
         dst_handling.add_argument("-k", "--keep", action="store_const", dest="dst_handling",
@@ -75,7 +80,7 @@ class SetupArgParser(ArgumentParser):
                                   const="delete", help="delete existing files")
         dst_handling.set_defaults(dst_handling="keep")
 
-        group.add_argument("-s", "--suffix", action="store", nargs=1, default="old", metavar="S",
+        group.add_argument("-s", "--suffix", action="store", nargs=1, default=["old"], metavar="S",
                            help="the suffix to be used when backing up files")
 
     def add_subparsers(self):
