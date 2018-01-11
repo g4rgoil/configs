@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf8 -*-
 
-"""Script for setting up vim on this machine"""
+""" Script for setting up vim on this machine """
 
 from pathlib import Path
 
@@ -30,7 +30,7 @@ class CategoryVim(Category):
     def add_subparser(self, subparsers):
         self.parser = subparsers.add_parser(self.name, help=self.help, usage=self.usage)
 
-    def set_up(self, namespace):
+    def set_up(self, namespace=None):
         super().set_up(namespace)
 
     def link(self):
