@@ -1,5 +1,5 @@
 #
-# /etc/zsh/zsh_aliases
+# ~/zsh_aliases
 #
 
 # Some pacman aliasses
@@ -82,19 +82,19 @@ alias pdf='$PDFVIEW'
 alias page='$PAGER'
 
 # Some aliases to quickly edit certain files
-alias zshrc='edit /etc/zsh/zshrc'
-alias zsh_aliases='edit /etc/zsh/zsh_aliases'
+alias zshrc='edit ~/.zshrc'
+alias zsh_aliases='edit ~/.zsh_aliases'
 alias zshenv='edit /etc/zsh/zshenv'
-alias vimrc='edit /etc/vimrc'
+alias vimrc='edit ~/.vimrc'
 alias fstab='sudo edit /etc/fstab'
 
 # Some git aliasses
-alias Gpush='git push'
-alias Gpull='git pull'
-alias Gcommit='git commit'
-alias Gadd='git add'
-alias Gstash='git stash'
-alias Gstat='git status'
+# alias Gpush='git push'
+# alias Gpull='git pull'
+# alias Gcommit='git commit'
+# alias Gadd='git add'
+# alias Gstash='git stash'
+# alias Gstat='git status'
 
 # Error Tolerance
 alias cd..='cd ..'
