@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
-""" Small script for creating symbolic links to the files in this repository """
+""" Small script for setting up files in this repository.  """
 
 from typing import *
 from argparse import ArgumentParser, HelpFormatter, ZERO_OR_MORE
@@ -13,7 +12,8 @@ __version__ = "0.6.0"
 
 
 class SetupArgParser(ArgumentParser):
-    usage = "setup.py [-h] [-v | -q] [-l | -n] [-b | -d | -k] [-s <suffix>] <category> [<args>]"
+    usage = "setup.py [-h] [-v | -q] [-l | -n] [-b | -d | -k] [-s <suffix>]" \
+            " <category> [<args>]"
 
     def __init__(self):
         super().__init__(prog="setup.py", add_help=False, usage=self.usage,
@@ -40,8 +40,9 @@ class SetupArgParser(ArgumentParser):
     @staticmethod
     def create_categories() -> Dict[str, category.Category]:
         """
-        Find all subclasses of Category and instantiate them. For a subclass to be recognized it
-        must have been imported at some point. All classes in the categories directory are imported
+        Find all subclasses of Category and instantiate them. For a
+        subclass to be recognized it must have been imported at some
+        point. All classes in the categories directory are imported
         automatically.
 
         :return: a dictionary of categories and their names
@@ -50,39 +51,59 @@ class SetupArgParser(ArgumentParser):
 
     def add_optional_arguments(self):
         verbosity = self.add_mutually_exclusive_group(required=False)
-        verbosity.add_argument("-v", "--verbose", action="store_true", help="be more verbose")
-        verbosity.add_argument("-q", "--quiet", action="store_true", help="don't print anything")
 
-        self.add_argument("-h", "--help", action="help", help="show this help message and exit")
-        self.add_argument("--version", action="version", version="setup.py " + __version__)
+        kwargs = dict(action="store_true", help="be more verbose")
+        verbosity.add_argument("-v", "--verbose", **kwargs)
+
+        kwargs = dict(action="store_true", help="don't print anything")
+        verbosity.add_argument("-q", "--quiet", **kwargs)
+
+        kwargs = dict(action="help", help="show this help message and exit")
+        self.add_argument("-h", "--help", **kwargs)
+
+        kwargs = dict(action="version", version="setup.py %s" % __version__)
+        self.add_argument("--version", **kwargs)
 
     def add_setup_options(self):
         group = self.add_argument_group("setup options")
 
-        group.add_argument("--dry-run", action="store_true", help="don't actually set up anything")
+        kwargs = dict(action="store_true", help="don't modify the filesystem")
+        group.add_argument("--dry-run", **kwargs)
 
         src_handling = group.add_mutually_exclusive_group(required=False)
-        src_handling.add_argument("-l", "--link", action="store_true", dest="link",
-                                  help="create links to the files in this repository (default)")
-        src_handling.add_argument("-n", "--no-link", action="store_false", dest="link",
-                                  help="don't create links to the files in this repository")
         self.set_defaults(link=True)
 
-        dst_handling = group.add_mutually_exclusive_group(required=False)
-        dst_handling.add_argument("-k", "--keep", action="store_const", dest="dst_handling",
-                                  const="keep", help="keep existing files (default)")
-        dst_handling.add_argument("-b", "--backup", action="store_const", dest="dst_handling",
-                                  const="backup", help="backup existing files")
-        dst_handling.add_argument("-d", "--delete", action="store_const", dest="dst_handling",
-                                  const="delete", help="delete existing files")
-        dst_handling.set_defaults(dst_handling="keep")
+        kwargs = dict(action="store_true", dest="link")
+        kwargs["help"] = "link to the files in this repository (default)"
+        src_handling.add_argument("-l", "--link", **kwargs)
 
-        group.add_argument("-s", "--suffix", action="store", nargs=1, default=["old"], metavar="S",
-                           help="the suffix, used when backing up files (default: old)")
+        kwargs = dict(action="store_false", dest="link")
+        kwargs["help"] = "don't link to the files in this repository"
+        src_handling.add_argument("-n", "--no-link", **kwargs)
+
+        dst_handling = group.add_mutually_exclusive_group(required=False)
+        kwargs = dict(action="store_const", dest="dst_handling")
+
+        kwargs["const"] = "keep"
+        kwargs["help"] = "keep existing files (default)"
+        dst_handling.add_argument("-k", "--keep", **kwargs)
+
+        kwargs["const"] = "backup"
+        kwargs["help"] = "backup existing files"
+        dst_handling.add_argument("-b", "--backup", **kwargs)
+
+        kwargs["const"] = "delete"
+        kwargs["help"] = "delete existing files"
+        dst_handling.add_argument("-d", "--delete", **kwargs)
+
+        kwargs = dict(action="store", nargs=1, default=["old"], metavar="S",
+                      help="the suffix, used when backing up files [: old]")
+        group.add_argument("-s", "--suffix", **kwargs)
 
     def add_subparsers(self):
-        subparsers = super().add_subparsers(title="setup categories", dest="category_name",
-                                            parser_class=CategorySubParser)
+        kwargs = dict(title="setup categories", dest="category_name",
+                      parser_class=CategorySubParser)
+        subparsers = super().add_subparsers(**kwargs)
         self.set_defaults(category_name=None)
 
         for category in self.categories.values():

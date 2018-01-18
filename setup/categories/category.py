@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf8 -*-
 
 import inspect
 import shutil
@@ -53,8 +52,8 @@ class Category(ABC):
         self._delete_directories()
 
     def _get_methods_by_prefix(self, prefix) -> List[Tuple[str, Callable]]:
-        return [m for m in inspect.getmembers(self, predicate=inspect.ismethod) if
-                m[0].startswith(prefix)]
+        return [m for m in inspect.getmembers(self, predicate=inspect.ismethod)
+                if m[0].startswith(prefix)]
 
     def _get_src_file(self, file):
         return self.src_dir / file
@@ -64,7 +63,8 @@ class Category(ABC):
 
     def _link_files(self):
         for src, dst in self.files.items():
-            src_file, dst_file = self._get_src_file(src), self._get_dst_file(dst)
+            src_file = self._get_src_file(src)
+            dst_file = self._get_dst_file(dst)
 
             try:
                 self.utils.symlink(src_file, dst_file)
@@ -73,7 +73,8 @@ class Category(ABC):
 
     def _link_directories(self):
         for src, dst in self.directories.items():
-            src_dir, dst_dir = self._get_src_file(src), self._get_dst_file(dst)
+            src_dir = self._get_src_file(src)
+            dst_dir = self._get_dst_file(dst)
 
             try:
                 self.utils.symlink(src_dir, dst_dir)
@@ -142,26 +143,24 @@ class _SetupUtils:
         if self.quiet:
             self.error = lambda *a, **kw: None
 
-        self.suffix = "." + get_value_or_default(args_dict, "suffix", ["old"])[0].lstrip(".")
+        self.suffix = "." + get_value_or_default(args_dict, "suffix",
+                                                 ["old"])[0].lstrip(".")
 
     def symlink(self, src: Path, dst: Path) -> None:
-        """
-        Create a symlink called dst pointing to src.
-
-        :param src: the target of the symlink
-        :param dst: the name of the symlink
-        """
+        """ Create a symlink called dst pointing to src. """
         if not self.link:
             return
 
         if dst.exists() or dst.is_symlink():
             if not self.keep:
-                raise FileExistsError("Cannot create link '%s': File exists" % str(dst))
+                raise FileExistsError("Cannot create link '%s': File exists"
+                                      % str(dst))
             else:
                 return
 
         if not src.exists() and not src.is_symlink():
-            raise FileNotFoundError("Cannot link to '%s': No such file exists" % str(src))
+            raise FileNotFoundError("Cannot link to '%s': No such file exists"
+                                    % str(src))
 
         self.print_create_symlink(dst, src)
 
@@ -169,16 +168,12 @@ class _SetupUtils:
             dst.symlink_to(src)
 
     def backup_file(self, src: Path) -> None:
-        """
-        Move src to src with self.suffix appended
-
-        :param src: the file to move
-        """
         if not self.backup:
             return
 
         if not src.exists() and not src.is_symlink():
-            raise FileNotFoundError("Cannot backup '%s': No such file exists" % str(src))
+            raise FileNotFoundError("Cannot backup '%s': No such file exists"
+                                    % str(src))
 
         dst = src.with_suffix(self.suffix)
 
@@ -188,16 +183,12 @@ class _SetupUtils:
             _os.rename(str(src), str(dst))
 
     def delete_file(self, file: Path) -> None:
-        """
-        Delete the specified file.
-
-        :param file: the file to delete
-        """
         if not self.delete:
             return
 
         if not file.exists() and not file.is_symlink():
-            raise FileNotFoundError("Cannot delete '%s': No such file exists" % str(file))
+            raise FileNotFoundError("Cannot delete '%s': No such file exists"
+                                    % str(file))
 
         self.print_delete(file)
 
@@ -214,11 +205,11 @@ class _SetupUtils:
         return run(args, **kwargs)
 
     def print(self, *args, **kwargs):
-        """ The implementation of this method might change in the constructor """
+        """ This method might be reassigned in the constructor """
         pass
 
     def error(self, *args, **kwargs):
-        """ The implementation of this method might change in the constructor """
+        """ This method might be reassigned in the constructor """
         print("setup.py:", *args, file=_sys.stderr, **kwargs)
 
     def print_create_symlink(self, src, dst):

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf8 -*-
 
 """ Script for setting up miscellaneous files on this machine. """
 
@@ -35,7 +34,8 @@ class CategoryMisc(Category):
         self.parser = None
 
     def add_subparser(self, subparsers):
-        self.parser = subparsers.add_parser(self.name, help=self.help, usage=self.usage)
+        kwargs = dict(help=self.help, usage=self.usage)
+        self.parser = subparsers.add_parser(self.name, **kwargs)
 
     def set_up(self, namespace=None):
         super().set_up(namespace)

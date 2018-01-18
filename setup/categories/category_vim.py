@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf8 -*-
 
 """ Script for setting up vim on this machine """
 
@@ -18,7 +17,8 @@ class CategoryVim(Category):
 
     name = "vim"
     prog = "setup.py vim"
-    usage = "setup.py [<global options>] vim [-h] [--install [plugins] [linters]]"
+    usage = "setup.py [<global options>] vim [-h] " \
+            "[--install [plugins] [linters]]"
     help = "set up files for the vim text editor"
 
     def __init__(self):
@@ -26,7 +26,9 @@ class CategoryVim(Category):
         self.src_dir = require_repo_dir(self.directory)
         self.dst_dir = Path.home()
 
-        self.files = {"vimrc": ".vimrc", "gvimrc": ".gvimrc", "ideavimrc": ".ideavimrc"}
+        self.files = {
+            "vimrc": ".vimrc", "gvimrc": ".gvimrc", "ideavimrc": ".ideavimrc"
+        }
         self.directories = {"skeletons": ".vim/skeletons"}
 
         self.install_dict = {
@@ -40,17 +42,19 @@ class CategoryVim(Category):
         self.parser = None
 
     def add_subparser(self, subparsers):
-        self.parser = subparsers.add_parser(self.name, prog=self.prog, help=self.help,
-                                            usage=self.usage)
+        kwargs = dict(prog=self.prog, usage=self.usage, help=self.help)
+        self.parser = subparsers.add_parser(self.name, **kwargs)
 
-        self.parser.add_argument("--version", action="version",
-                                 version="setup.py vim " + __version__)
+        kwargs = dict(action="version", version="setup.py vim " + __version__)
+        self.parser.add_argument("--version", **kwargs)
 
         group = self.parser.add_argument_group("vim specific options")
-        group .add_argument("--install", nargs="*", action="store", default=[],
-                            choices=self.install_dict.keys(), metavar="arg",
-                            help="install all specified categories; valid categories are " +
-                                 ", ".join(self.install_dict.keys()))
+
+        kwargs = dict(nargs="*", action="store", default=[], metavar="args",
+                      choices=self.install_dict.keys())
+        kwargs["help"] = "install all specified categories; valid categories" \
+                         " are " + ", ".join(self.install_dict.keys())
+        group .add_argument("--install", **kwargs)
 
     def set_up(self, namespace=None):
         super().set_up(namespace)
@@ -58,7 +62,8 @@ class CategoryVim(Category):
         if not namespace.install:
             pass
         elif "all" in namespace.install:
-            self._install([key for key in self.install_dict.keys() if key != "all"])
+            self._install(
+                [key for key in self.install_dict.keys() if key != "all"])
         else:
             self._install(namespace.install)
 
@@ -73,39 +78,44 @@ class CategoryVim(Category):
         install_location = Path("~/.vim/bundle/Vundle.vim").expanduser()
         src_url = "https://github.com/VundleVim/Vundle.vim.git"
 
-        self.utils.error("Installing Vundle to '%s'..." % str(install_location))
+        self.utils.error("Installing Vundle to '%s'..."
+                         % str(install_location))
 
         if install_location.exists():
-            self.utils.error("Vundle seems to already be installed")
-            return
+            return self.utils.error("Vundle seems to already be installed")
 
-        args = shlex.split("git clone -v") + [str(src_url), str(install_location)]
+        args = shlex.split("git clone -v") + [str(src_url),
+                                              str(install_location)]
         proc = self.utils.run(args)
 
         if proc.returncode != 0:
-            self.utils.error("Failed to install Vundle: Exited with code %s" % proc.returncode)
+            self.utils.error("Failed to install Vundle: Exited with code %s"
+                             % proc.returncode)
 
     def _install_plugins(self):
         self.utils.error("Installing plugins with Vundle...")
 
-        args = shlex.split("vim -c PluginInstall -c PluginUpdate -c PluginClean -c quitall")
+        args = shlex.split("vim -c PluginInstall -c PluginUpdate "
+                           "-c PluginClean -c quitall")
         proc = self.utils.run(args)
 
         if proc.returncode != 0:
-            self.utils.error("Failed to install plugins: Exited with code %s" % proc.returncode)
+            self.utils.error("Failed to install plugins: Exited with code %s"
+                             % proc.returncode)
 
     def _install_ycm(self):
         self.utils.error("Installing YouCompleteMe...")
 
-        ycm_installer = Path("~/.vim/bundle/YouCompleteMe/install.py").expanduser()
+        ycm_installer = Path("~/.vim/bundle/YouCompleteMe/"
+                             "install.py").expanduser()
         option_string = "--clang-completer"
 
         args = ["python", ycm_installer, option_string]
         proc = self.utils.run(args)
 
         if proc.returncode != 0:
-            self.utils.error("Failed to install YouCompleteMe: Exited with code %s" %
-                             proc.returncode)
+            self.utils.error("Failed to install YouCompleteMe: "
+                             "Exited with code %s" % proc.returncode)
 
     @require_root
     def _install_linters(self):  # Todo
