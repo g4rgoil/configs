@@ -8,9 +8,10 @@ import sys as _sys
 
 from abc import ABC, abstractmethod
 from pathlib import Path
+from subprocess import run, CompletedProcess, DEVNULL
 from typing import Tuple, List, Callable
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 
 
 class Category(ABC):
@@ -32,29 +33,31 @@ class Category(ABC):
 
     @abstractmethod
     def set_up(self, namespace=None):
-        self.utils = _SetupUtils(namespace)
-
         self.back_up()
         self.delete()
         self.link()
 
-    @abstractmethod
-    def link(self):
-        for method_tuple in self._get_methods_by_prefix("_link"):
-            method_tuple[1]()
+    def create_utils(self, namespace=None):
+        self.utils = _SetupUtils(namespace)
 
-    @abstractmethod
+    def link(self):
+        self._link_files()
+        self._link_directories()
+
+        # for method_tuple in self._get_methods_by_prefix("_link"):
+        #     method_tuple[1]()
+
     def back_up(self):
         for method_tuple in self._get_methods_by_prefix("_backup"):
             method_tuple[1]()
 
-    @abstractmethod
     def delete(self):
         for method_tuple in self._get_methods_by_prefix("_delete"):
             method_tuple[1]()
 
     def _get_methods_by_prefix(self, prefix) -> List[Tuple[str, Callable]]:
-        return [m for m in inspect.getmembers(self, predicate=inspect.ismethod) if m[0].startswith(prefix)]
+        return [m for m in inspect.getmembers(self, predicate=inspect.ismethod) if
+                m[0].startswith(prefix)]
 
     def _get_src_file(self, file):
         return self.src_dir / file
@@ -69,7 +72,7 @@ class Category(ABC):
             try:
                 self.utils.symlink(src_file, dst_file)
             except OSError as e:
-                self.utils.print_error(str(e))
+                self.utils.error(str(e))
 
     def _link_directories(self):
         for src, dst in self.directories.items():
@@ -78,7 +81,7 @@ class Category(ABC):
             try:
                 self.utils.symlink(src_dir, dst_dir)
             except OSError as e:
-                self.utils.print_error(str(e))
+                self.utils.error(str(e))
 
     def _backup_files(self):
         for file in self.files.values():
@@ -87,7 +90,7 @@ class Category(ABC):
             try:
                 self.utils.backup_file(dst_file)
             except OSError as e:
-                self.utils.print_error(str(e))
+                self.utils.error(str(e))
 
     def _backup_directories(self):
         for directory in self.directories.values():
@@ -96,7 +99,7 @@ class Category(ABC):
             try:
                 self.utils.backup_file(dst_dir)
             except OSError as e:
-                self.utils.print_error(str(e))
+                self.utils.error(str(e))
 
     def _delete_files(self):
         for file in self.files.values():
@@ -105,7 +108,7 @@ class Category(ABC):
             try:
                 self.utils.delete_file(dst_file)
             except OSError as e:
-                self.utils.print_error(str(e))
+                self.utils.error(str(e))
 
     def _delete_directories(self):
         for directory in self.directories.values():
@@ -114,7 +117,7 @@ class Category(ABC):
             try:
                 self.utils.delete_file(dst_dir)
             except OSError as e:
-                self.utils.print_error(str(e))
+                self.utils.error(str(e))
 
 
 class _SetupUtils:
@@ -140,7 +143,7 @@ class _SetupUtils:
             self.print = print
 
         if self.quiet:
-            self.print_error = lambda *a, **kw: None
+            self.error = lambda *a, **kw: None
 
         self.suffix = "." + get_value_or_default(args_dict, "suffix", ["old"])[0].lstrip(".")
 
@@ -156,12 +159,12 @@ class _SetupUtils:
 
         if dst.exists() or dst.is_symlink():
             if not self.keep:
-                raise FileExistsError("cannot create link '%s': File exists" % str(dst))
+                raise FileExistsError("Cannot create link '%s': File exists" % str(dst))
             else:
                 return
 
         if not src.exists() and not src.is_symlink():
-            raise FileNotFoundError("cannot link to '%s': No such file exists" % str(src))
+            raise FileNotFoundError("Cannot link to '%s': No such file exists" % str(src))
 
         self.print_create_symlink(dst, src)
 
@@ -178,7 +181,7 @@ class _SetupUtils:
             return
 
         if not src.exists() and not src.is_symlink():
-            raise FileNotFoundError("cannot backup '%s': No such file exists" % str(src))
+            raise FileNotFoundError("Cannot backup '%s': No such file exists" % str(src))
 
         dst = src.with_suffix(self.suffix)
 
@@ -197,7 +200,7 @@ class _SetupUtils:
             return
 
         if not file.exists() and not file.is_symlink():
-            raise FileNotFoundError("cannot delete '%s': No such file exists" % str(file))
+            raise FileNotFoundError("Cannot delete '%s': No such file exists" % str(file))
 
         self.print_delete(file)
 
@@ -207,20 +210,25 @@ class _SetupUtils:
             elif file.is_dir():
                 shutil.rmtree(str(file))
 
+    def run(self, args: List[str]) -> CompletedProcess:
+        kwargs = dict(stdout=None if self.verbose else DEVNULL,
+                      stderr=DEVNULL if self.quiet else None, check=False)
+
+        return run(args, **kwargs)
+
     def print(self, *args, **kwargs):
         """ The implementation of this method might change in the constructor """
         pass
 
-    def print_error(self, *args, **kwargs):
-        """ The implementation of this method might change int he constructor """
-        self.print("setup.py:", *args, file=_sys.stderr, **kwargs)
+    def error(self, *args, **kwargs):
+        """ The implementation of this method might change in the constructor """
+        print("setup.py:", *args, file=_sys.stderr, **kwargs)
 
     def print_create_symlink(self, src, dst):
-        self.print("creating link: '%s' -> '%s'" % (str(dst), str(src)))
+        self.print("Creating link: '%s' -> '%s'" % (str(dst), str(src)))
 
     def print_delete(self, file):
         self.print("deleting file: '%s'" % str(file))
 
     def print_move(self, src, dst):
-        self.print("moving file: '%s' -> '%s'" % (str(src), str(dst)))
-
+        self.print("Moving file: '%s' -> '%s'" % (str(src), str(dst)))
