@@ -1,1 +1,5 @@
 source ~/.vimrc
+
+set surround    "" Enable vim-surround
+
+"" Map editor commands

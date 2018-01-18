@@ -80,7 +80,9 @@ let g:UltiSnipsJumpBackwardTrigger='<C-H>'
 
 "" ycm (you complete me) configuration
 let g:ycm_global_ycm_extra_conf='/usr/share/vim/vimfiles/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
-let g:ycm_server_python_interpreter='/bin/python2'
+" let g:ycm_server_python_interpreter='/bin/python2'
+
+let g:ycm_python_binary_path = '/usr/bin/python3'
 
 "" File Type options
 autocmd BufNewFile,BufReadPost *.md,*.mkd set filetype=markdown
@@ -89,25 +91,31 @@ let g:markdown_fenced_languages = ['javascript', 'go', 'php']
 autocmd BufNewFile,BufReadPost *.asm set filetype=mips
 
 "" Plugins
-call plug#begin('~/.vim/plugged')
-    Plug 'junegunn/goyo.vim'
-    Plug 'junegunn/vim-easy-align'
+set rtp+=~/.vim/bundle/Vundle.vim
 
-    Plug 'tpope/vim-surround'
-    Plug 'tpope/vim-fugitive'
+call vundle#begin()
+    Plugin 'VundleVim/Vundle.vim'
 
-    Plug 'vim-airline/vim-airline'
-    Plug 'vim-airline/vim-airline-themes'
+    Plugin 'junegunn/goyo.vim'
+    Plugin 'junegunn/vim-easy-align'
+
+    Plugin 'tpope/vim-surround'
+    Plugin 'tpope/vim-fugitive'
+
+    Plugin 'vim-airline/vim-airline'
+    Plugin 'vim-airline/vim-airline-themes'
     
-    Plug 'SirVer/ultisnips'
-    Plug 'honza/vim-snippets'
-    Plug 'pgilad/vim-skeletons'
+    Plugin 'SirVer/ultisnips'
+    Plugin 'honza/vim-snippets'
+    Plugin 'pgilad/vim-skeletons'
 
 
-    Plug 'scrooloose/nerdtree'
-    Plug 'ap/vim-css-color'
-    Plug 'lervag/vimtex'
+    Plugin 'scrooloose/nerdtree'
+    Plugin 'ap/vim-css-color'
+    Plugin 'lervag/vimtex'
 
-    Plug 'harenome/vim-mipssyntax'
-    Plug 'vim-syntastic/syntastic'
-call plug#end()
+    Plugin 'harenome/vim-mipssyntax'
+    Plugin 'vim-syntastic/syntastic'
+
+    Plugin 'Valloric/YouCompleteMe'
+call vundle#end()
