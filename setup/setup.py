@@ -4,27 +4,25 @@
 """ Small script for creating symbolic links to the files in this repository """
 
 from typing import *
-from argparse import ArgumentParser
+from argparse import ArgumentParser, HelpFormatter, ZERO_OR_MORE
 
 # noinspection PyUnresolvedReferences
 from categories import *
 
-
-__version__ = "1.0.0"
+__version__ = "0.6.0"
 
 
 class SetupArgParser(ArgumentParser):
-
     usage = "setup.py [-h] [-v | -q] [-l | -n] [-b | -d | -k] [-s <suffix>] <category> [<args>]"
-    epilog = None   # Todo
 
     def __init__(self):
-        super().__init__(prog="setup.py", add_help=False, usage=self.usage, epilog=self.epilog)
+        super().__init__(prog="setup.py", add_help=False, usage=self.usage,
+                         formatter_class=MyHelpFormatter)
 
         self.categories = self.create_categories()
 
-        self.add_modifiers()
-        self.add_setup_modifiers()
+        self.add_optional_arguments()
+        self.add_setup_options()
         self.add_subparsers()
 
     def parse_args(self, args=None, namespace=None):
@@ -32,6 +30,7 @@ class SetupArgParser(ArgumentParser):
 
         if namespace.category_name is not None:
             category = self.categories[namespace.category_name]
+            category.create_utils(namespace)
             category.set_up(namespace)
         else:
             self.print_usage()
@@ -49,18 +48,18 @@ class SetupArgParser(ArgumentParser):
         """
         return dict((c.name, c()) for c in category.Category.__subclasses__())
 
-    def add_modifiers(self):
-        group = self.add_argument_group("global options")
-
-        group.add_argument("-h", "--help", action="help", help="show this help message and exit")
-        group.add_argument("--version", action="version", version=__version__)
-
-        verbosity = group.add_mutually_exclusive_group(required=False)
+    def add_optional_arguments(self):
+        verbosity = self.add_mutually_exclusive_group(required=False)
         verbosity.add_argument("-v", "--verbose", action="store_true", help="be more verbose")
         verbosity.add_argument("-q", "--quiet", action="store_true", help="don't print anything")
 
-    def add_setup_modifiers(self):
+        self.add_argument("-h", "--help", action="help", help="show this help message and exit")
+        self.add_argument("--version", action="version", version="setup.py " + __version__)
+
+    def add_setup_options(self):
         group = self.add_argument_group("setup options")
+
+        group.add_argument("--dry-run", action="store_true", help="don't actually set up anything")
 
         src_handling = group.add_mutually_exclusive_group(required=False)
         src_handling.add_argument("-l", "--link", action="store_true", dest="link",
@@ -68,8 +67,6 @@ class SetupArgParser(ArgumentParser):
         src_handling.add_argument("-n", "--no-link", action="store_false", dest="link",
                                   help="don't create links to the files in this repository")
         self.set_defaults(link=True)
-
-        group.add_argument("--dry-run", action="store_true", help="don't actually set up anything")
 
         dst_handling = group.add_mutually_exclusive_group(required=False)
         dst_handling.add_argument("-k", "--keep", action="store_const", dest="dst_handling",
@@ -81,11 +78,11 @@ class SetupArgParser(ArgumentParser):
         dst_handling.set_defaults(dst_handling="keep")
 
         group.add_argument("-s", "--suffix", action="store", nargs=1, default=["old"], metavar="S",
-                           help="the suffix to be used when backing up files")
+                           help="the suffix, used when backing up files (default: old)")
 
     def add_subparsers(self):
-        subparsers = super().add_subparsers(title="setup categories",
-                                            parser_class=CategorySubParser, dest="category_name")
+        subparsers = super().add_subparsers(title="setup categories", dest="category_name",
+                                            parser_class=CategorySubParser)
         self.set_defaults(category_name=None)
 
         for category in self.categories.values():
@@ -94,7 +91,19 @@ class SetupArgParser(ArgumentParser):
 
 class CategorySubParser(ArgumentParser):
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+        super().__init__(**kwargs, formatter_class=MyHelpFormatter)
+
+
+class MyHelpFormatter(HelpFormatter):
+    def _format_args(self, action, default_metavar):
+        get_metavar = self._metavar_formatter(action, default_metavar)
+
+        if action.nargs == ZERO_OR_MORE:
+            result = '[%s ...]' % get_metavar(1)
+        else:
+            result = super()._format_args(action, default_metavar)
+
+        return result
 
 
 if __name__ == "__main__":
