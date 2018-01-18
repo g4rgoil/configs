@@ -44,16 +44,13 @@ class Category(ABC):
         self._link_files()
         self._link_directories()
 
-        # for method_tuple in self._get_methods_by_prefix("_link"):
-        #     method_tuple[1]()
-
     def back_up(self):
-        for method_tuple in self._get_methods_by_prefix("_backup"):
-            method_tuple[1]()
+        self._backup_files()
+        self._backup_directories()
 
     def delete(self):
-        for method_tuple in self._get_methods_by_prefix("_delete"):
-            method_tuple[1]()
+        self._delete_files()
+        self._delete_directories()
 
     def _get_methods_by_prefix(self, prefix) -> List[Tuple[str, Callable]]:
         return [m for m in inspect.getmembers(self, predicate=inspect.ismethod) if
