@@ -1,0 +1,30 @@
+{
+  "category": {
+    "name": "vim",
+    "prog": "setup.py vim",
+    "usage": "setup.py [<global options>] vim [-h] [--install arg [arg ...]]",
+    "help": "setup files and plugins for the vim text editor",
+
+    "files": [
+      {
+        "src": "vimrc",
+        "dst": "~/.vimrc"
+      },
+      {
+        "src": "gvimrc",
+        "dst": "~/.gvimrc"
+      },
+      {
+        "src": "ideavimrc",
+        "dst": "~/.ideavimrc"
+      }
+    ],
+
+    "directories": [
+      {
+        "src": "skeletons",
+        "dst": "~/.vim/skeletons"
+      }
+    ]
+  }
+}
