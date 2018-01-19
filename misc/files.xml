@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<category name="misc">
+    <files>
+        <file src="latexmkrc" dst="~/.latexmkrc"/>
+        <file src="neofetch-config" dst="~/.neofetch-config"/>
+        <file src="pycodestylerc" dst="~/.pycodestylerc"/>
+        <file src="terminator" dst="~/.config/terminator/config"/>
+        <file src="warprc" dst="~/.warprc"
+    </files>
+    <directories>
+
+    </directories>
+</category>

@@ -204,6 +204,24 @@ class _SetupUtils:
 
         return run(args, **kwargs)
 
+    def clone_repo(self, url: str, path: Path, name=None):
+        if name is None:
+            name = path.name
+
+        self.error("Installing %s to '%s'..." % (name, str(path)))
+
+        if path.exists():
+            return self.error("%s seems to already be installed" % name)
+
+        path.mkdir(parents=True)
+
+        args = ["git", "clone", "-v", str(url), str(path)]
+        process = self.run(args)
+
+        if process.returncode != 0:
+            self.error("Failed to install %s: Exited with code %s"
+                       % (name, process.returncode))
+
     def print(self, *args, **kwargs):
         """ This method might be reassigned in the constructor """
         pass

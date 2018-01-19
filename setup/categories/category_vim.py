@@ -53,7 +53,7 @@ class CategoryVim(Category):
         kwargs = dict(nargs="*", action="store", default=[], metavar="args",
                       choices=self.install_dict.keys())
         kwargs["help"] = "install all specified categories; valid categories" \
-                         " are " + ", ".join(self.install_dict.keys())
+                         " are " + ", ".join(kwargs["choices"])
         group .add_argument("--install", **kwargs)
 
     def set_up(self, namespace=None):
@@ -78,19 +78,7 @@ class CategoryVim(Category):
         install_location = Path("~/.vim/bundle/Vundle.vim").expanduser()
         src_url = "https://github.com/VundleVim/Vundle.vim.git"
 
-        self.utils.error("Installing Vundle to '%s'..."
-                         % str(install_location))
-
-        if install_location.exists():
-            return self.utils.error("Vundle seems to already be installed")
-
-        args = shlex.split("git clone -v") + [str(src_url),
-                                              str(install_location)]
-        proc = self.utils.run(args)
-
-        if proc.returncode != 0:
-            self.utils.error("Failed to install Vundle: Exited with code %s"
-                             % proc.returncode)
+        self.utils.clone_repo(src_url, install_location, name="Vundle")
 
     def _install_plugins(self):
         self.utils.error("Installing plugins with Vundle...")

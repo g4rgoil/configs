@@ -25,7 +25,7 @@ class CategoryMisc(Category):
 
         self.files = {
             "yaourtrc": ".yaourtrc",
-            "neofetch_config": ".neofetch_config",
+            "neofetch-config": ".neofetch-config",
             "warprc": ".warprc",
             "terminator": ".config/terminator/config"
         }
