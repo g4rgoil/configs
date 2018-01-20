@@ -1,0 +1,60 @@
+{
+  "category": {
+    "name": "vim",
+    "prog": "setup.py vim",
+    "usage": "setup.py [<global options>] vim [-h] [--install arg [arg ...]]",
+    "help": "setup files and plugins for the vim text editor"
+  },
+  "files": [
+    {
+      "src": "vimrc",
+      "dst": "~/.vimrc"
+    },
+    {
+      "src": "gvimrc",
+      "dst": "~/.gvimrc"
+    },
+    {
+      "src": "ideavimrc",
+      "dst": "~/.ideavimrc"
+    }
+  ],
+  "directories": [
+    {
+      "src": "skeletons",
+      "dst": "~/.vim/skeletons"
+    }
+  ],
+  "linters": {
+    "requirements": {
+      "arch": [
+        "curl",
+        "nodejs"
+      ],
+      "debian": [
+        "build-essential",
+        "curl",
+        "python-pip"
+      ]
+    },
+    "arch": [
+      "shellcheck"
+    ],
+    "debian": [
+      "shellcheck",
+      "checkstyle"
+    ],
+    "npm": [
+      "coffeelint",
+      "eslint",
+      "jsonlint",
+      "phplint",
+      "stylelint",
+      "vimlint",
+      "xmllint"
+    ],
+    "pip": [
+      "flake8"
+    ]
+  }
+}
