@@ -108,7 +108,7 @@ call vundle#begin()
     Plugin 'SirVer/ultisnips'
     Plugin 'honza/vim-snippets'
     Plugin 'pgilad/vim-skeletons'
-
+    Plugin 'davidhalter/jedi-vim'
 
     Plugin 'scrooloose/nerdtree'
     Plugin 'ap/vim-css-color'
