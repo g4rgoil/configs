@@ -29,7 +29,8 @@
     "requirements": {
       "arch": [
         "curl",
-        "nodejs"
+        "nodejs",
+        "python-pip"
       ],
       "debian": [
         "build-essential",
