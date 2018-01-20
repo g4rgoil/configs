@@ -7,29 +7,17 @@ import shlex
 from pathlib import Path
 
 from categories.category import Category
-from categories import require_repo_dir, require_root
+from categories import require_root
+from categories import get_dist
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 
 
 class CategoryVim(Category):
     directory = "vim"
 
-    name = "vim"
-    prog = "setup.py vim"
-    usage = "setup.py [<global options>] vim [-h] " \
-            "[--install [plugins] [linters]]"
-    help = "set up files for the vim text editor"
-
     def __init__(self):
         super().__init__()
-        self.src_dir = require_repo_dir(self.directory)
-        self.dst_dir = Path.home()
-
-        self.files = {
-            "vimrc": ".vimrc", "gvimrc": ".gvimrc", "ideavimrc": ".ideavimrc"
-        }
-        self.directories = {"skeletons": ".vim/skeletons"}
 
         self.install_dict = {
             "vundle": self._install_plugin_manager,
@@ -39,40 +27,23 @@ class CategoryVim(Category):
             "all": None
         }
 
-        self.parser = None
-
     def add_subparser(self, subparsers):
-        kwargs = dict(prog=self.prog, usage=self.usage, help=self.help)
-        self.parser = subparsers.add_parser(self.name, **kwargs)
+        super().add_subparser(subparsers)
 
-        kwargs = dict(action="version", version="setup.py vim " + __version__)
-        self.parser.add_argument("--version", **kwargs)
+        self.parser.add_version_action(__version__)
 
         group = self.parser.add_argument_group("vim specific options")
 
-        kwargs = dict(nargs="*", action="store", default=[], metavar="args",
-                      choices=self.install_dict.keys())
-        kwargs["help"] = "install all specified categories; valid categories" \
-                         " are " + ", ".join(kwargs["choices"])
-        group .add_argument("--install", **kwargs)
+        choices = self.install_dict.keys()
+        help = "install all specified categories; valid categories " \
+               + ", ".join(choices)
+        self.parser.add_install_action(group=group, choices=choices, help=help)
 
     def set_up(self, namespace=None):
         super().set_up(namespace)
 
-        if not namespace.install:
-            pass
-        elif "all" in namespace.install:
-            self._install(
-                [key for key in self.install_dict.keys() if key != "all"])
-        else:
-            self._install(namespace.install)
-
-    def _install(self, keys):
-        for key in keys:
-            try:
-                self.install_dict[key]()
-            except PermissionError as e:
-                self.utils.error("Install %s:" % key, str(e))
+        if namespace.install:
+            self.install(namespace.install)
 
     def _install_plugin_manager(self):
         install_location = Path("~/.vim/bundle/Vundle.vim").expanduser()
@@ -107,4 +78,28 @@ class CategoryVim(Category):
 
     @require_root
     def _install_linters(self):  # Todo
-        raise NotImplementedError()
+        linters = self.descriptor["linters"]
+        dist = get_dist()
+
+        if dist not in linters or dist not in linters["requirements"]:
+            raise OSError("Cannot install linters: Unknown linux "
+                          "distribution '%s'" % dist)
+
+        self.utils.install_packages(dist, *linters["requirements"][dist])
+
+        if dist == "debian":
+            self._debian_install_nodejs()
+
+        self.utils.install_packages(dist, *linters[dist])
+        self.utils.install_npm_packages(*linters["npm"])
+        self.utils.install_pip_packages(*linters["pip"])
+
+    @require_root
+    def _debian_install_nodejs(self):
+        src_url = "https://deb.nodesource.com/setup_9.x"
+        install_location = Path("~/nodesource_setup.sh")
+
+        self.utils.run(["curl", "-sL", src_url, "-o", str(install_location)])
+        self.utils.run(["sh", str(install_location)])
+
+        self.utils.install_packages("debian", "nodejs")

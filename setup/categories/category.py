@@ -2,39 +2,73 @@
 
 import inspect
 import shutil
+import json
+import shlex
 import os as _os
 import sys as _sys
 
 from abc import ABC, abstractmethod
 from pathlib import Path
 from subprocess import run, CompletedProcess, DEVNULL
-from typing import Tuple, List, Callable
+from typing import Tuple, List, Dict, Callable
+
+from categories import require_repo_dir
 
 __version__ = "1.1.0"
 
 
 class Category(ABC):
-    name = ""
+    directory = ""
 
     def __init__(self):
-        self.src_dir: Path = None
+        self.src_dir: Path = require_repo_dir(self.directory)
         self.dst_dir: Path = None
 
-        self.files = {}
-        self.directories = {}
+        path = Path(self.src_dir, "category.json")
+        self.descriptor = self.parse_json_descriptor(path)
+
+        self.name = self.descriptor["category"]["name"]
+
+        self.files = self.parse_src_dst_dict(self.descriptor, "files")
+        self.directories = self.parse_src_dst_dict(self.descriptor,
+                                                   "directories")
+
+        self.install_dict = {}
 
         self.parser = None
         self.utils = _SetupUtils()
 
     @abstractmethod
     def add_subparser(self, subparsers):
-        pass
+        descriptor = self.descriptor["category"]
+
+        kwargs = dict(prog=descriptor["prog"], usage=descriptor["usage"],
+                      help=descriptor["help"])
+        self.parser = subparsers.add_parser(descriptor["name"], **kwargs)
 
     @abstractmethod
     def set_up(self, namespace=None):
         self.back_up()
         self.delete()
         self.link()
+
+    @staticmethod
+    def parse_json_descriptor(path):
+        with open(path, "r", encoding="utf-8") as file:
+            json_file = json.load(file)
+
+        return json_file
+
+    def parse_src_dst_dict(self, json_descriptor, name) -> Dict[Path, Path]:
+        target_dict = dict()
+
+        for item in json_descriptor[name]:
+            src = Path(self.src_dir, item["src"]).expanduser()
+            dst = Path(item["dst"]).expanduser()
+
+            target_dict[src] = dst
+
+        return target_dict
 
     def create_utils(self, namespace=None):
         self.utils = _SetupUtils(namespace)
@@ -51,71 +85,46 @@ class Category(ABC):
         self._delete_files()
         self._delete_directories()
 
+    def install(self, keys):
+        if "all" in keys:
+            keys = [k for k in self.install_dict.keys() if k != "all"]
+
+        for key in self.install_dict.keys():
+            if key not in keys:
+                continue
+
+            try:
+                self.install_dict[key]()
+            except PermissionError as e:
+                self.utils.error("Install %s:" % key, str(e))
+
     def _get_methods_by_prefix(self, prefix) -> List[Tuple[str, Callable]]:
         return [m for m in inspect.getmembers(self, predicate=inspect.ismethod)
                 if m[0].startswith(prefix)]
 
-    def _get_src_file(self, file):
-        return self.src_dir / file
-
-    def _get_dst_file(self, file):
-        return self.dst_dir / file
-
     def _link_files(self):
         for src, dst in self.files.items():
-            src_file = self._get_src_file(src)
-            dst_file = self._get_dst_file(dst)
-
-            try:
-                self.utils.symlink(src_file, dst_file)
-            except OSError as e:
-                self.utils.error(str(e))
+            self.utils.try_execute(lambda: self.utils.symlink(src, dst))
 
     def _link_directories(self):
         for src, dst in self.directories.items():
-            src_dir = self._get_src_file(src)
-            dst_dir = self._get_dst_file(dst)
-
-            try:
-                self.utils.symlink(src_dir, dst_dir)
-            except OSError as e:
-                self.utils.error(str(e))
+            self.utils.try_execute(lambda: self.utils.symlink(src, dst))
 
     def _backup_files(self):
-        for file in self.files.values():
-            dst_file = self._get_dst_file(file)
-
-            try:
-                self.utils.backup_file(dst_file)
-            except OSError as e:
-                self.utils.error(str(e))
+        for dst_file in self.files.values():
+            self.utils.try_execute(lambda: self.utils.backup_file(dst_file))
 
     def _backup_directories(self):
-        for directory in self.directories.values():
-            dst_dir = self._get_dst_file(directory)
-
-            try:
-                self.utils.backup_file(dst_dir)
-            except OSError as e:
-                self.utils.error(str(e))
+        for dst_dir in self.directories.values():
+            self.utils.try_execute(lambda: self.utils.backup_file(dst_dir))
 
     def _delete_files(self):
-        for file in self.files.values():
-            dst_file = self._get_dst_file(file)
-
-            try:
-                self.utils.delete_file(dst_file)
-            except OSError as e:
-                self.utils.error(str(e))
+        for dst_file in self.files.values():
+            self.utils.try_execute(lambda: self.utils.delete_file(dst_file))
 
     def _delete_directories(self):
-        for directory in self.directories.values():
-            dst_dir = self._get_dst_file(directory)
-
-            try:
-                self.utils.delete_file(dst_dir)
-            except OSError as e:
-                self.utils.error(str(e))
+        for dst_dir in self.directories.values():
+            self.utils.try_execute(lambda: self.utils.delete_file(dst_dir))
 
 
 class _SetupUtils:
@@ -214,6 +223,7 @@ class _SetupUtils:
             return self.error("%s seems to already be installed" % name)
 
         path.mkdir(parents=True)
+        path.expanduser()
 
         args = ["git", "clone", "-v", str(url), str(path)]
         process = self.run(args)
@@ -221,6 +231,48 @@ class _SetupUtils:
         if process.returncode != 0:
             self.error("Failed to install %s: Exited with code %s"
                        % (name, process.returncode))
+
+    def try_execute(self, func):
+        try:
+            func()
+        except OSError as e:
+            self.error(str(e))
+
+    def install_packages(self, dist, *packages):
+        if dist == "arch":
+            command = "pacman -S --noconfirm %s"
+        elif dist == "debian":
+            command = "apt --assume-yes install %s"
+        else:
+            raise OSError("Cannot install packages: Unknown linux "
+                          "distribution '%s'" % dist)
+
+        for package in packages:
+            process = self.run(shlex.split(command % package))
+
+            if process.returncode != 0:
+                self.error("Failed to install package '%s': Exited with code "
+                           "%s" % (package, process.returncode))
+
+    def install_pip_packages(self, *packages):
+        command = "pip install %s"
+
+        for package in packages:
+            process = self.run(shlex.split(command % package))
+
+            if process.returncode != 0:
+                self.error("Failed to install pip package '%s': Exited with "
+                           "code %s" % (package, process.returncode))
+
+    def install_npm_packages(self, *packages):
+        command = "npm install -g %s"
+
+        for package in packages:
+            process = self.run(shlex.split(command % package))
+
+            if process.returncode != 0:
+                self.error("Failed to install npm package '%s': Exited with "
+                           "code %s" % (package, process.returncode))
 
     def print(self, *args, **kwargs):
         """ This method might be reassigned in the constructor """

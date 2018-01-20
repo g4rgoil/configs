@@ -2,59 +2,45 @@
 
 """ Script for setting up files for the Z shell on this machine. """
 
-import shlex
-
 from pathlib import Path
 
 from categories.category import Category
-from categories import require_repo_dir, require_root
+from categories import require_root
 
-__version__ = "0.0.1"
+__version__ = "0.5.0"
 
 
 class CategoryZsh(Category):
     directory = "zsh"
 
-    name = "zsh"
-    prog = "setup.py zsh"
-    usage = "setup.py [<global options>] zsh [-h]"
-    help = "set up files for the Z shell"
-
     def __init__(self):
         super().__init__()
-        self.src_dir = require_repo_dir(self.directory)
-        self.dst_dir = Path.home()
 
-        self.files = {"zshrc": ".zshrc", "zsh-aliases": ".zsh-aliases"}
-        self.directories = {}
-
-        self._install_dict = {
+        self.install_dict = {
             "oh-my-zsh": self._install_oh_my_zsh,
             "powerline": self._install_powerlevel9k,
-            "syntax": self._install_syntax_highlighting,
+            "fish": self._install_syntax_highlighting,
             "font": self._install_font,
             "all": None
         }
 
-        self.parser = None
-
     def add_subparser(self, subparsers):
-        kwargs = dict(prog=self.prog, usage=self.usage, help=self.help)
-        self.parser = subparsers.add_parser(self.name, **kwargs)
+        super().add_subparser(subparsers)
 
-        kwargs = dict(action="version", version=__version__)
-        self.parser.add_argument("--version", **kwargs)
+        self.parser.add_version_action(__version__)
 
         group = self.parser.add_argument_group("zsh specific options")
 
-        kwargs = dict(nargs="*", action="store", default=[], metavar="args",
-                      choices=self._install_dict.keys())
-        kwargs["help"] = "install all specified categories; valid categories " \
-                         "are " + ", ".join(kwargs["choices"])
-        group.add_argument("--install", **kwargs)
+        choices = self.install_dict.keys()
+        help = "install the specified categories; valid categories are " \
+               + ", ".join(choices)
+        self.parser.add_install_action(group=group, choices=choices, help=help)
 
     def set_up(self, namespace=None):
         super().set_up(namespace)
+
+        if namespace.install:
+            self.install(namespace.install)
 
     def _install_oh_my_zsh(self):
         install_location = Path("~/.oh-my-zsh")
@@ -78,4 +64,9 @@ class CategoryZsh(Category):
 
     @require_root
     def _install_font(self):
-        pass
+        install_location = Path("~/repositories/awesome-terminal-fonts")
+        src_url = "https://github.com/gabrielelana/awesome-terminal-fonts"
+
+        self.utils.clone_repo(src_url, install_location, "FontAwesome")
+
+        # Todo

@@ -2,7 +2,7 @@
 
 """ Small script for setting up files in this repository.  """
 
-from typing import *
+from typing import Dict
 from argparse import ArgumentParser, HelpFormatter, ZERO_OR_MORE
 
 # noinspection PyUnresolvedReferences
@@ -47,7 +47,8 @@ class SetupArgParser(ArgumentParser):
 
         :return: a dictionary of categories and their names
         """
-        return dict((c.name, c()) for c in category.Category.__subclasses__())
+        instances = [c() for c in category.Category.__subclasses__()]
+        return dict(zip([i.name for i in instances], instances))
 
     def add_optional_arguments(self):
         verbosity = self.add_mutually_exclusive_group(required=False)
@@ -83,6 +84,7 @@ class SetupArgParser(ArgumentParser):
 
         dst_handling = group.add_mutually_exclusive_group(required=False)
         kwargs = dict(action="store_const", dest="dst_handling")
+        self.set_defaults(dst_handling="keep")
 
         kwargs["const"] = "keep"
         kwargs["help"] = "keep existing files (default)"
@@ -113,6 +115,18 @@ class SetupArgParser(ArgumentParser):
 class CategorySubParser(ArgumentParser):
     def __init__(self, **kwargs):
         super().__init__(**kwargs, formatter_class=MyHelpFormatter)
+
+    def add_version_action(self, version):
+        kwargs = dict(action="version", version=self.prog + " " + version)
+        self.add_argument("--version", **kwargs)
+
+    def add_install_action(self, group=None, choices=None, help=None):
+        choices = dict() if choices is None else choices
+        group = self if group is None else group
+
+        kwargs = dict(nargs="*", action="store", default=[], metavar="args",
+                      choices=choices, help=help)
+        group.add_argument("--install", **kwargs)
 
 
 class MyHelpFormatter(HelpFormatter):

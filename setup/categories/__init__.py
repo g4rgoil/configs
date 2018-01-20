@@ -3,8 +3,10 @@
 
 import os as _os
 import re as _re
+import shlex
 
 from pathlib import Path
+from subprocess import run, DEVNULL
 from os.path import dirname, basename, isfile
 from glob import glob
 
@@ -27,34 +29,16 @@ def require_root(func):
     """ Function decorator for functions that require root privileges. """
     def new_function(*args, **kwargs):
         if _os.getuid() != 0:
-            raise PermissionError("Cannot perform this operation: Missing root privileges")
+            raise PermissionError("Cannot perform this operation: "
+                                  "Missing root privileges")
         return func(*args, **kwargs)
     return new_function
 
 
-def require_packages(*args):  # Todo
-    def decorator(func):
-        return func
-
-    return decorator
-
-
-def get_dist():  # Todo
+def get_dist():
     with open("/etc/os-release", "r") as file:
         for line in file.read().splitlines():
             if _re.match("^ID=", line):
                 return line.lstrip("ID=")
 
-
-def install_package(package):  # Todo
-    dist = get_dist()
-
-    if dist == "arch":
-        command = "pacman -S --noconfirm  %s" % " ".join(package)
-    elif dist == "debian":
-        command = "apt install %s" % " ".join(package)
-    else:
-        raise OSError("cannot install packages: unknown linux distribution '%s'" % dist)
-
-    _os.system(command)
-
+    return ""
