@@ -30,32 +30,39 @@
       "arch": [
         "curl",
         "nodejs",
-        "python-pip"
+        "python-pip",
+        "ruby"
       ],
       "debian": [
         "build-essential",
         "curl",
-        "python-pip"
+        "python-pip",
+        "ruby"
       ]
     },
     "arch": [
+      "libxml",
       "shellcheck"
     ],
     "debian": [
-      "shellcheck",
-      "checkstyle"
+      "libxml",
+      "shellcheck"
+
     ],
     "npm": [
       "coffeelint",
-      "eslint",
+      "csslint",
+      "jslint",
       "jsonlint",
-      "phplint",
-      "stylelint",
-      "vimlint",
-      "xmllint"
+      "phplint"
     ],
     "pip": [
       "flake8"
+    ],
+    "gem": [
+      "mdl",
+      "scss_lint",
+      "sqlint"
     ]
   }
 }

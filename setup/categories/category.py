@@ -274,6 +274,16 @@ class _SetupUtils:
                 self.error("Failed to install npm package '%s': Exited with "
                            "code %s" % (package, process.returncode))
 
+    def install_gem_packages(self, *packages):
+        command = "gem install %s"
+
+        for package in packages:
+            process = self.run(shlex.split(command % package))
+
+            if process.returncode != 0:
+                self.error("Failed to install gem package '%s': Exited with "
+                           "code %s" % (package, process.returncode))
+
     def print(self, *args, **kwargs):
         """ This method might be reassigned in the constructor """
         pass

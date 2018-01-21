@@ -93,6 +93,7 @@ class CategoryVim(Category):
         self.utils.install_packages(dist, *linters[dist])
         self.utils.install_npm_packages(*linters["npm"])
         self.utils.install_pip_packages(*linters["pip"])
+        self.utils.install_pip_packages(*linters["gem"])
 
     @require_root
     def _debian_install_nodejs(self):
