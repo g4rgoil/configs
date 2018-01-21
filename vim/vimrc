@@ -89,6 +89,7 @@ autocmd BufNewFile,BufReadPost *.md,*.mkd set filetype=markdown
 let g:markdown_fenced_languages = ['javascript', 'go', 'php']
 
 autocmd BufNewFile,BufReadPost *.asm set filetype=mips
+autocmd BufNewFile,BufReadPost *.coffee set filetype=coffee
 
 "" Plugins
 set rtp+=~/.vim/bundle/Vundle.vim
