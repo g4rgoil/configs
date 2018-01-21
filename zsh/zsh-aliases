@@ -10,7 +10,7 @@ alias uninstall-force='sudo pacman -Rdd'
 
 # Some handy aliasses for everyday commands
 alias wheather='curl wttr.in/Karlsruhe'
-alias neofetch='neofetch --config ~/.neofetch_config'
+alias neofetch='neofetch --config ~/.neofetch-config'
 alias cdtemp='cd $(mktemp -d)'
 alias etemp='edit $(mktemp)'
 alias cpumonitor='sudo s-tui'

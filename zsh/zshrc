@@ -1,10 +1,8 @@
 #
-# /etc/zsh/zshrc
+# ~/.zshrc
 #
 
-# The following lines were added by compinstall
-
-zstyle ':completion:*' completer _expand _complete _ignored _correct _approximate
+zstyle ':completion:*' completer _expand _complete _approximate _ignored _correct
 zstyle ':completion:*' expand suffix
 zstyle ':completion:*' format 'Complete %d'
 zstyle ':completion:*' group-name ''
@@ -20,60 +18,101 @@ zstyle ':completion:*' preserve-prefix '//[^/]##/'
 zstyle ':completion:*' select-prompt '%SScrolling active: current selection at %p%s'
 zstyle ':completion:*' verbose true
 zstyle ':completion:*' rehash true
-zstyle :compinstall filename '/etc/zsh/zshrc'
+zstyle :compinstall filename '~/.zshrc'
 
 autoload -Uz compinit promptinit
 compinit
 promptinit
-# End of lines added by compinstall
 
-# Lines configured by zsh-newuser-install
-HISTFILE=~/.zsh_history
-HISTSIZE=1000
-SAVEHIST=1000
+HISTFILE=~/.zsh-history
+HISTSIZE=2000
+SAVEHIST=2000
+
 setopt appendhistory autocd extendedglob notify
 unsetopt beep nomatch
 bindkey -v
-# End of lines configured by zsh-newuser-install
 
 # Enable git completion
 zstyle ':completion:*:*:git:*' script /usr/share/git/completion/git-completion.zsh
 
 setopt PROMPT_SUBST
 
-# Set left prompt
-PROMPT="[%n@%m %1~]%# "
+export ZSH=~/.oh-my-zsh
+ZSH_THEME='powerlevel9k/powerlevel9k'
+# plugins=(git vi-mode wd zsh-syntax-highlighting)
+plugins=(git vi-mode wd zsh-syntax-highlighting)
 
-# Enable and configure git prompt as right prompt
-if [ -f /usr/share/git/completion/git-prompt.sh ]; then
-    source /usr/share/git/completion/git-prompt.sh
-    RPROMPT+='$(__git_ps1 "[%s]")'
-
-    # Indicate (un)staged changes (+ and *)
-    GIT_PS1_SHOWDIRTYSTATE=true
-
-    # Indicate untracked files (%)
-    GIT_PS1_SHOWUNTRACKEDFILES=true
-
-    # Indicate difference between HEAD and its upstream
-    GIT_PS1_SHOWUPSTREAM="auto"
-
-    # Use colors for hints
-    GIT_PS1_SHOWCOLORHINTS=true  # Todo: Not working as of right now
+# Disable powerlevel9k if in virtual console 
+if [[ "$TERM" == "linux" ]]; then
+    unset ZSH_THEME
 fi
 
-if [[ -n "$SSH_CLIENT" ]] || [[ -n "$SSH_TTY" ]]; then
-    RPROMPT+="[SSH=$(hostname)]"
-fi
+# Configure Powerlevel9k  # TODO
+DEFAULT_FOREGROUND=240
+DEFAULT_BACKGROUND='white'
+DEFAULT_COLOR=$DEFAULT_FOREGROUND
+
+POWERLEVEL9K_MODE='awesome-patched'
+
+POWERLEVEL9K_PROMPT_ON_NEWLINE=true
+POWERLEVEL9K_RPROMPT_ON_NEWLINE=true
+
+POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(os_icon dir dir_writable vcs)
+POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status command_execution_time root_indicator background_jobs battery ssh time)
+
+# Configure os_icon segment
+POWERLEVEL9K_OS_ICON_BACKGROUND='white'
+POWERLEVEL9K_OS_ICON_FOREGROUND='blue'
+
+# Configure dir segment
+POWERLEVEL9K_SHORTEN_DIR_LENGTH=2
+POWERLEVEL9K_DIR_HOME_FOREGROUND='white'
+POWERLEVEL9K_DIR_SUBFOLDER_FOREGROUND='white'
+POWERLEVEL9K_DIR_DEFAULT_FOREGROUND='white'
+
+# Configure status segment
+POWERLEVEL9K_STATUS_OK=false
+POWERLEVEL9K_STATUS_HIDE_SIGNAME=true
+
+# Configure command_execution_time segment
+POWERLEVEL9K_COMMAND_EXECUTION_TIME_THRESHOLD=5
+
+# Configure battery segment
+POWERLEVEL9K_BATTERY_VERBOSE=false
+POWERLEVEL9K_BATTERY_ICON=''
+POWERLEVEL9K_BATTERY_LOW_BACKGROUND='red'
+POWERLEVEL9K_BATTERY_LOW_FOREGROUND='white'
+POWERLEVEL9K_BATTERY_CHARGING_BACKGROUND='yellow'
+POWERLEVEL9K_BATTERY_CHARGING_FOREGROUND='white'
+POWERLEVEL9K_BATTERY_CHARGED_BACKGROUND='green' 
+POWERLEVEL9K_BATTERY_CHARGED_FOREGROUND='white'
+POWERLEVEL9K_BATTERY_DISCONNECTED_BACKGROUND='blue'
+POWERLEVEL9K_BATTERY_DISCONNECTED_FOREGROUND='white'
+
+# Configure time segment
+POWERLEVEL9K_TIME_FORMAT='%D{%H:%M} \uF017'
+POWERLEVEL9K_TIME_BACKGROUND='240'
+POWERLEVEL9K_TIME_FOREGROUND='white'
+
+# Configure zsh-syntax-highlighting
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern)
+
+source $ZSH/oh-my-zsh.sh
 
 # Enable zsh syntax highlighting
-[ -f /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ] && source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+if [[ -f /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then 
+    source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi
 
 # Source global alias definitions from /etc/zsh/zsh_aliases
-[ -f /etc/zsh/zsh_aliases ] && source /etc/zsh/zsh_aliases
+if [[ -f /etc/zsh/zsh-aliases ]]; then
+    source /etc/zsh/zsh-aliases
+fi
 
 # Source user specific alias definitions from ~/.zsh_aliases
-[ -f ~/.zsh_aliases ] && source ~/.zsh_aliases
+if [[ -f ~/.zsh-aliases ]]; then
+    source ~/.zsh-aliases
+fi
 
 # Start the ssh-agent if it is not already running
 # !! IMPORTANT: Add "AddKeysToAgent yes" to ~/.ssh/config !!
