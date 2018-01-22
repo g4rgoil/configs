@@ -1,3 +1,4 @@
+home:~
 cofigs:~/repositories/configs
 documents:~/Documents
 repositories:~/repositories
@@ -15,6 +16,5 @@ mycloud:/mnt/mycloud
 lukas-vps:/mnt/lukas/vps
 mycloud-public:/mnt/mycloud/public
 mycloud-pascal:/mnt/mycloud/pascal
-home:~
 usb:/mnt/usb
 optiplex:/mnt/optiplex
