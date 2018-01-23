@@ -174,6 +174,7 @@ class _SetupUtils:
         self.print_create_symlink(dst, src)
 
         if not self.dry_run:
+            dst.parent.mkdir(parents=True, exist_ok=True)
             dst.symlink_to(src)
 
     def backup_file(self, src: Path) -> None:

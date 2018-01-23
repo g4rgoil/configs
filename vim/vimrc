@@ -1,5 +1,5 @@
 "" Pascal Mehnert
-"" Version: 1.0 
+"" Version: 1 billion 
 
 
 set nocompatible
@@ -70,13 +70,16 @@ let g:vimtex_view_general_options = '--unique file:@pdf\#src:@line@tex'
 let g:vimtex_view_general_options_latexmk = '--unique'
 
 "" Skeleton configuration
-let skeletons#autoRegister = 1
-let skeletons#skeletonsDir = '~/.vim/skeletons'
+let skeletons#autoRegister= 1
+let skeletons#skeletonsDir=['~/.vim/skeletons','/etc/vim/skeletons']
 
 "" ultisnips configuration
 let g:UltiSnipsExpandTrigger='<C-J>'
 let g:UltiSnipsJumpForwardTrigger='<C-L>'
 let g:UltiSnipsJumpBackwardTrigger='<C-H>'
+
+" let g:UltiSnipsSnippetsDir='~/.vim/snippets/UltiSnips'
+let g:UltiSnipsSnippetDirectories=["UltiSnips"]
 
 "" ycm (you complete me) configuration
 let g:ycm_global_ycm_extra_conf='/usr/share/vim/vimfiles/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'

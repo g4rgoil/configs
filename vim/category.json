@@ -23,6 +23,10 @@
     {
       "src": "skeletons",
       "dst": "~/.vim/skeletons"
+    },
+    {
+      "src": "snippets",
+      "dst": "~/.vim/user-snippets/UltiSnips"
     }
   ],
   "linters": {
