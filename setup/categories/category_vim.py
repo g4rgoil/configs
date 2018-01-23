@@ -35,7 +35,7 @@ class CategoryVim(Category):
         group = self.parser.add_argument_group("vim specific options")
 
         choices = self.install_dict.keys()
-        help = "install all specified categories; valid categories " \
+        help = "install all specified categories; valid categories are" \
                + ", ".join(choices)
         self.parser.add_install_action(group=group, choices=choices, help=help)
 
@@ -88,19 +88,10 @@ class CategoryVim(Category):
         self.utils.install_packages(dist, *linters["requirements"][dist])
 
         if dist == "debian":
-            self._debian_install_nodejs()
+            self.utils.debian_install_nodejs()
 
         self.utils.install_packages(dist, *linters[dist])
         self.utils.install_npm_packages(*linters["npm"])
         self.utils.install_pip_packages(*linters["pip"])
         self.utils.install_pip_packages(*linters["gem"])
 
-    @require_root
-    def _debian_install_nodejs(self):
-        src_url = "https://deb.nodesource.com/setup_9.x"
-        install_location = Path("~/nodesource_setup.sh")
-
-        self.utils.run(["curl", "-sL", src_url, "-o", str(install_location)])
-        self.utils.run(["sh", str(install_location)])
-
-        self.utils.install_packages("debian", "nodejs")

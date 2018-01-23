@@ -12,7 +12,7 @@ from pathlib import Path
 from subprocess import run, CompletedProcess, DEVNULL
 from typing import Tuple, List, Dict, Callable
 
-from categories import require_repo_dir
+from categories import require_repo_dir, require_root
 
 __version__ = "1.1.0"
 
@@ -217,13 +217,14 @@ class _SetupUtils:
         if name is None:
             name = path.name
 
+        path = path.expanduser()
+
         self.error("Installing %s to '%s'..." % (name, str(path)))
 
         if path.exists():
             return self.error("%s seems to already be installed" % name)
 
         path.mkdir(parents=True)
-        path.expanduser()
 
         args = ["git", "clone", "-v", str(url), str(path)]
         process = self.run(args)
@@ -235,7 +236,7 @@ class _SetupUtils:
     def try_execute(self, func):
         try:
             func()
-        except OSError as e:
+        except (OSError, PermissionError) as e:
             self.error(str(e))
 
     def install_packages(self, dist, *packages):
@@ -300,3 +301,12 @@ class _SetupUtils:
 
     def print_move(self, src, dst):
         self.print("Moving file: '%s' -> '%s'" % (str(src), str(dst)))
+
+    def debian_install_nodejs(self):
+        src_url = "https://deb.nodesource.com/setup_9.x"
+        install_location = Path("~/nodesource_setup.sh")
+
+        self.run(["curl", "-sL", src_url, "-o", str(install_location)])
+        self.run(["sh", str(install_location)])
+
+        self.install_packages("debian", "nodejs")

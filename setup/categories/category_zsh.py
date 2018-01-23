@@ -5,7 +5,6 @@
 from pathlib import Path
 
 from categories.category import Category
-from categories import require_root
 
 __version__ = "0.5.0"
 
@@ -20,7 +19,6 @@ class CategoryZsh(Category):
             "oh-my-zsh": self._install_oh_my_zsh,
             "powerline": self._install_powerlevel9k,
             "fish": self._install_syntax_highlighting,
-            "font": self._install_font,
             "all": None
         }
 
@@ -61,12 +59,3 @@ class CategoryZsh(Category):
 
         self.utils.clone_repo(src_url, install_location,
                               name="zsh-syntax-highlighting")
-
-    @require_root
-    def _install_font(self):
-        install_location = Path("~/repositories/awesome-terminal-fonts")
-        src_url = "https://github.com/gabrielelana/awesome-terminal-fonts"
-
-        self.utils.clone_repo(src_url, install_location, "FontAwesome")
-
-        # Todo
