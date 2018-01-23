@@ -26,7 +26,7 @@
     },
     {
       "src": "snippets",
-      "dst": "~/.vim/user-snippets"
+      "dst": "~/.vim/user-snippets/UltiSnips"
     }
   ],
   "linters": {
