@@ -1,5 +1,5 @@
 home:~
-cofigs:~/repositories/configs
+configs:~/repositories/configs
 documents:~/Documents
 repositories:~/repositories
 downloads:~/Downloads
