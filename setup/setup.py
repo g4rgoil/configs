@@ -2,11 +2,9 @@
 
 """ Small script for setting up files in this repository.  """
 
-from typing import Dict
-from argparse import ArgumentParser, HelpFormatter, ZERO_OR_MORE
+from argparse import ArgumentParser
 
-# noinspection PyUnresolvedReferences
-from categories import *
+from category import Category, CategorySubParser, MyHelpFormatter
 
 __version__ = "0.6.0"
 
@@ -19,7 +17,7 @@ class SetupArgParser(ArgumentParser):
         super().__init__(prog="setup.py", add_help=False, usage=self.usage,
                          formatter_class=MyHelpFormatter)
 
-        self.categories = self.create_categories()
+        self.categories = Categories()
 
         self.add_optional_arguments()
         self.add_setup_options()
@@ -36,19 +34,6 @@ class SetupArgParser(ArgumentParser):
             self.print_usage()
 
         return namespace
-
-    @staticmethod
-    def create_categories() -> Dict[str, category.Category]:
-        """
-        Find all subclasses of Category and instantiate them. For a
-        subclass to be recognized it must have been imported at some
-        point. All classes in the categories directory are imported
-        automatically.
-
-        :return: a dictionary of categories and their names
-        """
-        instances = [c() for c in category.Category.__subclasses__()]
-        return dict(zip([i.name for i in instances], instances))
 
     def add_optional_arguments(self):
         verbosity = self.add_mutually_exclusive_group(required=False)
@@ -108,37 +93,23 @@ class SetupArgParser(ArgumentParser):
         subparsers = super().add_subparsers(**kwargs)
         self.set_defaults(category_name=None)
 
-        for category in self.categories.values():
+        for category in self.categories:
             category.add_subparser(subparsers)
 
 
-class CategorySubParser(ArgumentParser):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs, formatter_class=MyHelpFormatter)
+class Categories:
+    def __init__(self):
+        instances = [c() for c in Category.__subclasses__()]
+        self.dict = dict([(i.name, i) for i in instances])
 
-    def add_version_action(self, version):
-        kwargs = dict(action="version", version=self.prog + " " + version)
-        self.add_argument("--version", **kwargs)
+    def __getitem__(self, item):
+        return self.dict[item]
 
-    def add_install_action(self, group=None, choices=None, help=None):
-        choices = dict() if choices is None else choices
-        group = self if group is None else group
+    def __contains__(self, item):
+        return item in self.dict
 
-        kwargs = dict(nargs="*", action="store", default=[], metavar="args",
-                      choices=choices, help=help)
-        group.add_argument("--install", **kwargs)
-
-
-class MyHelpFormatter(HelpFormatter):
-    def _format_args(self, action, default_metavar):
-        get_metavar = self._metavar_formatter(action, default_metavar)
-
-        if action.nargs == ZERO_OR_MORE:
-            result = '[%s ...]' % get_metavar(1)
-        else:
-            result = super()._format_args(action, default_metavar)
-
-        return result
+    def __iter__(self):
+        return iter(self.dict.values())
 
 
 if __name__ == "__main__":

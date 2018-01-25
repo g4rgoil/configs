@@ -1,0 +1,9 @@
+{
+  "category": {
+    "name": "all",
+    "prog": "setup.py all",
+    "usage": "setup.py [<global options>] all [-h]",
+    "help": "setup files for all categories",
+    "version": "0.0.1"
+  }
+}
