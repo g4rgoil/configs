@@ -19,10 +19,6 @@ __version__ = "1.1.0"
 __repo_dir__ = Path(__file__).parents[1]
 
 
-# Todo: Remove version action from subparsers
-# Todo: --> Or move the version to the json file
-
-
 def require_repo_dir(name) -> Path:
     repo_dir = __repo_dir__ / name
 
@@ -55,6 +51,13 @@ def get_dist():
     return None
 
 
+def parse_json_descriptor(path):
+    with open(path, "r", encoding="utf-8") as file:
+        json_file = json.load(file)
+
+    return json_file
+
+
 class Category(ABC):
     directory = None
 
@@ -75,7 +78,7 @@ class Category(ABC):
 
         if self.src_dir is not None:
             path = Path(self.src_dir, "category.json")
-            self.descriptor = self.parse_json_descriptor(path)
+            self.descriptor = parse_json_descriptor(path)
 
         if self.descriptor is not None:
             self.name = self.descriptor["category"]["name"]
@@ -98,13 +101,6 @@ class Category(ABC):
         kwargs = dict(prog=descriptor["prog"], usage=descriptor["usage"],
                       help=descriptor["help"], version=descriptor["version"])
         self.parser = subparsers.add_parser(descriptor["name"], **kwargs)
-
-    @staticmethod
-    def parse_json_descriptor(path):
-        with open(path, "r", encoding="utf-8") as file:
-            json_file = json.load(file)
-
-        return json_file
 
     def parse_src_dst_dict(self, json_descriptor, name) -> Dict[Path, Path]:
         target_dict = dict()
@@ -183,7 +179,7 @@ class CategoryAll(Category):
         super().__init__()
 
         path = Path(__repo_dir__, "setup", "resources", "category_all.json")
-        self.descriptor = self.parse_json_descriptor(path)
+        self.descriptor = parse_json_descriptor(path)
 
     def set_up(self, namespace=None):
         super().set_up(namespace)

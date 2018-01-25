@@ -3,21 +3,27 @@
 """ Small script for setting up files in this repository.  """
 
 from argparse import ArgumentParser
+from pathlib import Path
 
 from category import Category, CategorySubParser, MyHelpFormatter
+from category import parse_json_descriptor, __repo_dir__
 
 __version__ = "0.6.0"
 
 
 class SetupArgParser(ArgumentParser):
-    usage = "setup.py [-h] [-v | -q] [-l | -n] [-b | -d | -k] [-s <suffix>]" \
-            " <category> [<args>]"
+    """ Class that provides a command line interface for the setup script """
 
     def __init__(self):
-        super().__init__(prog="setup.py", add_help=False, usage=self.usage,
+        path = Path(__repo_dir__, "setup", "resources", "parser.json")
+        self.descriptor = parse_json_descriptor(path)
+        descriptor = self.descriptor
+
+        super().__init__(prog=descriptor["prog"], usage=descriptor["usage"],
+                         epilog=descriptor["epilog"], add_help=False,
                          formatter_class=MyHelpFormatter)
 
-        self.categories = Categories()
+        self.categories = CategoryCache()
 
         self.add_optional_arguments()
         self.add_setup_options()
@@ -47,7 +53,8 @@ class SetupArgParser(ArgumentParser):
         kwargs = dict(action="help", help="show this help message and exit")
         self.add_argument("-h", "--help", **kwargs)
 
-        kwargs = dict(action="version", version="setup.py %s" % __version__)
+        kwargs = dict(action="version",
+                      version="setup.py %s" % self.descriptor["version"])
         self.add_argument("--version", **kwargs)
 
     def add_setup_options(self):
@@ -97,7 +104,7 @@ class SetupArgParser(ArgumentParser):
             category.add_subparser(subparsers)
 
 
-class Categories:
+class CategoryCache:
     def __init__(self):
         instances = [c() for c in Category.__subclasses__()]
         self.dict = dict([(i.name, i) for i in instances])

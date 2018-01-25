@@ -1,3 +1,6 @@
 {
-
+  "prog": "setup.py",
+  "usage": "setup.py [-h] [-v | -q] [-l | -n] [-b | -d | -k] [-s <suffix>] <category> [<args>]",
+  "epilog": "",
+  "version": "0.6.0"
 }
