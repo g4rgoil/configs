@@ -1,10 +1,13 @@
 {
   "category": {
     "name": "vim",
-    "prog": "setup.py vim",
-    "usage": "setup.py [<global options>] vim [-h] [--install arg [arg ...]]",
-    "help": "setup files and plugins for the vim text editor",
-    "version": "1.1.0"
+    "parser": {
+      "prog": "setup.py vim",
+      "usage": "setup.py [<global options>] vim [-h] [--install arg [arg ...]]",
+      "epilog": null,
+      "help": "setup files and plugins for the vim text editor",
+      "version": "1.1.0"
+    }
   },
   "files": [
     {
@@ -46,11 +49,11 @@
       ]
     },
     "arch": [
-      "libxml",
+      "libxml2",
       "shellcheck"
     ],
     "debian": [
-      "libxml",
+      "libxml2",
       "shellcheck"
 
     ],

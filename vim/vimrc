@@ -121,5 +121,8 @@ call vundle#begin()
     Plugin 'harenome/vim-mipssyntax'
     Plugin 'vim-syntastic/syntastic'
 
+    Plugin 'tmhedberg/SimpylFold'
+    Plugin 'Konfekt/FastFold'
+
     Plugin 'Valloric/YouCompleteMe'
 call vundle#end()

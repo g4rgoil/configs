@@ -51,6 +51,21 @@ def get_dist():
     return None
 
 
+class CategoryCache:
+    def __init__(self):
+        instances = [c() for c in Category.__subclasses__()]
+        self.dict = dict([(i.name, i) for i in instances])
+
+    def __getitem__(self, item):
+        return self.dict[item]
+
+    def __contains__(self, item):
+        return item in self.dict
+
+    def __iter__(self):
+        return iter(self.dict.values())
+
+
 def parse_json_descriptor(path):
     with open(path, "r", encoding="utf-8") as file:
         json_file = json.load(file)
@@ -98,9 +113,9 @@ class Category(ABC):
             raise ValueError("The descriptor dictionary has not been set")
 
         descriptor = self.descriptor["category"]
-        kwargs = dict(prog=descriptor["prog"], usage=descriptor["usage"],
-                      help=descriptor["help"], version=descriptor["version"])
-        self.parser = subparsers.add_parser(descriptor["name"], **kwargs)
+        # kwargs = dict(prog=descriptor["prog"], usage=descriptor["usage"],
+        #               help=descriptor["help"], version=descriptor["version"])
+        self.parser = subparsers.add_parser(self.name, **descriptor["parser"])
 
     def parse_src_dst_dict(self, json_descriptor, name) -> Dict[Path, Path]:
         target_dict = dict()
@@ -180,6 +195,8 @@ class CategoryAll(Category):
 
         path = Path(__repo_dir__, "setup", "resources", "category_all.json")
         self.descriptor = parse_json_descriptor(path)
+
+        self.name = self.descriptor["category"]["name"]
 
     def set_up(self, namespace=None):
         super().set_up(namespace)
@@ -463,7 +480,7 @@ class SetupUtils:
         self._install_packages("npm install -g %s", *packages)
 
     def install_gem_packages(self, *packages):
-        self._install_packages("gem install %s", *packages)
+        self._install_packages("gem install %s --no-user-install", *packages)
 
     def _install_packages(self, command, *packages):
         for package in packages:

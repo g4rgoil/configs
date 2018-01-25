@@ -5,10 +5,10 @@
 from argparse import ArgumentParser
 from pathlib import Path
 
-from category import Category, CategorySubParser, MyHelpFormatter
+from category import CategoryCache, CategorySubParser, MyHelpFormatter
 from category import parse_json_descriptor, __repo_dir__
 
-__version__ = "0.6.0"
+__version__ = "1.0.0"
 
 
 class SetupArgParser(ArgumentParser):
@@ -17,10 +17,8 @@ class SetupArgParser(ArgumentParser):
     def __init__(self):
         path = Path(__repo_dir__, "setup", "resources", "parser.json")
         self.descriptor = parse_json_descriptor(path)
-        descriptor = self.descriptor
 
-        super().__init__(prog=descriptor["prog"], usage=descriptor["usage"],
-                         epilog=descriptor["epilog"], add_help=False,
+        super().__init__(**self.descriptor["parser"],
                          formatter_class=MyHelpFormatter)
 
         self.categories = CategoryCache()
@@ -42,6 +40,7 @@ class SetupArgParser(ArgumentParser):
         return namespace
 
     def add_optional_arguments(self):
+        """ Adds optional arguments to the parser """
         verbosity = self.add_mutually_exclusive_group(required=False)
 
         kwargs = dict(action="store_true", help="be more verbose")
@@ -58,6 +57,7 @@ class SetupArgParser(ArgumentParser):
         self.add_argument("--version", **kwargs)
 
     def add_setup_options(self):
+        """ Adds options for modifying the setup process """
         group = self.add_argument_group("setup options")
 
         kwargs = dict(action="store_true", help="don't modify the filesystem")
@@ -95,6 +95,7 @@ class SetupArgParser(ArgumentParser):
         group.add_argument("-s", "--suffix", **kwargs)
 
     def add_subparsers(self):
+        """ Adds a subparser for each category defined in self.categories """
         kwargs = dict(title="setup categories", dest="category_name",
                       parser_class=CategorySubParser)
         subparsers = super().add_subparsers(**kwargs)
@@ -102,21 +103,6 @@ class SetupArgParser(ArgumentParser):
 
         for category in self.categories:
             category.add_subparser(subparsers)
-
-
-class CategoryCache:
-    def __init__(self):
-        instances = [c() for c in Category.__subclasses__()]
-        self.dict = dict([(i.name, i) for i in instances])
-
-    def __getitem__(self, item):
-        return self.dict[item]
-
-    def __contains__(self, item):
-        return item in self.dict
-
-    def __iter__(self):
-        return iter(self.dict.values())
 
 
 if __name__ == "__main__":
