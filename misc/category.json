@@ -3,7 +3,8 @@
     "name": "misc",
     "prog": "setup.py misc",
     "usage": "setup.py [<global options>] misc [-h] [--install arg [arg ...]]",
-    "help": "setup files for miscellaneous programs"
+    "help": "setup files for miscellaneous programs",
+    "version": "0.2.0"
   },
   "files": [
     {

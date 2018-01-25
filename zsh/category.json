@@ -3,7 +3,8 @@
     "name": "zsh",
     "prog": "setup.py zsh",
     "usage": "setup.py [<global options>] zsh [-h] [--install arg [arg ...]]",
-    "help": "set up files and plugins for the Z shell"
+    "help": "set up files and plugins for the Z shell",
+    "version": "0.9.0"
   },
   "files": [
     {

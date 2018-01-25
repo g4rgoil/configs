@@ -17,6 +17,7 @@ set textwidth=120               " Line wrap (after cols)
 set showmatch                   " Highlight matching braces
 set cmdheight=1                 " Number of lines at bottom of screen
 set tw=0                        " Don't use automatic line breaks
+set backspace=indent,eol,start  " Set the backspace to delete by default
 syntax enable                   " Enable syntax highlighting
 
 "" Indentation
@@ -34,7 +35,6 @@ set autoindent
 set foldmethod=manual
 
 "" Misc key mappings
-" nnoremap <Alt-S> :w<CR>
 
 "" Configure split behaviour
 nnoremap <C-J> <C-W><C-J>

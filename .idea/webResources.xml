@@ -11,6 +11,7 @@
             <path value="file://$PROJECT_DIR$/zsh" />
             <path value="file://$PROJECT_DIR$/bash" />
             <path value="file://$PROJECT_DIR$/backup_scripts" />
+            <path value="file://$PROJECT_DIR$/setup/resources" />
           </resourceRoots>
         </entryData>
       </entry>
