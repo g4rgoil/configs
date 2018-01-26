@@ -483,12 +483,11 @@ class SetupUtils:
         self._install_packages("gem install %s --no-user-install", *packages)
 
     def _install_packages(self, command, *packages):
-        for package in packages:
-            process = self.run(shlex.split(command % package))
+        process = self.run(shlex.split(command % " ".join(packages)))
 
-            if process.returncode != 0:
-                self.error("Failed to install package '%s': Exited with "
-                           "code %s" % (package, process.returncode))
+        if process.returncode != 0:
+            self.error("Failed to install packages '%s': Exited with "
+                       "code %s" % (", ".join(packages), process.returncode))
 
     def print(self, *args, **kwargs):
         """ This method might be reassigned in the constructor """
