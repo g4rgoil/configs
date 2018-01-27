@@ -29,6 +29,10 @@
     {
       "src": "warprc",
       "dst": "~/.warprc"
+    },
+    {
+      "src": "cleanup.hook",
+      "dst": "/etc/pacman/"
     }
   ],
   "directories": [

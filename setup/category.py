@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+""" This module provides classes for setting up this system """
+
 import json
 import shlex
 import shutil
@@ -31,7 +33,6 @@ def require_repo_dir(name) -> Path:
 
 def require_root(func):
     """ Function decorator for functions that require root privileges. """
-
     def new_function(*args, **kwargs):
         if _os.getuid() != 0:
             raise PermissionError("Cannot perform this operation: "
@@ -42,7 +43,7 @@ def require_root(func):
 
 
 def get_dist():
-    """ This method is not guaranteed to work on every linux distribution! """
+    """ Returns the name of the linux distribution on this system or None """
     with open("/etc/os-release", "r") as file:
         for line in file.read().splitlines():
             if _re.match("^ID=", line):
@@ -51,32 +52,37 @@ def get_dist():
     return None
 
 
-class CategoryCache:
-    def __init__(self):
-        instances = [c() for c in Category.__subclasses__()]
-        self.dict = dict([(i.name, i) for i in instances])
-
-    def __getitem__(self, item):
-        return self.dict[item]
-
-    def __contains__(self, item):
-        return item in self.dict
-
-    def __iter__(self):
-        return iter(self.dict.values())
-
-
 def parse_json_descriptor(path):
+    """ Parses the specified json file and returns it as dict """
     with open(path, "r", encoding="utf-8") as file:
         json_file = json.load(file)
 
     return json_file
 
 
+class CategoryCollection:
+    def __init__(self):
+        instances = [c() for c in Category.__subclasses__()]
+        self.dict = dict([(i.name, i) for i in instances])
+
+    def __contains__(self, item):
+        return item in self.dict
+
+    def __delitem__(self, key):
+        del self.dict[key]
+
+    def __getitem__(self, item):
+        return self.dict[item]
+
+    def __iter__(self):
+        for category in self.dict.values():
+            yield category
+
+
 class Category(ABC):
     directory = None
 
-    def __init__(self):
+    def __init__(self, descriptor_path: Path = None):
         self.name = None
         self.src_dir = None
         self.descriptor = None
@@ -91,7 +97,9 @@ class Category(ABC):
         if self.directory is not None:
             self.src_dir: Path = require_repo_dir(self.directory)
 
-        if self.src_dir is not None:
+        if descriptor_path is not None:
+            self.descriptor = parse_json_descriptor(descriptor_path)
+        elif self.src_dir is not None:
             path = Path(self.src_dir, "category.json")
             self.descriptor = parse_json_descriptor(path)
 
@@ -191,15 +199,21 @@ class CategoryAll(Category):
     directory = None
 
     def __init__(self):
-        super().__init__()
-
         path = Path(__repo_dir__, "setup", "resources", "category_all.json")
-        self.descriptor = parse_json_descriptor(path)
-
-        self.name = self.descriptor["category"]["name"]
+        super().__init__(path)
 
     def set_up(self, namespace=None):
-        super().set_up(namespace)
+        for category in [c for c in CategoryCollection() if c.name != self.name]:
+            category.set_up(namespace)
+
+    def add_subparser(self, subparsers):
+        super().add_subparser(subparsers)
+
+        group = self.parser.add_argument_group("all specific options")
+
+        help = "values to pass to the install action of each category. For " \
+               " available values consult the help message for each category"
+        self.parser.add_install_action(group=group, help=help)
 
 
 class CategoryMisc(Category):

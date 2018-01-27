@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
 
-""" Small script for setting up files in this repository.  """
+""" This module provides a command line interface for the setup script """
 
 from argparse import ArgumentParser
 from pathlib import Path
 
-from category import CategoryCache, CategorySubParser, MyHelpFormatter
+from category import CategoryCollection, CategorySubParser, MyHelpFormatter
 from category import parse_json_descriptor, __repo_dir__
 
 __version__ = "1.0.0"
 
 
 class SetupArgParser(ArgumentParser):
-    """ Class that provides a command line interface for the setup script """
+    """ This class provides an argument parser for for the setup script """
 
     def __init__(self):
         path = Path(__repo_dir__, "setup", "resources", "parser.json")
@@ -21,7 +21,7 @@ class SetupArgParser(ArgumentParser):
         super().__init__(**self.descriptor["parser"],
                          formatter_class=MyHelpFormatter)
 
-        self.categories = CategoryCache()
+        self.categories = CategoryCollection()
 
         self.add_optional_arguments()
         self.add_setup_options()
