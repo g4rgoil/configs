@@ -3,7 +3,7 @@
     "name": "misc",
     "parser": {
       "prog": "setup.py misc",
-      "usage": "setup.py [<global options>] misc [-h] [--install arg [arg ...]]",
+      "usage": "setup.py misc [-h] [--install arg [arg ...]]",
       "epilog": null,
       "help": "setup files for miscellaneous programs",
       "version": "0.5.0"
@@ -32,7 +32,9 @@
     },
     {
       "src": "cleanup.hook",
-      "dst": "/etc/pacman/"
+      "dst": "/etc/pacman/hooks/cleanup.hook",
+      "distribution": "arch",
+      "root": true
     }
   ],
   "directories": [
