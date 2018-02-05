@@ -3,7 +3,7 @@
     "name": "zsh",
     "parser": {
       "prog": "setup.py zsh",
-      "usage": "setup.py [<global options>] zsh [-h] [--install arg [arg ...]]",
+      "usage": "setup.py zsh [-h] [--install arg [arg ...]]",
       "epilog": null,
       "help": "set up files and plugins for the Z shell",
       "version": "0.9.0"
@@ -19,6 +19,7 @@
       "dst": "~/.zsh-aliases"
     },
     {
+      "@root": true,
       "src": "zshenv",
       "dst": "/etc/zsh/zshenv"
     }

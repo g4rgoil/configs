@@ -31,10 +31,15 @@ def require_repo_dir(name) -> Path:
     return repo_dir
 
 
+def is_root() -> bool:
+    return _os.getuid() == 0
+
+
 def require_root(func):
     """ Function decorator for functions that require root privileges. """
+
     def new_function(*args, **kwargs):
-        if _os.getuid() != 0:
+        if not is_root():
             raise PermissionError("Cannot perform this operation: "
                                   "Missing root privileges")
         return func(*args, **kwargs)
@@ -60,7 +65,7 @@ def parse_json_descriptor(path):
     return json_file
 
 
-class CategoryCollection:
+class CategoryCollection(object):
     def __init__(self):
         instances = [c() for c in Category.__subclasses__()]
         self.dict = dict([(i.name, i) for i in instances])
@@ -203,7 +208,9 @@ class CategoryAll(Category):
         super().__init__(path)
 
     def set_up(self, namespace=None):
-        for category in [c for c in CategoryCollection() if c.name != self.name]:
+        for category in [c for c in CategoryCollection() if
+                         c.name != self.name]:
+            category.create_utils(namespace)
             category.set_up(namespace)
 
     def add_subparser(self, subparsers):
@@ -363,7 +370,7 @@ class CategoryZsh(Category):
                               name="zsh-syntax-highlighting")
 
 
-class SetupUtils:
+class SetupUtils(object):
     def __init__(self, namespace=None):
         def get_value_or_default(dictionary, key, default):
             return dictionary[key] if key in dictionary else default
@@ -515,7 +522,7 @@ class SetupUtils:
         self.print("Creating link: '%s' -> '%s'" % (str(dst), str(src)))
 
     def print_delete(self, file):
-        self.print("deleting file: '%s'" % str(file))
+        self.print("Deleting file: '%s'" % str(file))
 
     def print_move(self, src, dst):
         self.print("Moving file: '%s' -> '%s'" % (str(src), str(dst)))
@@ -528,6 +535,67 @@ class SetupUtils:
         self.run(["sh", str(install_location)])
 
         self.install_packages("debian", "nodejs")
+
+
+class FileMapping(object):
+    """
+    Represents a mapping between a file in this repository and a file
+    another file on this system.
+    """
+
+    category: Category = None
+
+    def __init__(self, src, dst, distribution=None, root=False):
+        """
+        :param src: the absolute path to the file in the repository
+        :param dst: the absolute path to the file on the system
+        :param root: whether root privileges are required for the file
+        :param distribution: the (list of) linux distribution(s) the
+                             file is used on
+        """
+        self.src = src
+        self.dst = dst
+        self.root = root
+        self.distribution = distribution
+
+    @classmethod
+    def create_mapping_class(cls, category_instance):
+        class NewClass(FileMapping):
+            category = category_instance
+
+        return NewClass
+
+    @classmethod
+    def parse_mappings_list(cls, category_instance, dictionary_list):
+        mapping_class = cls.create_mapping_class(category_instance)
+
+        for dictionary in dictionary_list:
+            mapping = mapping_class.parse_mapping(dictionary)
+
+    @classmethod
+    def parse_mapping(cls, dictionary):
+        return cls(**dictionary)
+
+    def is_privileged(self):  # Todo rename?!
+        return is_root() == self.root
+
+    def is_distribution(self):  # Todo rename?!
+        return get_dist() == self.distribution
+
+    def can_setup(self):  # todo rename?!
+        return self.is_privileged() and self.is_distribution()
+
+    def link(self):
+        if self.can_setup():
+            self.category.utils.symlink(self.src, self.dst)
+
+    def delete_dst(self):
+        if self.can_setup():
+            self.category.utils.delete_file(self.dst)
+
+    def backup_dst(self):
+        if self.can_setup():
+            self.category.utils.backup_file(self.dst)
 
 
 class CategorySubParser(ArgumentParser):
