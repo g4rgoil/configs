@@ -43,8 +43,13 @@ if ! mountpoint -q ${BACKUP_MOUNT}; then
 
     if ! mount ${BACKUP_MOUNT}; then
         log_error "Unable to mount backup device"
-        slack_message "$(hostname): Backup failed, unable to mount backup target. "
+        slack_message "$(hostname): Backup failed, unable to mount backup target."
         exit 2
+    fi
+
+    if ! mountpoint -q ${BACKUP_MOUNT}; then
+        log_error "Unable to mount backup device"
+        slack_message "$(hostname): Backup failed, unable to mount backup target."
     fi
 
     unmount=true
