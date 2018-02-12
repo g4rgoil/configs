@@ -257,7 +257,7 @@ class CategoryVim(Category):
         group = self.parser.add_argument_group("vim specific options")
 
         choices = self.install_dict.keys()
-        help = "install all specified categories; valid categories are" \
+        help = "install all specified categories; valid categories are " \
                + ", ".join(choices)
         self.parser.add_install_action(group=group, choices=choices, help=help)
 
@@ -379,8 +379,6 @@ class SetupUtils(object):
 
         self.link = get_value_or_default(args_dict, "link", True)
 
-        self.dry_run = get_value_or_default(args_dict, "dry_run", False)
-
         dst_handling = get_value_or_default(args_dict, "dst_handling", "keep")
         self.keep = (dst_handling == "keep")
         self.backup = (dst_handling == "backup")
@@ -415,10 +413,8 @@ class SetupUtils(object):
                                     % str(src))
 
         self.print_create_symlink(dst, src)
-
-        if not self.dry_run:
-            dst.parent.mkdir(parents=True, exist_ok=True)
-            dst.symlink_to(src)
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        dst.symlink_to(src)
 
     def backup_file(self, src: Path) -> None:
         if not self.backup:
@@ -429,11 +425,8 @@ class SetupUtils(object):
                                     % str(src))
 
         dst = src.with_suffix(self.suffix)
-
         self.print_move(src, dst)
-
-        if not self.dry_run:
-            _os.rename(str(src), str(dst))
+        _os.rename(str(src), str(dst))
 
     def delete_file(self, file: Path) -> None:
         if not self.delete:
@@ -445,11 +438,10 @@ class SetupUtils(object):
 
         self.print_delete(file)
 
-        if not self.dry_run:
-            if file.is_file() or file.is_symlink():
-                file.unlink()
-            elif file.is_dir():
-                shutil.rmtree(str(file))
+        if file.is_file() or file.is_symlink():
+            file.unlink()
+        elif file.is_dir():
+            shutil.rmtree(str(file))
 
     def run(self, args: List[str]) -> CompletedProcess:
         kwargs = dict(stdout=None if self.verbose else DEVNULL,
@@ -543,9 +535,7 @@ class FileMapping(object):
     another file on this system.
     """
 
-    category: Category = None
-
-    def __init__(self, src, dst, distribution=None, root=False):
+    def __init__(self, src, dst, category=None, distribution=None, root=False):
         """
         :param src: the absolute path to the file in the repository
         :param dst: the absolute path to the file on the system
@@ -553,33 +543,31 @@ class FileMapping(object):
         :param distribution: the (list of) linux distribution(s) the
                              file is used on
         """
+        if category is None:
+            self.category = Category()
+        else:
+            self.category = category
+
         self.src = src
         self.dst = dst
         self.root = root
         self.distribution = distribution
 
     @classmethod
-    def create_mapping_class(cls, category_instance):
-        class NewClass(FileMapping):
-            category = category_instance
-
-        return NewClass
-
-    @classmethod
     def parse_mappings_list(cls, category_instance, dictionary_list):
-        mapping_class = cls.create_mapping_class(category_instance)
+        mapping_list = list()
 
         for dictionary in dictionary_list:
-            mapping = mapping_class.parse_mapping(dictionary)
+            mapping_list.append(cls.parse_mapping(dictionary))
 
     @classmethod
     def parse_mapping(cls, dictionary):
         return cls(**dictionary)
 
-    def is_privileged(self):  # Todo rename?!
+    def is_privileged(self) -> bool:  # Todo rename?!
         return is_root() == self.root
 
-    def is_distribution(self):  # Todo rename?!
+    def is_distribution(self) -> bool:  # Todo rename?!
         return get_dist() == self.distribution
 
     def can_setup(self):  # todo rename?!
