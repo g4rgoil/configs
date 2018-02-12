@@ -83,7 +83,7 @@ alias page='$PAGER'
 
 # Some aliases to quickly edit certain files
 alias zshrc='edit ~/.zshrc'
-alias zsh_aliases='edit ~/.zsh_aliases'
+alias zsh-aliases='edit ~/.zsh-aliases'
 alias zshenv='edit /etc/zsh/zshenv'
 alias vimrc='edit ~/.vimrc'
 alias fstab='sudo edit /etc/fstab'

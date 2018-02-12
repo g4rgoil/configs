@@ -38,6 +38,8 @@ zstyle ':completion:*:*:git:*' script /usr/share/git/completion/git-completion.z
 setopt PROMPT_SUBST
 
 export ZSH=~/.oh-my-zsh
+export UPDATE_ZSH_DAYS=7
+
 ZSH_THEME='powerlevel9k/powerlevel9k'
 plugins=(extract git vi-mode vundle wd zsh-syntax-highlighting zsh_reload)
 
