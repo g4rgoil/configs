@@ -11,6 +11,9 @@ from category import parse_json_descriptor, __repo_dir__
 __version__ = "1.0.0"
 
 
+# Todo: users option
+
+
 class SetupArgParser(ArgumentParser):
     """ This class provides an argument parser for for the setup script """
 
@@ -60,9 +63,6 @@ class SetupArgParser(ArgumentParser):
         """ Adds options for modifying the setup process """
         group = self.add_argument_group("setup options")
 
-        kwargs = dict(action="store_true", help="don't modify the filesystem")
-        group.add_argument("--dry-run", **kwargs)
-
         src_handling = group.add_mutually_exclusive_group(required=False)
         self.set_defaults(link=True)
 
@@ -93,6 +93,10 @@ class SetupArgParser(ArgumentParser):
         kwargs = dict(action="store", nargs=1, default=["old"], metavar="S",
                       help="the suffix, used when backing up files [: old]")
         group.add_argument("-s", "--suffix", **kwargs)
+
+        kwargs = dict(action="store", nargs="+", default=[], metavar="U",
+                      help="run for each of the specified users")
+        group.add_argument("--user", **kwargs)
 
     def add_subparsers(self):
         """ Adds a subparser for each category defined in self.categories """
