@@ -84,7 +84,7 @@ class CategoryCollection(object):
             yield category
 
 
-class Category(ABC):
+class Category(object):
     directory = None
 
     def __init__(self, descriptor_path: Path = None):
@@ -115,7 +115,6 @@ class Category(ABC):
             self.directories = self.parse_src_dst_dict(self.descriptor,
                                                        "directories")
 
-    @abstractmethod
     def set_up(self, namespace=None):
         self.back_up()
         self.delete()
@@ -532,7 +531,7 @@ class SetupUtils(object):
 class FileMapping(object):
     """
     Represents a mapping between a file in this repository and a file
-    another file on this system.
+    on this system.
     """
 
     def __init__(self, src, dst, category=None, distribution=None, root=False):
