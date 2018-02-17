@@ -31,6 +31,10 @@
       "dst": "~/.warprc"
     },
     {
+      "src": "yaourtrc",
+      "dst": "~/.yaourtrc"
+    },
+    {
       "src": "cleanup.hook",
       "dst": "/etc/pacman/hooks/cleanup.hook",
       "distribution": "arch",
