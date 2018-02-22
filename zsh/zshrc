@@ -41,7 +41,7 @@ export ZSH=~/.oh-my-zsh
 export UPDATE_ZSH_DAYS=7
 
 ZSH_THEME='powerlevel9k/powerlevel9k'
-plugins=(extract git vi-mode vundle wd zsh-syntax-highlighting zsh_reload)
+plugins=(extract git thefuck vi-mode vundle wd zsh-syntax-highlighting zsh_reload)
 
 # Disable powerlevel9k if in virtual console 
 if [[ "$TERM" == "linux" ]]; then
