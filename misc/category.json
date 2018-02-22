@@ -39,6 +39,10 @@
       "dst": "/etc/pacman/hooks/cleanup.hook",
       "distribution": "arch",
       "root": true
+    },
+    {
+      "src": "todo.cfg",
+      "dst": "~/.todo/config"
     }
   ],
   "directories": [

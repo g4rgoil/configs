@@ -19,7 +19,7 @@
       "dst": "~/.zsh-aliases"
     },
     {
-      "@root": true,
+      "root": true,
       "src": "zshenv",
       "dst": "/etc/zsh/zshenv"
     }
