@@ -125,4 +125,5 @@ call vundle#begin()
     Plugin 'Konfekt/FastFold'
 
     Plugin 'Valloric/YouCompleteMe'
+    Plugin 'freitass/todo.txt-vim'
 call vundle#end()
