@@ -100,3 +100,8 @@ alias fstab='sudo edit /etc/fstab'
 
 # Error Tolerance
 alias cd..='cd ..'
+
+# Some handy functions
+function mount.usb() {
+    sudo mount $1 /mnt/usb
+}
