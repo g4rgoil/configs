@@ -105,3 +105,15 @@ alias cd..='cd ..'
 function mount.usb() {
     sudo mount $1 /mnt/usb
 }
+
+function mount.hdd() {
+    sudo mount $1 /mnt/hdd
+}
+
+function umount.usb() {
+    sudo umount /mnt/usb
+}
+
+function umount.hdd() {
+    sudo umount /mnt/hdd
+}
