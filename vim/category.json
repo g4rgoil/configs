@@ -31,6 +31,10 @@
     {
       "src": "snippets",
       "dst": "~/.vim/user-snippets/UltiSnips"
+    },
+    {
+      "src": "ftdetect",
+      "dst": "~/.vim/ftdetect"
     }
   ],
   "linters": {
