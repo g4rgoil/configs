@@ -46,6 +46,10 @@
     }
   ],
   "directories": [
+    {
+      "src": "todo-actions",
+      "dst": "~/.todo.actions.d"
+    }
   ]
 }
 
