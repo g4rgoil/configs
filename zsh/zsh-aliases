@@ -67,6 +67,7 @@ alias vim='echo "Use \"e\" you idiot" && vim'
 alias svim='echo "use \"se\" you bloody idiot" && sudo vim'
 alias v='vim'
 alias sv='svim'
+alias todo='todo.sh'
 alias t='todo.sh'
 
 # Edit commands
