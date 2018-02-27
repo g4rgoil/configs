@@ -1,0 +1,39 @@
+#!/usr/bin/python
+
+import sys
+import os
+import re
+
+todo_sh = os.environ['TODO_SH']
+todo_full_sh = os.environ['TODO_FULL_SH']
+
+usage = "%s pri ITEM# [ITEM# ...] PRIORITY" % todo_sh
+
+help_msg = """  Customized pri:
+    pri ITEM# [ITEM# ...] PRIORITY
+    p ITEM# [ITEM# ...] PRIORITY
+      Adds PRIORITY to every line specified as ITEM#. If the task is
+      already prioritzed, replaces current priority with new PRIORITY.
+      PRIORITY must be a letter between A and Z.
+"""
+
+if sys.argv[1] == "usage":
+    print(help_msg)
+    sys.exit()
+
+items = sys.argv[2:-1]
+priority = sys.argv[-1]
+
+for item in items:
+    if not item.isdigit():
+        print(usage)
+        print("note: ITEM# must be a valid digit")
+        sys.exit()
+
+if not re.fullmatch("^[a-zA-Z]$", priority):
+    print(usage)
+    print("note: PRIORITY must be an alphanumerical character")
+    sys.exit()
+
+for item in items:
+    os.system("%s command pri %s %s" % (todo_full_sh, item, priority))
