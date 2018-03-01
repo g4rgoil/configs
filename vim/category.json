@@ -19,6 +19,10 @@
       "dst": "~/.gvimrc"
     },
     {
+      "src": "vimpagerrc",
+      "dst": "~/.vimpagerrc"
+    },
+    {
       "src": "ideavimrc",
       "dst": "~/.ideavimrc"
     }
