@@ -33,7 +33,7 @@ log "Starting backup procedure"
 ssh_user="pascal"
 ssh_host="pascal_desktop"
 
-if ! ping -c 1 "${TARGET_HOST}" >/dev/null 2>&1; then
+if ! ping -c 1 "${ssh_host}" >/dev/null 2>&1; then
     log_error "Unable to communicate with ssh server"
     slack_message "$(hostname): Backup failed, unable to communicate with ssh server"
     exit 2
