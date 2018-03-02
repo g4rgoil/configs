@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# TODO: Add variable for location of scripts
-
 slack_url="https://hooks.slack.com/services/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"
 script_directory="/etc/backup_scripts"
 log_directory="/var/log/backup_logs"
