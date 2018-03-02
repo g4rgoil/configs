@@ -71,8 +71,8 @@ alias todo='todo.sh'
 alias t='todo.sh'
 
 # Edit commands
-alias edit='$VISUAL'
-alias sedit='sudo $VISUAL'
+alias edit=$VISUAL
+alias sedit="sudo $VISUAL"
 alias e='edit'
 alias se='sedit'
 
@@ -82,7 +82,9 @@ alias g='gedit'
 alias sg='sgedit'
 
 alias pdf='$PDFVIEW'
-alias page='$PAGER'
+alias less=$PAGER
+alias zless=$PAGER
+alias page=$PAGER
 
 # Some aliases to quickly edit certain files
 alias zshrc='edit ~/.zshrc'
@@ -90,14 +92,6 @@ alias zsh-aliases='edit ~/.zsh-aliases'
 alias zshenv='edit /etc/zsh/zshenv'
 alias vimrc='edit ~/.vimrc'
 alias fstab='sudo edit /etc/fstab'
-
-# Some git aliasses
-# alias Gpush='git push'
-# alias Gpull='git pull'
-# alias Gcommit='git commit'
-# alias Gadd='git add'
-# alias Gstash='git stash'
-# alias Gstat='git status'
 
 # Error Tolerance
 alias cd..='cd ..'
