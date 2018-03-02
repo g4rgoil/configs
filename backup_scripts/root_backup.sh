@@ -2,52 +2,56 @@
 
 # TODO: Add variable for location of scripts
 
-SLACK_URL="https://hooks.slack.com/services/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"
-LOG_DIRECTORY="/var/log/backup_logs"
-LOG="$LOG_DIRECTORY/root.log"
+slack_url="https://hooks.slack.com/services/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"
+script_directory="/etc/backup_scripts"
+log_directory="/var/log/backup_logs"
+log="$log_directory/root.log"
+tformat="%Y-%m-%d %H:%M:%S"
 
 function timestamp() {
-    echo ["$(date '+%Y-%m-%d %H:%M:%S')"]
+    echo ["$(date "+${tformat}")"]
 }
 
 function log() {
-    echo -e "$(timestamp) $1" >> $LOG
+    echo -e "$(timestamp) $1" >> $log
 }
 
 function log_error() {
-    echo -e "$(timestamp) ERROR: $1" >> $LOG
+    echo -e "$(timestamp) ERROR: $1" >> $log
 }
 
 function slack_message() {
-    curl -X POST --data-urlencode "payload={\"text\": \"${1}\"}" ${SLACK_URL} > /dev/null 2>&1
+    curl -X POST --data-urlencode "payload={\"text\": \"${1}\"}" ${slack_url} > /dev/null 2>&1
 }
 
-if [[ ! -d ${LOG_DIRECTORY} ]]; then
-    mkdir -p ${LOG_DIRECTORY}
+if [[ ! -d ${log_directory} ]]; then
+    mkdir -p ${log_directory}
     log "Creating backup log directory"
 fi
 
+
 log "Starting backup procedure"
 
-BACKUP_MOUNT="/hdd/mybook"
+backup_mount="/hdd/mybook"
 
-if [[ ! -d ${BACKUP_MOUNT} ]]; then
+if [[ ! -d ${backup_mount} ]]; then
     log "Creating mount point for backup device"
-    mkdir -p ${BACKUP_MOUNT}
+    mkdir -p ${backup_mount}
 fi
+
 
 unmount=false
 
-if ! mountpoint -q ${BACKUP_MOUNT}; then
+if ! mountpoint -q ${backup_mount}; then
     log "Mounting backup device"
 
-    if ! mount ${BACKUP_MOUNT}; then
+    if ! mount ${backup_mount}; then
         log_error "Unable to mount backup device"
         slack_message "$(hostname): Backup failed, unable to mount backup target."
         exit 2
     fi
 
-    if ! mountpoint -q ${BACKUP_MOUNT}; then
+    if ! mountpoint -q ${backup_mount}; then
         log_error "Unable to mount backup device"
         slack_message "$(hostname): Backup failed, unable to mount backup target."
         exit 2
@@ -56,47 +60,66 @@ if ! mountpoint -q ${BACKUP_MOUNT}; then
     unmount=true
 fi
 
-BACKUP_DIR="${BACKUP_MOUNT}/Linux_Backups/desktop_arch"
 
-if [[ ! -d ${BACKUP_DIR} ]]; then
-    log "Creating backup directory on backup device"
-    mkdir -p ${BACKUP_DIR}
+backup_repo="${backup_mount}/borg-repository"
+
+if [[ ! -d "${backup_repo}" ]]; then
+    log_error "Borg repository doesn't exist"
+    slack_message "$(hostname): Backup failed, borg repository doesn't exist."
+    exit 2
 fi
 
-EXCLUDE_FILE="/etc/backup_scripts/root_backup.exclude"
-INFO="flist,stats2"
+export BORG_REPO=${backup_repo}
+export BORG_PASSCOMMAND='cat /root/borg.key'
 
-BACKUP_TARGET="${BACKUP_DIR}/desktop_arch_$(date '+%Y-%m-%d')"
 
-if [[ ! "$(ls -A ${BACKUP_DIR})" ]]; then
-    log "Creating initial backup as \"${BACKUP_TARGET}\""
-    rsync -aAHX --partial --info=${INFO} --exclude-from=${EXCLUDE_FILE} / "${BACKUP_TARGET}" | ts '[%Y-%m-%d %H:%M:%S]' >> $LOG
+log "Creating backup"
 
-else
-    if [[ -d ${BACKUP_TARGET} ]]; then
-        x=1
-        while [[ -d "${BACKUP_TARGET}_${x}" ]]; do
-            ((x++))
-        done
+exclude_file="${script_directory}/root_backup.exclude"
 
-        BACKUP_TARGET="${BACKUP_TARGET}_${x}"
-    fi
+borg create                 \
+    --warning               \
+    --stats                 \
+    --list                  \
+    --filter E              \
+    --stats                 \
+    --compression lz4       \
+    --exclude-from ${exclude_file}  \
+                            \
+    ::'{hostname}-{now}'    \
+    / 2>&1 | ts "[${tformat}]" >> $log
 
-    BACKUP_PARENT="${BACKUP_DIR}/$(ls -r1 "${BACKUP_DIR}" | head -n 1)"
+backup_exit=$?
 
-    log "Creating incremental backup as \"${BACKUP_TARGET}\" based on \"${BACKUP_PARENT}\""
-    rsync -aAHX --partial --delete --info=${INFO} --exclude-from=${EXCLUDE_FILE} --link-dest="${BACKUP_PARENT}" / "${BACKUP_TARGET}" | ts '[%Y-%m-%d %H:%M:%S]' >> $LOG
+
+log "Pruning borg repository"
+
+borg prune                  \
+    --list                  \
+    --prefix '{hostname}-'  \
+    --keep-daily    7       \
+    --keep-weekly   4       \
+    --keep-monthly  6       \
+    2>&1 | ts "[${tformat}]" >> $log
+
+prune_exit=$?
+
+
+global_exit=$(( backup_exit > prune_exit ? backup_exit : prune_exit ))
+
+if [[ ${global_exit} -eq 1 ]]; then
+    log_error "Backup or Prune exited with a warning"
+elif [[ ${global_exit} -gt 1 ]]; then
+    log_error "Backup or Prune exited with an error"
 fi
 
-for deprecated_backup in $(ls -1 "${BACKUP_DIR}" | head -n -10); do
-    log "Deleting deprecated backup \"${deprecated_backup}\""
-    rm -r "${BACKUP_DIR:?}/${deprecated_backup:?}"
-done
 
 if [[ "$unmount" = true ]]; then
     log "Unmounting backup device"
-    umount ${BACKUP_MOUNT}
+    umount ${backup_mount}
 fi
 
 log "Finishing backup procedure"
-echo "" >> $LOG
+echo "" >> $log
+
+exit ${global_exit}
