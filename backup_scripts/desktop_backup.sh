@@ -59,7 +59,7 @@ if ! mountpoint -q ${backup_mount}; then
 fi
 
 
-backup_repo="${backup_mount}/borg-repository"
+backup_repo="${backup_mount}/Borg_Backups/pascal_desktop"
 
 if [[ ! -d "${backup_repo}" ]]; then
     log_error "Borg repository doesn't exist"
@@ -68,7 +68,8 @@ if [[ ! -d "${backup_repo}" ]]; then
 fi
 
 export BORG_REPO=${backup_repo}
-export BORG_PASSCOMMAND='cat /root/borg.key'
+export BORG_PASSPHRASE=""
+export BORG_KEY_FILE="/root/.config/borg/keys/pascal_desktop"
 
 
 log "Creating backup"
@@ -84,7 +85,7 @@ borg create                 \
     --compression lz4       \
     --exclude-from ${exclude_file}  \
                             \
-    ::'{hostname}-{now}'    \
+    ::'pascal_desktop-{now}'    \
     / 2>&1 | ts "[${tformat}]" >> $log
 
 backup_exit=$?
@@ -94,7 +95,7 @@ log "Pruning borg repository"
 
 borg prune                  \
     --list                  \
-    --prefix '{hostname}-'  \
+    --prefix 'pascal_desktop-'  \
     --keep-daily    7       \
     --keep-weekly   4       \
     --keep-monthly  6       \
