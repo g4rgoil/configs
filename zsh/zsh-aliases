@@ -71,20 +71,20 @@ alias todo='todo.sh'
 alias t='todo.sh'
 
 # Edit commands
-alias edit=$VISUAL
+alias edit="$VISUAL"
 alias sedit="sudo $VISUAL"
 alias e='edit'
 alias se='sedit'
 
-alias gedit='$GRAPHICAL'
-alias sgedit='sudo $GRAPHICAL'
+alias gedit="$GRAPHICAL"
+alias sgedit="sudo $GRAPHICAL"
 alias g='gedit'
 alias sg='sgedit'
 
-alias pdf='$PDFVIEW'
-alias less=$PAGER
-alias zless=$PAGER
-alias page=$PAGER
+alias pdf="$PDFVIEW"
+alias less="$PAGER"
+alias zless="$PAGER"
+alias page="$PAGER"
 
 # Some aliases to quickly edit certain files
 alias zshrc='edit ~/.zshrc'
