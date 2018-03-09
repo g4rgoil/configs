@@ -43,6 +43,10 @@
     {
       "src": "todo.cfg",
       "dst": "~/.todo/config"
+    },
+    {
+      "src": "tobuy.cfg",
+      "dst": "~/.todo/tobuy.config"
     }
   ],
   "directories": [

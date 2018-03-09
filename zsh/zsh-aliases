@@ -68,7 +68,9 @@ alias svim='echo "use \"se\" you bloody idiot" && sudo vim'
 alias v='vim'
 alias sv='svim'
 alias todo='todo.sh'
-alias t='todo.sh'
+alias t='todo'
+alias tobuy='todo.sh -d ~/.todo/tobuy.config'
+alias tb='tobuy'
 
 # Edit commands
 alias edit="$VISUAL"
