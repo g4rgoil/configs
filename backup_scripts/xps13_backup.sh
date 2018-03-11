@@ -41,7 +41,7 @@ fi
 
 export BORG_REPO="ssh://${ssh_user}@${ssh_host}/hdd/mybook/Borg_Backups/pascal_xps13"
 export BORG_PASSPHRASE=""
-export BORG_KEY_FILE="/root/.config/borg/keys/pascal_xps13"
+export BORG_KEY_FILE="/root/.config/borg/keys/mybook_xps13"
 
 
 log "Creating backup"

@@ -69,7 +69,7 @@ fi
 
 export BORG_REPO=${backup_repo}
 export BORG_PASSPHRASE=""
-export BORG_KEY_FILE="/root/.config/borg/keys/pascal_desktop"
+export BORG_KEY_FILE="/root/.config/borg/keys/mybook_desktop"
 
 
 log "Creating backup"
