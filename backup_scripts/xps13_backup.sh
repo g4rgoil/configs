@@ -46,7 +46,7 @@ export BORG_KEY_FILE="/root/.config/borg/keys/mybook_xps13"
 
 log "Creating backup"
 
-exclude_file="${script_directory}/root_backup.exclude"
+exclude_file="${script_directory}/root.exclude"
 
 borg create                 \
     --warning               \
@@ -70,7 +70,7 @@ borg prune                  \
     --prefix 'pascal_xps13-'       \
     --keep-daily    7       \
     --keep-weekly   4       \
-    --keep-monthly  6       \
+    --keep-monthly  12      \
     2>&1 | ts "[${tformat}]" >> $log
 
 prune_exit=$?

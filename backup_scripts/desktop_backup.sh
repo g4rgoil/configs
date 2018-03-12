@@ -43,13 +43,7 @@ unmount=false
 if ! mountpoint -q ${backup_mount}; then
     log "Mounting backup device"
 
-    if ! mount ${backup_mount}; then
-        log_error "Unable to mount backup device"
-        slack_message "$(hostname): Backup failed, unable to mount backup target."
-        exit 2
-    fi
-
-    if ! mountpoint -q ${backup_mount}; then
+    if ! mount ${backup_mount} || ! mountpoint -q ${backup_mount}; then
         log_error "Unable to mount backup device"
         slack_message "$(hostname): Backup failed, unable to mount backup target."
         exit 2
@@ -74,7 +68,7 @@ export BORG_KEY_FILE="/root/.config/borg/keys/mybook_desktop"
 
 log "Creating backup"
 
-exclude_file="${script_directory}/root_backup.exclude"
+exclude_file="${script_directory}/root.exclude"
 
 borg create                 \
     --warning               \
@@ -98,7 +92,7 @@ borg prune                  \
     --prefix 'pascal_desktop-'  \
     --keep-daily    7       \
     --keep-weekly   4       \
-    --keep-monthly  6       \
+    --keep-monthly  12      \
     2>&1 | ts "[${tformat}]" >> $log
 
 prune_exit=$?
