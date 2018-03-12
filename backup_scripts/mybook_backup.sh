@@ -1,113 +1,120 @@
 #!/bin/bash
 
-SLACK_URL="https://hooks.slack.com/services/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"
-LOG_DIRECTORY="/var/log/backup_logs"
-LOG="${LOG_DIRECTORY}/mybook.log"
+slack_url="https://hooks.slack.com/services/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"
+script_directory="/etc/backup_scripts"
+log_directory="/var/log/backup_logs"
+log="$log_directory/mybook.log"
+tformat="%Y-%m-%d %H:%M:%S"
 
 function timestamp() {
-    echo ["$(date '+%Y-%m-%d %H:%M:%S')"]
+    echo ["$(date "+${tformat}")"]
 }
 
 function log() {
-    echo -e "$(timestamp) $1" >> $LOG
+    echo -e "$(timestamp) $1" >> $log
 }
 
 function log_error() {
-    echo -e "$(timestamp) ERROR: $1" >> $LOG
+    echo -e "$(timestamp) ERROR: $1" >> $log
 }
 
 function slack_message() {
-    curl -X POST --data-urlencode "payload={\"text\": \"${1}\"}" ${SLACK_URL} > /dev/null 2>&1
+    curl -X POST --data-urlencode "payload={\"text\": \"${1}\"}" ${slack_url} > /dev/null 2>&1
 }
 
-if [[ ! -d  ${LOG_DIRECTORY} ]]; then
-    mkdir ${LOG_DIRECTORY}
+if [[ ! -d ${log_directory} ]]; then
+    mkdir -p ${log_directory}
+    log "Creating backup log directory"
 fi
 
-if [[ ! -e ${LOG} ]]; then
-    touch ${LOG}
-    log "Creating log file for backup"
+
+log "Starting backup procedure"
+
+ssh_user="pascal"
+ssh_host="192.168.3.47"
+
+if ! ping -c 1 "${ssh_host}" >/dev/null 2>&1; then
+    log_error "Unable to communicate with ssh server"
+    slack_message "$(hostname):" \
+        "Backup failed, unable to communicate with ssh server"
+    exit 2
 fi
 
-log "Beginning backup procedure"
-slack_message "MyBook Backup: Starting Backup"
-TARGET_HOST="optiplex"  # 192.168.100.200 
 
+backup_src="/hdd/mybook"
 
-
-
-if ! ping -c 1 ${TARGET_HOST} > /dev/null 2>&1; then
-    log_error "Unable to communicate with target host"
-    slack_message "MyBook Backup: Failed, can't connect to target host"
-    exit 1
+if [[ ! -d ${backup_src} ]]; then
+    log "Creating mount point for mybook"
+    mkdir -p ${backup_src}
 fi
 
-BACKUP_MOUNT="/mnt/optiplex"
+unmount=false
 
-if [[ ! -d ${BACKUP_MOUNT} ]]; then
-    log "Creating mount point for target device"
-    mkdir -p ${BACKUP_MOUNT}
-fi
+if ! mountpoint -q ${backup_src}; then
+    log "Mounting mybook"
 
-unmount_target=false
-
-if ! mountpoint -q ${BACKUP_MOUNT}; then
-    log "Mounting target device"
-    
-
-    if ! mount ${BACKUP_MOUNT}; then
-        log_error "Unable to mount target device"
-        slack_message "MyBook Backup: Failed, can't mount target device"
+    if ! mount ${backup_src} || ! mountpoint -q ${backup_src}; then
+        log_error "Unable to mount mybook"
+        slack_message "$(hostname): Backup failed, unable to mount mybook."
         exit 2
     fi
 
-    unmount_target=true
+    unmount=true
 fi
 
-BACKUP_TARGET="${BACKUP_MOUNT}/mybook_backup"
-BACKUP_SOURCE="/hdd/mybook/"
 
-if [ ! -d ${BACKUP_TARGET} ]; then
-    log "Creating backup directory on target_device"
-    mkdir -p ${BACKUP_TARGET}
+export BORG_REPO="ssh://${ssh_user}@${ssh_host}/pool/pascal/borg-repository"
+export BORG_PASSPHRASE=""
+export BORG_KEY_FILE="/root/.config/borg/keys/zfsnas_mybook"
+
+log "Creating backup"
+
+exclude_file="${script_directory}/mybook.exclude"
+
+borg create                 \
+    --warning               \
+    --stats                 \
+    --list                  \
+    --filter E              \
+    --stats                 \
+    --compression zlib,5    \
+    --exclude-from ${exclude_file}  \
+                            \
+    ::'mybook-{now}'        \
+    ${backup_src}           \
+    2>&1 | ts "[${tformat}]" >> $log
+
+backup_exit=$?
+
+
+log "Pruning borg repository"
+
+borg prune                  \
+    --list                  \
+    --prefix 'mybook-'      \
+    --keep-daily    7       \
+    --keep-weekly   4       \
+    --keep-monthly  12      \
+    2>&1 | ts "[${tformat}]" >> $log
+
+prune_exit=$?
+
+
+global_exit=$(( backup_exit > prune_exit ? backup_exit : prune_exit ))
+
+if [[ ${global_exit} -eq 1 ]]; then
+    log_error "Backup or Prune exited with a warning"
+elif [[ ${global_exit} -gt 1 ]]; then
+    log_error "Backup or Prune exited with an error"
 fi
 
-unmount_source=false
 
-if ! mountpoint -q ${BACKUP_SOURCE} ; then
-    log "Mounting mybook for backup"
-    
-    if ! mount ${BACKUP_SOURCE}; then
-        log_error "Unable to mount mybook"
-        slack_message "MyBook Backup: Failed, can't mount mybook"
-        exit 3
-    fi
-
-    unmount_source=true
-fi
-
-for source_dir in Linux_Backups; do
-    BACKUP_SOURCE_DIR="${BACKUP_SOURCE}/${source_dir}"
-    BACKUP_TARGET_ARCHIVE="${BACKUP_TARGET}/${source_dir}.tar.gz"
-
-    tar -c --use-compress-program="pigz -2" ${BACKUP_SOURCE_DIR} > ${BACKUP_TARGET_ARCHIVE}
-done
-
-
-# TODO: Create backup for Linux Backups directory <18-10-17, pascal> #
-# TODO: Create backup for Game Save directory <18-10-17, pascal> #
-
-if [[ "$unmount_source" = true ]]; then
-    log "Unmounting mybook"
-    unmount ${BACKUP_SOURCE}
-fi
-
-if [[ "$unmount_target" = true ]]; then
-    log "Unmounting target device"
-    umount ${BACKUP_MOUNT}
+if [[ "$unmount" = true ]]; then
+    log "Unmounting backup device"
+    umount ${backup_src}
 fi
 
 log "Finishing backup procedure"
-slack_message "MyBook Backup: Backup succesful"
-echo "" >> ${LOG}
+echo "" >> $log
 
+exit ${global_exit}
