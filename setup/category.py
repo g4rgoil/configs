@@ -5,16 +5,14 @@
 import json
 import shlex
 import shutil
-import inspect
-import os as _os
-import re as _re
-import sys as _sys
+import os
+import re
+import sys
 
-from abc import ABC, abstractmethod
 from argparse import ArgumentParser, HelpFormatter, ZERO_OR_MORE
 from pathlib import Path
 from subprocess import CompletedProcess, DEVNULL, run
-from typing import Tuple, List, Dict, Callable
+from typing import List
 
 __version__ = "1.1.0"
 
@@ -32,7 +30,7 @@ def require_repo_dir(name) -> Path:
 
 
 def is_root() -> bool:
-    return _os.getuid() == 0
+    return os.getuid() == 0
 
 
 def require_root(func):
@@ -51,7 +49,7 @@ def get_dist():
     """ Returns the name of the linux distribution on this system or None """
     with open("/etc/os-release", "r") as file:
         for line in file.read().splitlines():
-            if _re.match("^ID=", line):
+            if re.match("^ID=", line):
                 return line.lstrip("ID=")
 
     return None
@@ -92,8 +90,8 @@ class Category(object):
         self.src_dir = None
         self.descriptor = None
 
-        self.files = dict()
-        self.directories = dict()
+        self.files = list()
+        self.directories = list()
         self.install_dict = dict()
 
         self.parser = None
@@ -111,9 +109,9 @@ class Category(object):
         if self.descriptor is not None:
             self.name = self.descriptor["category"]["name"]
 
-            self.files = self.parse_src_dst_dict(self.descriptor, "files")
-            self.directories = self.parse_src_dst_dict(self.descriptor,
-                                                       "directories")
+            self.files = self.parse_file_mapping_list(self.descriptor["files"])
+            self.directories = self.parse_file_mapping_list(
+                self.descriptor["directories"])
 
     def set_up(self, namespace=None):
         self.back_up()
@@ -129,31 +127,37 @@ class Category(object):
         #               help=descriptor["help"], version=descriptor["version"])
         self.parser = subparsers.add_parser(self.name, **descriptor["parser"])
 
-    def parse_src_dst_dict(self, json_descriptor, name) -> Dict[Path, Path]:
-        target_dict = dict()
+    def parse_file_mapping_list(self, dictionary_list):
+        return [self.parse_file_mapping(d) for d in dictionary_list]
 
-        for item in json_descriptor[name]:
-            src = Path(self.src_dir, item["src"]).expanduser()
-            dst = Path(item["dst"]).expanduser()
+    def parse_file_mapping(self, dictionary):
+        dictionary["src"] = Path(self.src_dir, dictionary["src"]).expanduser()
+        dictionary["dst"] = Path(dictionary["dst"]).expanduser()
 
-            target_dict[src] = dst
+        try:
+            mapping = FileMapping(**dictionary)
+        except ValueError as e:
+            self.utils.error("Failed to parse mapping %s: %s"
+                             % (dictionary, str(e)))
+            # sys.exit(2)
+            raise e
 
-        return target_dict
+        return mapping
 
     def create_utils(self, namespace=None):
         self.utils = SetupUtils(namespace)
 
     def link(self):
-        self._link_files()
-        self._link_directories()
+        for mapping in self.files + self.directories:
+            self.utils.try_execute(lambda: mapping.link(self.utils))
 
     def back_up(self):
-        self._backup_files()
-        self._backup_directories()
+        for mapping in self.files + self.directories:
+            self.utils.try_execute(lambda: mapping.backup_dst(self.utils))
 
     def delete(self):
-        self._delete_files()
-        self._delete_directories()
+        for mapping in self.files + self.directories:
+            self.utils.try_execute(lambda: mapping.delete_dst(self.utils))
 
     def install(self, keys):
         if "all" in keys:
@@ -167,34 +171,6 @@ class Category(object):
                 self.install_dict[key]()
             except PermissionError as e:
                 self.utils.error("Install %s:" % key, str(e))
-
-    def _get_methods_by_prefix(self, prefix) -> List[Tuple[str, Callable]]:
-        return [m for m in inspect.getmembers(self, predicate=inspect.ismethod)
-                if m[0].startswith(prefix)]
-
-    def _link_files(self):
-        for src, dst in self.files.items():
-            self.utils.try_execute(lambda: self.utils.symlink(src, dst))
-
-    def _link_directories(self):
-        for src, dst in self.directories.items():
-            self.utils.try_execute(lambda: self.utils.symlink(src, dst))
-
-    def _backup_files(self):
-        for dst_file in self.files.values():
-            self.utils.try_execute(lambda: self.utils.backup_file(dst_file))
-
-    def _backup_directories(self):
-        for dst_dir in self.directories.values():
-            self.utils.try_execute(lambda: self.utils.backup_file(dst_dir))
-
-    def _delete_files(self):
-        for dst_file in self.files.values():
-            self.utils.try_execute(lambda: self.utils.delete_file(dst_file))
-
-    def _delete_directories(self):
-        for dst_dir in self.directories.values():
-            self.utils.try_execute(lambda: self.utils.delete_file(dst_dir))
 
 
 class CategoryAll(Category):
@@ -425,7 +401,7 @@ class SetupUtils(object):
 
         dst = src.with_suffix(self.suffix)
         self.print_move(src, dst)
-        _os.rename(str(src), str(dst))
+        os.rename(str(src), str(dst))
 
     def delete_file(self, file: Path) -> None:
         if not self.delete:
@@ -507,7 +483,7 @@ class SetupUtils(object):
 
     def error(self, *args, **kwargs):
         """ This method might be reassigned in the constructor """
-        print("setup.py:", *args, file=_sys.stderr, **kwargs)
+        print("setup.py:", *args, file=sys.stderr, **kwargs)
 
     def print_create_symlink(self, src, dst):
         self.print("Creating link: '%s' -> '%s'" % (str(dst), str(src)))
@@ -534,7 +510,9 @@ class FileMapping(object):
     on this system.
     """
 
-    def __init__(self, src, dst, category=None, distribution=None, root=False):
+    utils = SetupUtils()
+
+    def __init__(self, src: Path, dst: Path, root=False, distribution=None):
         """
         :param src: the absolute path to the file in the repository
         :param dst: the absolute path to the file on the system
@@ -542,47 +520,45 @@ class FileMapping(object):
         :param distribution: the (list of) linux distribution(s) the
                              file is used on
         """
-        if category is None:
-            self.category = Category()
-        else:
-            self.category = category
-
         self.src = src
         self.dst = dst
         self.root = root
-        self.distribution = distribution
+        self.distributions = list()
+
+        if type(distribution) is str:
+            self.distributions.append(distribution)
+        elif type(distribution) is list:
+            self.distributions.extend(distribution)
+        elif distribution is not None:
+            raise ValueError("Distribution must be either string or list")
+
+    def __repr__(self):
+        return "FileMapping(src='%s', dst='%s')" % (self.src, self.dst)
 
     @classmethod
-    def parse_mappings_list(cls, category_instance, dictionary_list):
-        mapping_list = list()
+    def require_utils(cls, utils: SetupUtils) -> SetupUtils:
+        return utils if utils is not None else cls.utils
 
-        for dictionary in dictionary_list:
-            mapping_list.append(cls.parse_mapping(dictionary))
-
-    @classmethod
-    def parse_mapping(cls, dictionary):
-        return cls(**dictionary)
-
-    def is_privileged(self) -> bool:  # Todo rename?!
+    def is_privileged(self) -> bool:
         return is_root() == self.root
 
-    def is_distribution(self) -> bool:  # Todo rename?!
-        return get_dist() == self.distribution
+    def is_distribution(self) -> bool:
+        return get_dist() in self.distributions or not self.distributions
 
-    def can_setup(self):  # todo rename?!
+    def can_setup(self):
         return self.is_privileged() and self.is_distribution()
 
-    def link(self):
+    def link(self, utils=None):
         if self.can_setup():
-            self.category.utils.symlink(self.src, self.dst)
+            self.require_utils(utils).symlink(self.src, self.dst)
 
-    def delete_dst(self):
+    def delete_dst(self, utils=None):
         if self.can_setup():
-            self.category.utils.delete_file(self.dst)
+            self.require_utils(utils).delete_file(self.dst)
 
-    def backup_dst(self):
+    def backup_dst(self, utils=None):
         if self.can_setup():
-            self.category.utils.backup_file(self.dst)
+            self.require_utils(utils).backup_file(self.dst)
 
 
 class CategorySubParser(ArgumentParser):
@@ -600,7 +576,6 @@ class CategorySubParser(ArgumentParser):
         self.add_argument("--version", **kwargs)
 
     def add_install_action(self, group=None, choices=None, help=None):
-        choices = dict() if choices is None else choices
         group = self if group is None else group
 
         kwargs = dict(nargs="*", action="store", default=[], metavar="args",

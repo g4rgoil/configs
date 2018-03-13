@@ -24,7 +24,10 @@ class SetupArgParser(ArgumentParser):
         super().__init__(**self.descriptor["parser"],
                          formatter_class=MyHelpFormatter)
 
-        self.categories = CategoryCollection()
+        try:
+            self.categories = CategoryCollection()
+        except ValueError:
+            self.exit(2)
 
         self.add_optional_arguments()
         self.add_setup_options()
@@ -37,6 +40,7 @@ class SetupArgParser(ArgumentParser):
             category = self.categories[namespace.category_name]
             category.create_utils(namespace)
             category.set_up(namespace)
+
         else:
             self.print_usage()
 
