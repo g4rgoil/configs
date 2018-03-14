@@ -15,7 +15,7 @@
       "dst": "~/.latexmkrc"
     },
     {
-      "src": "neofetch-config",
+      "src": "neofetch.cfg",
       "dst": "~/.neofetch-config"
     },
     {
