@@ -19,7 +19,8 @@ function log_error() {
 }
 
 function slack_message() {
-    curl -X POST --data-urlencode "payload={\"text\": \"${1}\"}" ${slack_url} > /dev/null 2>&1
+    curl -X POST --data-urlencode "payload={\"text\": \"${1}\"}" \
+        ${slack_url} > /dev/null 2>&1
 }
 
 if [[ ! -d ${log_directory} ]]; then
@@ -29,6 +30,7 @@ fi
 
 
 log "Starting backup procedure"
+slack_message "$(hostname): Starting weekly mybook backup"
 
 ssh_user="pascal"
 ssh_host="192.168.3.47"
@@ -115,6 +117,7 @@ if [[ "$unmount" = true ]]; then
 fi
 
 log "Finishing backup procedure"
+slack_message "$(hostname): Finished weekly mybook backup"
 echo "" >> $log
 
 exit ${global_exit}
