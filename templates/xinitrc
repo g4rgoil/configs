@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# LightDM wrapper to run around X sessions.
+# Wrapper to run around X sessions (adopted from LightDm).
 
 echo "Running X session wrapper"
 
