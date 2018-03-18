@@ -76,6 +76,9 @@ function finish() {
 
 trap finish EXIT
 
+trap 'trap "" EXIT; log_error "The backup was interrupted by a signal\n"' \
+    HUP INT QUIT TERM
+
 
 if [[ ! -d $log_directory ]]; then
     log "Creating backup log directory"
