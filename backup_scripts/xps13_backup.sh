@@ -78,8 +78,13 @@ trap finish EXIT
 
 
 if [[ ! -d $log_directory ]]; then
-    mkdir -p $log_directory
     log "Creating backup log directory"
+    mkdir -p $log_directory
+fi
+
+if [[ ! -d $spool_directory ]]; then
+    log "Creating spool directory"
+    mkdir -p $spool_directory
 fi
 
 
