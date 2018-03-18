@@ -55,7 +55,7 @@ function add_scheduling() {
     remove_scheduling
 
     mkdir -p "$spool_directory"
-    echo "/bin/bash $script_file" |    \
+    echo "/bin/bash $script_file" | \
         at now + 1 hour 2>&1 |      \
         tail -1 |                   \
         cut -f2 -d" " >             \
@@ -96,7 +96,7 @@ if [[ -f $spool_ts_file ]]; then
     touch -d "$min_backup_interval" "$time_reference_file"
 
     if [[ $spool_ts_file -nt $time_reference_file ]]; then
-        log_error "Attempting backup to soon after previous one"
+        log_error "Attempting backup to soon after previous backup"
 
         exit 1
     fi
@@ -135,7 +135,7 @@ backup_exit=$?
 log "Pruning borg repository"
 
 borg prune                      \
-    --list                      \
+    --warning                   \
     --prefix 'pascal_xps13-'    \
     --keep-daily    7           \
     --keep-weekly   4           \
