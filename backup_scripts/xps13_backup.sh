@@ -1,91 +1,150 @@
 #!/bin/bash
 
 slack_url="https://hooks.slack.com/services/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"
-script_directory="/etc/backup_scripts"
-log_directory="/var/log/backup_logs"
-log="$log_directory/root.log"
 tformat="%Y-%m-%d %H:%M:%S"
 
-function timestamp() {
-    echo ["$(date "+${tformat}")"]
-}
+script_directory="/etc/backup_scripts"
+script_file="${script_directory}/xps13_backup.sh"
+exclude_file="${script_directory}/root.exclude"
 
-function log() {
-    echo -e "$(timestamp) $1" >> $log
-}
+log_directory="/var/log/backup_logs"
+log_file="${log_directory}/root.log"
 
-function log_error() {
-    echo -e "$(timestamp) ERROR: $1" >> $log
-}
+spool_directory="/var/spool/backups"
+spool_job_file="${spool_directory}/xps13_job"
+spool_ts_file="${spool_directory}/xps13_ts"
 
-function slack_message() {
-    curl -X POST --data-urlencode "payload={\"text\": \"${1}\"}" ${slack_url} > /dev/null 2>&1
-}
-
-if [[ ! -d ${log_directory} ]]; then
-    mkdir -p ${log_directory}
-    log "Creating backup log directory"
-fi
-
-
-log "Starting backup procedure"
+min_backup_interval="-6 hours"
+time_reference_file=$(mktemp)
 
 ssh_user="root"
 ssh_host="pascal_desktop"
-
-if ! ping -c 1 "${ssh_host}" >/dev/null 2>&1; then
-    log_error "Unable to communicate with ssh server"
-    slack_message "$(hostname): Backup failed, unable to communicate with ssh server"
-    exit 2
-fi
 
 export BORG_REPO="ssh://${ssh_user}@${ssh_host}/hdd/mybook/Borg_Backups/pascal_xps13"
 export BORG_PASSPHRASE=""
 export BORG_KEY_FILE="/root/.config/borg/keys/mybook_xps13"
 
 
+function slack_message() {
+    curl -X POST --data-urlencode "payload={'text': '$(hostname): ${1}'}" \
+        $slack_url >/dev/null 2>&1
+}
+
+function timestamp() {
+    ts "[${tformat}]" >> $log_file
+}
+
+function log() {
+    echo "$1" | timestamp
+}
+
+function log_error() {
+    log "ERROR: $1"
+}
+
+
+function remove_scheduling() {
+    if [[ -f "$spool_job_file" ]]; then
+        job_id=$(<$spool_job_file)
+        at -r "$job_id" >/dev/null 2>&1
+        rm "$spool_job_file" >/dev/null 2>&1
+    fi
+}
+
+function add_scheduling() {
+    remove_scheduling
+
+    mkdir -p "$spool_directory"
+    echo "/bin/bash $script_file" |    \
+        at now + 1 hour 2>&1 |      \
+        tail -1 |                   \
+        cut -f2 -d" " >             \
+        $spool_job_file
+}
+
+
+function finish() {
+    exit_code=$?
+
+    if [[ $exit_code -eq 0 ]]; then
+        date +%Y%m%d%H%M > $spool_ts_file
+    fi
+    
+    log "Finishing backup procedure"
+    log ""
+}
+
+trap finish EXIT
+
+
+if [[ ! -d $log_directory ]]; then
+    mkdir -p $log_directory
+    log "Creating backup log directory"
+fi
+
+
+log "Starting backup procedure"
+
+
+if [[ -f $spool_ts_file ]]; then
+    touch -t "$(<$spool_ts_file)" $spool_ts_file
+    touch -d "$min_backup_interval" "$time_reference_file"
+
+    if [[ $spool_ts_file -nt $time_reference_file ]]; then
+        log_error "Attempting backup to soon after previous one"
+
+        exit 1
+    fi
+fi
+
+
+if ! ping -c 1 $ssh_host >/dev/null 2>&1; then
+    log_error "Unable to communicate with ssh server"
+    log "Scheduling backup to be rerun later"
+
+    slack_message "$(hostname): Backup failed, unable to communicate with ssh server. Scheduling backup to be rerun."
+
+    add_scheduling
+    exit 2
+fi
+
+remove_scheduling
+
+
 log "Creating backup"
 
-exclude_file="${script_directory}/root.exclude"
 
-borg create                 \
-    --warning               \
-    --stats                 \
-    --list                  \
-    --filter E              \
-    --stats                 \
-    --compression lz4       \
-    --exclude-from ${exclude_file}  \
-                            \
-    ::'pascal_xps13-{now}'  \
-    / 2>&1 | ts "[${tformat}]" >> $log
+borg create                     \
+    --warning                   \
+    --filter E                  \
+    --compression lz4           \
+    --exclude-from $exclude_file    \
+    --exclude-caches            \
+                                \
+    ::'pascal_xps13-{now}'      \
+    / 2>&1 | timestamp
 
 backup_exit=$?
 
 
 log "Pruning borg repository"
 
-borg prune                  \
-    --list                  \
-    --prefix 'pascal_xps13-'       \
-    --keep-daily    7       \
-    --keep-weekly   4       \
-    --keep-monthly  12      \
-    2>&1 | ts "[${tformat}]" >> $log
+borg prune                      \
+    --list                      \
+    --prefix 'pascal_xps13-'    \
+    --keep-daily    7           \
+    --keep-weekly   4           \
+    --keep-monthly  12          \
+    2>&1 | timestamp
 
 prune_exit=$?
 
 
-global_exit=$(( backup_exit > prune_exit ? backup_exit : prune_exit ))
+borg_exit=$(( backup_exit > prune_exit ? backup_exit : prune_exit ))
 
-if [[ ${global_exit} -eq 1 ]]; then
-    log_error "Backup or Prune exited with a warning"
-elif [[ ${global_exit} -gt 1 ]]; then
-    log_error "Backup or Prune exited with an error"
+if [[ $borg_exit -gt 0 ]]; then
+    log_error "Borg exited with non-zero exit code $borg_exit"
+    exit 3
 fi
 
-
-log "Finishing backup procedure"
-echo "" >> $log
-
-exit ${global_exit}
+exit 0
