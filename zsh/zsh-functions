@@ -1,0 +1,48 @@
+#
+# ~/.zsh-functions
+#
+
+
+usb_mount="/mnt/usb"
+hdd_mount="/mnt/hdd"
+mapper_usb="/dev/mapper/usb"
+mapper_hdd="/dev/mapper/hdd"
+
+
+function mount.usb() {
+    sudo mount $1 $usb_mount
+}
+
+function mount.hdd() {
+    sudo mount $1 $hdd_mount
+}
+
+function umount.usb() {
+    sudo umount $usb_mount
+}
+
+function umount.hdd() {
+    sudo umount $hdd_mount
+}
+
+function luksOpen.usb() {
+    if sudo cryptsetup luksOpen $1 usb; then
+        sudo mount $mapper_usb $usb_mount
+    fi
+}
+
+function luksOpen.hdd() {
+    if sudo cryptsetup luksOpen $1 hdd; then
+        sudo mount $mapper_hdd $hdd_mount
+    fi
+}
+
+function luksClose.usb() {
+    sudo umount $usb_mount
+    sudo cryptsetup luksClose usb
+}
+
+function luksClose.hdd() {
+    sudo umount $hdd_mount
+    sudo cryptsetup luksClose hdd
+}

@@ -1,6 +1,7 @@
 #
-# ~/zsh_aliases
+# ~/.zsh_aliases
 #
+
 
 # Some pacman aliasses
 alias update='yaourt -Syua'
@@ -97,20 +98,3 @@ alias fstab='sudo edit /etc/fstab'
 
 # Error Tolerance
 alias cd..='cd ..'
-
-# Some handy functions
-function mount.usb() {
-    sudo mount $1 /mnt/usb
-}
-
-function mount.hdd() {
-    sudo mount $1 /mnt/hdd
-}
-
-function umount.usb() {
-    sudo umount /mnt/usb
-}
-
-function umount.hdd() {
-    sudo umount /mnt/hdd
-}

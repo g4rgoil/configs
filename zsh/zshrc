@@ -119,6 +119,11 @@ if [[ -f ~/.zsh-aliases ]]; then
     source ~/.zsh-aliases
 fi
 
+# Source user specific functions from ~/.zsh_functions
+if [[ -f ~/.zsh-aliases ]]; then
+    source ~/.zsh-aliases
+fi
+
 # Start the ssh-agent if it is not already running
 # !! IMPORTANT: Add "AddKeysToAgent yes" to ~/.ssh/config !!
 if ! pgrep -u "$USER" ssh-agent > /dev/null; then

@@ -18,6 +18,9 @@
       "src": "zsh-aliases",
       "dst": "~/.zsh-aliases"
     },
+    { "src": "zsh-functions",
+      "dst": "~/.zsh-functions"
+    },
     {
       "root": true,
       "src": "zshenv",
