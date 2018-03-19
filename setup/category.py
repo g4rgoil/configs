@@ -139,7 +139,6 @@ class Category(object):
         except ValueError as e:
             self.utils.error("Failed to parse mapping %s: %s"
                              % (dictionary, str(e)))
-            # sys.exit(2)
             raise e
 
         return mapping
@@ -193,8 +192,8 @@ class CategoryAll(Category):
 
         group = self.parser.add_argument_group("all specific options")
 
-        help = "values to pass to the install action of each category. For " \
-               " available values consult the help message for each category"
+        help = "values to pass to the install action of each category; for " \
+               "available values consult the help message for each category"
         self.parser.add_install_action(group=group, help=help)
 
 
@@ -540,7 +539,7 @@ class FileMapping(object):
         return utils if utils is not None else cls.utils
 
     def is_privileged(self) -> bool:
-        return is_root() == self.root
+        return is_root() >= self.root
 
     def is_distribution(self) -> bool:
         return get_dist() in self.distributions or not self.distributions
