@@ -11,8 +11,8 @@ log_directory="/var/log/backup_logs"
 log_file="${log_directory}/root.log"
 
 spool_directory="/var/spool/backups"
-spool_job_file="${spool_directory}/xps13_job"
 spool_ts_file="${spool_directory}/xps13_ts"
+spool_job_file="${spool_directory}/xps13_job"
 
 min_backup_interval="-6 hours"
 time_reference_file=$(mktemp)
