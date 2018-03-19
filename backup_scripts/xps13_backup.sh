@@ -35,11 +35,15 @@ function timestamp() {
 }
 
 function log() {
-    echo "$1" | timestamp
+    echo -e "$1" | timestamp
 }
 
 function log_error() {
     log "ERROR: $1"
+}
+
+function blank_line() {
+    echo "" >> $log_file
 }
 
 
@@ -71,12 +75,17 @@ function finish() {
     fi
     
     log "Finishing backup procedure"
-    log ""
+    blank_line
+}
+
+function terminate() {
+    log_error "The backup procedure was terminated by a signal"
+    blank_line
 }
 
 trap finish EXIT
 
-trap 'trap "" EXIT; log_error "The backup was interrupted by a signal\n"' \
+trap 'trap "" EXIT; terminate' \
     HUP INT QUIT TERM
 
 
