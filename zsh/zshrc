@@ -120,8 +120,8 @@ if [[ -f ~/.zsh-aliases ]]; then
 fi
 
 # Source user specific functions from ~/.zsh_functions
-if [[ -f ~/.zsh-aliases ]]; then
-    source ~/.zsh-aliases
+if [[ -f ~/.zsh-functions ]]; then
+    source ~/.zsh-functions
 fi
 
 # Start the ssh-agent if it is not already running
