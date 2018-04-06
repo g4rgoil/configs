@@ -5,6 +5,7 @@
 
 usb_mount="/mnt/usb"
 hdd_mount="/mnt/hdd"
+tmp_mount="/mnt/tmp"
 mapper_usb="/dev/mapper/usb"
 mapper_hdd="/dev/mapper/hdd"
 
@@ -17,12 +18,20 @@ function mount.hdd() {
     sudo mount $1 $hdd_mount
 }
 
+function mount.tmp() {
+    sudo mount $1 $tmp_mount
+}
+
 function umount.usb() {
     sudo umount $usb_mount
 }
 
 function umount.hdd() {
     sudo umount $hdd_mount
+}
+
+function umount.tmp() {
+    sudo umount $tmp_mount
 }
 
 function luksOpen.usb() {
