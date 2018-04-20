@@ -56,8 +56,6 @@ function remove_scheduling() {
 }
 
 function add_scheduling() {
-    remove_scheduling
-
     mkdir -p "$spool_directory"
     echo "/bin/bash $script_file" | \
         at now + 1 hour 2>&1 |      \
@@ -99,6 +97,7 @@ if [[ ! -d $spool_directory ]]; then
     mkdir -p $spool_directory
 fi
 
+remove_scheduling
 
 log "Starting backup procedure"
 
@@ -124,8 +123,6 @@ if ! ping -c 1 $ssh_host >/dev/null 2>&1; then
     add_scheduling
     exit 2
 fi
-
-remove_scheduling
 
 
 log "Creating backup"
