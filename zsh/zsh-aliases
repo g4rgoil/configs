@@ -72,6 +72,7 @@ alias todo='todo.sh'
 alias t='todo'
 alias tobuy='todo.sh -d ~/.todo/tobuy.config'
 alias tb='tobuy'
+alias tailf='tail -f'
 
 # Edit commands
 alias edit="$VISUAL"
