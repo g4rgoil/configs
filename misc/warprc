@@ -2,13 +2,7 @@ home:~
 documents:~/Documents
 downloads:~/Downloads
 dropbox:~/Dropbox
-studium:~/University
-prog:~/University/prog
-pse:~/University/pse
-tgi:~/University/tgi
-os:~/University/os
-ro:~/University/ro
-stoch:~/University/stoch
+uni:~/University
 configs:~/repositories/configs
 repositories:~/repositories
 media:/hdd/media
@@ -22,3 +16,6 @@ nfs:/mnt/nfs
 todo:~/MEGA/todo
 mega:~/MEGA
 hdd:/mnt/hdd
+dbs:~/University/dbs
+eir:~/University/eir
+pse:~/University/pse
