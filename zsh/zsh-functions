@@ -36,22 +36,22 @@ function umount.tmp() {
 
 function luksMount.usb() {
     if sudo cryptsetup luksOpen $1 usb; then
-        sudo mount $mapper_usb $usb_mount
+        mount.usb $mapper_usb
     fi
 }
 
 function luksMount.hdd() {
     if sudo cryptsetup luksOpen $1 hdd; then
-        sudo mount $mapper_hdd $hdd_mount
+        mount.hdd $mapper_hdd
     fi
 }
 
 function luksUmount.usb() {
-    sudo umount $usb_mount
+    umount.usb
     sudo cryptsetup luksClose usb
 }
 
 function luksUmount.hdd() {
-    sudo umount $hdd_mount
+    umount.hdd
     sudo cryptsetup luksClose hdd
 }
