@@ -34,24 +34,24 @@ function umount.tmp() {
     sudo umount $tmp_mount
 }
 
-function luksOpen.usb() {
+function luksMount.usb() {
     if sudo cryptsetup luksOpen $1 usb; then
         sudo mount $mapper_usb $usb_mount
     fi
 }
 
-function luksOpen.hdd() {
+function luksMount.hdd() {
     if sudo cryptsetup luksOpen $1 hdd; then
         sudo mount $mapper_hdd $hdd_mount
     fi
 }
 
-function luksClose.usb() {
+function luksUmount.usb() {
     sudo umount $usb_mount
     sudo cryptsetup luksClose usb
 }
 
-function luksClose.hdd() {
+function luksUmount.hdd() {
     sudo umount $hdd_mount
     sudo cryptsetup luksClose hdd
 }
