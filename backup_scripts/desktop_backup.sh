@@ -17,10 +17,9 @@ min_backup_interval="-6 hours"
 time_reference_file=$(mktemp)
 
 backup_mount="/hdd/mybook"
-backup_repo="${backup_mount}/Borg_Backups/pascal_desktop"
 unmount=false
 
-export BORG_REPO=$backup_repo
+export BORG_REPO="${backup_mount}/Borg_Backups/pascal_desktop"
 export BORG_PASSPHRASE=""
 export BORG_KEY_FILE="/root/.config/borg/keys/mybook_desktop"
 
@@ -51,7 +50,7 @@ function mount_backup_device() {
 
     if ! mount $backup_mount || ! mountpoint -q $backup_mount; then
         log_error "Unable to mount backup device"
-        slack_message "$(hostname): Backup failed, unable to mount backup target."
+        slack_message "Backup failed, unable to mount backup target."
         exit 2
     fi
 
@@ -61,7 +60,7 @@ function mount_backup_device() {
 function unmount_backup_device() {
     if [[ "$unmount" = true ]]; then
         log "Unmounting backup device"
-        unmount $backup_mount
+        umount $backup_mount
     fi
 
     unmount=false
@@ -130,17 +129,7 @@ if ! mountpoint -q $backup_mount; then
 fi
 
 
-
-if [[ ! -d "${backup_repo}" ]]; then
-    log_error "Borg repository doesn't exist"
-    slack_message "$(hostname): Backup failed, borg repository doesn't exist."
-    exit 2
-fi
-
-
-
 log "Creating backup"
-
 
 borg create                     \
     --warning                   \

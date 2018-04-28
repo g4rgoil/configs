@@ -118,7 +118,8 @@ if ! ping -c 1 $ssh_host >/dev/null 2>&1; then
     log_error "Unable to communicate with ssh server"
     log "Scheduling backup to be rerun later"
 
-    slack_message "$(hostname): Backup failed, unable to communicate with ssh server. Scheduling backup to be rerun."
+    slack_message "Backup failed, unable to communicate with ssh server"
+    slack_message "Scheduling backup to be rerun"
 
     add_scheduling
     exit 2
@@ -128,14 +129,14 @@ fi
 log "Creating backup"
 
 
-borg create                     \
-    --warning                   \
-    --filter E                  \
-    --compression lz4           \
+borg create                 \
+    --warning               \
+    --filter E              \
+    --compression lz4       \
     --exclude-from $exclude_file    \
-    --exclude-caches            \
-                                \
-    ::'pascal_xps13-{now}'      \
+    --exclude-caches        \
+                            \
+    ::'pascal_xps13-{now}'  \
     / 2>&1 | timestamp
 
 backup_exit=$?
