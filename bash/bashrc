@@ -14,10 +14,14 @@ else
 fi
 
 # Enable git completion
-[ -f /usr/share/git/completion/git-completion.bash ] && source /usr/share/git/completion/git-completion.bash
+if [[ -f /usr/share/git/completion/git-completion.bash ]]; then
+    source /usr/share/git/completion/git-completion.bash
+fi
 
 # Enable maven completion (github.com/juven/maven-bash-completion)
-[ -f /etc/maven-bash-completion.bash ] && source /etc/maven-bash-completion.bash
+if [[ -f /etc/maven-bash-completion.bash ]]; then
+    source /etc/maven-bash-completion.bash
+fi
 
 # Start the ssh-agent if it is not already running
 if ! pgrep -u "$USER" ssh-agent > /dev/null; then
@@ -33,7 +37,11 @@ export GRAPHICAL=gvim
 export PDFVIEW=okular
 
 # Source global alias definitions from /etc/bash.bash_aliases
-[ -f /etc/bash.bash_aliases ] && source /etc/bash.bash_aliases
+if [[ -f /etc/bash.bash-aliases ]]; then
+    source /etc/bash.bash-aliases
+fi
 
 # Source alias definitions from ~/.bash_alias
-[ -f ~/.bash_aliases ] && source ~/.bash_aliases
+if [[ -f ~/.bash_aliases ]]; then
+    source ~/.bash_aliases
+fi
