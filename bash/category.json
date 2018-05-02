@@ -5,11 +5,15 @@
       "prog": "setup.py bash",
       "usage": "setup.py bash [-h]",
       "epilog": null,
-      "help": "set up files and plugins for the bourne again shell",
+      "help": "set up files for the bourne again shell",
       "version": "0.1.0"
     }
   },
   "files": [
+    {
+      "src": "bash-profile",
+      "dst": "~/.bash_profile"
+    },
     {
       "src": "bashrc",
       "dst": "~/.bashrc"

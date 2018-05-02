@@ -36,12 +36,12 @@ export VISUAL=vim
 export GRAPHICAL=gvim
 export PDFVIEW=okular
 
-# Source global alias definitions from /etc/bash.bash_aliases
+# Source global alias definitions from /etc/bash.bash-aliases
 if [[ -f /etc/bash.bash-aliases ]]; then
     source /etc/bash.bash-aliases
 fi
 
-# Source alias definitions from ~/.bash_alias
+# Source alias definitions from ~/.bash-aliases
 if [[ -f ~/.bash_aliases ]]; then
     source ~/.bash_aliases
 fi
