@@ -5,7 +5,7 @@
       "prog": "setup.py all",
       "usage": "setup.py [<global options>] all [-h]",
       "epilog": null,
-      "help": "setup files for all categories",
+      "help": "set up files for all categories",
       "version": "0.0.1"
     }
   },

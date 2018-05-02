@@ -197,6 +197,18 @@ class CategoryAll(Category):
         self.parser.add_install_action(group=group, help=help)
 
 
+class CategoryBash(Category):
+    """ Functionality for setting up the bourne again shell on this system """
+
+    directory = "bash"
+
+    def __init__(self):
+        super().__init__()
+
+    def set_up(self, namespace=None):
+        super().set_up(namespace)
+
+
 class CategoryMisc(Category):
     """ Functionality for setting up misceleanus things on this machine """
 
