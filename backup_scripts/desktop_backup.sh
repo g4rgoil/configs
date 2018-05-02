@@ -1,11 +1,12 @@
 #!/bin/bash
 
-slack_url="https://hooks.slack.com/services/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"
-tformat="%Y-%m-%d %H:%M:%S"
-
 script_directory="/etc/backup_scripts"
-script_file="${script_directory}/desktop_backup.sh"
+# script_file="${script_directory}/desktop_backup.sh"
 exclude_file="${script_directory}/root.exclude"
+library_file="${script_directory}/backup_library.sh"
+
+# shellcheck source=/dev/null
+source $library_file
 
 log_directory="/var/log/backup_logs"
 ts_file="${log_directory}/desktop.ts"
@@ -22,28 +23,6 @@ unmount=false
 export BORG_REPO="${backup_mount}/Borg_Backups/pascal_desktop"
 export BORG_PASSPHRASE=""
 export BORG_KEY_FILE="/root/.config/borg/keys/mybook_desktop"
-
-
-function slack_message() {
-    curl -X POST --data-urlencode "payload={'text': '$(hostname): ${1}'}" \
-        $slack_url >/dev/null 2>&1
-}
-
-function timestamp() {
-    ts "[${tformat}]" >> $log_file
-}
-
-function log() {
-    echo -e "$1" | timestamp
-}
-
-function log_error() {
-    log "ERROR: $1"
-}
-
-function blank_line() {
-    echo "" >> $log_file
-}
 
 function mount_backup_device() {
     log "Mounting backup device"
@@ -75,7 +54,11 @@ function finish() {
 
     unmount_backup_device
     
-    log "Finishing backup procedure"
+    if [[ $exit_code -eq 0 ]]; then
+        log "Finishing backup procedure"
+    else
+        log "Backup procedure failed"
+    fi
     blank_line
 }
 
