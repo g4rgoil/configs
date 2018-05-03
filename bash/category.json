@@ -19,6 +19,10 @@
       "dst": "~/.bashrc"
     },
     {
+      "src": "bashenv",
+      "dst": "~/.bashenv"
+    },
+    {
       "src": "bash-aliases",
       "dst": "~/.bash-aliases"
     }

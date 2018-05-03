@@ -2,15 +2,43 @@
 # /etc/bash.bashrc
 #
 
+shopt -s autocd
+
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
+# Source gloabal envrionment variables
+if [[ -f /etc/bash.bashenv ]]; then
+    source /etc/bash.bashenv
+fi
+
+# Source envrionment variables
+if [[ -f ~/.bashenv ]]; then
+    source ~/.bashenv
+fi
+
+# Source global alias definitions from /etc/bash.bash-aliases
+if [[ -f /etc/bash.bash-aliases ]]; then
+    source /etc/bash.bash-aliases
+fi
+
+# Source alias definitions from ~/.bash-aliases
+if [[ -f ~/.bash-aliases ]]; then
+    source ~/.bash-aliases
+fi
+
+# Try sourcing the git prompt 
 if [ -f /usr/share/git/completion/git-prompt.sh ]; then
     source /usr/share/git/completion/git-prompt.sh
     PS1='[\u@\h \W$(__git_ps1 " (%s)")]\$ '
 else
     echo "Can't find git-completion.bash"
     PS1='[\u@\h \W]\$ '
+fi
+
+# Enable bash comletion
+if [[ -f /usr/share/bash-completion/bash_completion ]]; then
+    source /usr/share/bash-completion/bash_completion
 fi
 
 # Enable git completion
@@ -30,18 +58,4 @@ fi
 
 if [[ "$SSH_AGENT_PID" == "" ]]; then
     eval "$(<~/.ssh-agent-thing)"
-fi
-
-export VISUAL=vim
-export GRAPHICAL=gvim
-export PDFVIEW=okular
-
-# Source global alias definitions from /etc/bash.bash-aliases
-if [[ -f /etc/bash.bash-aliases ]]; then
-    source /etc/bash.bash-aliases
-fi
-
-# Source alias definitions from ~/.bash-aliases
-if [[ -f ~/.bash_aliases ]]; then
-    source ~/.bash_aliases
 fi
