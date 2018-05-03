@@ -22,9 +22,8 @@
       "dst": "~/.zsh-functions"
     },
     {
-      "root": true,
       "src": "zshenv",
-      "dst": "/etc/zsh/zshenv"
+      "dst": "~/.zshenv"
     }
   ],
   "directories": [
