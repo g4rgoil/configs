@@ -1,12 +1,13 @@
 #!/bin/bash
 
 script_directory="/etc/backup_scripts"
-script_file="${script_directory}/xps13_backup.sh"
-exclude_file="${script_directory}/mybook.exclude"
 library_file="${script_directory}/backup_library.sh"
 
 # shellcheck source=/dev/null
 source $library_file
+
+script_file="${script_directory}/xps13_backup.sh"
+exclude_file="${script_directory}/mybook.exclude"
 
 log_directory="/var/log/backup_logs"
 ts_file="${log_directory}/mybook.ts"
@@ -16,10 +17,9 @@ job_file="${log_directory}/mybook.job"
 pid_file="/var/run/xps13-backup.pid"
 
 min_backup_interval="-24 hours"
-time_reference_file=$(mktemp)
 
 backup_src="/hdd/mybook"
-unmount=false
+unmount_src=false
 
 ssh_user="pascal"
 ssh_host="192.168.3.47"
@@ -28,59 +28,38 @@ export BORG_REPO="ssh://${ssh_user}@${ssh_host}/pool/pascal/borg-repository"
 export BORG_PASSPHRASE=""
 export BORG_KEY_FILE="/root/.config/borg/keys/zfsnas_mybook"
 
-function mount_backup_device() {
-    log "Mounting mybook"
-
-    if ! mount $backup_src || ! mountpoint -q $backup_src; then
-        log_error "Unable to mount mybook"
-        slack_message "Backup failed, unable to mount mybook."
-        exit 2
-    fi
-
-    unmount=true
-}
-
-function unmount_backup_device() {
-    if [[ "$unmount" = true ]]; then
-        log "Unmounting backup device"
-        umount $backup_src
-    fi
-
-    unmount=false
-}
-
-function remove_scheduling() {
-    if [[ -f "$job_file" ]]; then
-        job_id=$(<$job_file)
-        at -r "$job_id" >/dev/null 2>&1
-        rm "$job_file" >/dev/null 2>&1
-    fi
-}
-
-function add_scheduling() {
-    echo "/bin/bash $script_file" | \
-        at now + 4 hour 2>&1 |      \
-        tail -1 |                   \
-        cut -f2 -d" " >             \
-        $job_file
-}
-
 
 function finish() {
     exit_code=$?
 
     if [[ $exit_code -eq 0 ]]; then
-        date +%Y%m%d%H%M > $ts_file
+        set_timestamp
     fi
     
-    log "Finishing backup procedure"
-    slack_message "Finished weekly mybook backup"
+    if [[ "$unmount_src" = true ]]; then
+        unmount_device $backup_src
+        unmount_src=false
+    fi
+
+    if [[ $exit_code -eq 0 ]]; then
+        log "Finishing backup procedure"
+        slack_message "Finished weekly mybook backup"
+    else
+        log "Backup procedure failed with exit code $exit_code"
+        slack_message "Weekly mybook backup failed"
+    fi
+    
     blank_line
 }
 
 function terminate() {
-    log_error "The backup procedure was terminated by a signal"
-    unmount_backup_device
+    log_error "The backup procedure was interrupted by a signal"
+    
+    if [[ "$unmount_src" = true ]]; then
+        unmount_device $backup_src
+        unmount_src=false
+    fi
+    
     blank_line
 }
 
@@ -90,87 +69,30 @@ trap 'trap "" EXIT; terminate' \
     HUP INT QUIT TERM
 
 
-if [[ -f $pid_file ]] && kill -0 "$(cat $pid_file)" 2>/dev/null; then
-    echo "Different instance of backup already running"
-    exit 0
-fi
+require_single_instance
 
-echo $$ > $pid_file
-
-if [[ ! -d $log_directory ]]; then
-    log "Creating backup log directory"
-    mkdir -p $log_directory
-fi
-
-if [[ ! -d $backup_src ]]; then
-    log "Creating mount point for mybook"
-    mkdir -p $backup_src
-fi
+require_directory $log_directory "log directory"
+require_directory $backup_src "mount point for mybook"
 
 remove_scheduling
 
 log "Starting backup procedure"
 slack_message "Starting weekly mybook backup"
 
-
-if [[ -f $ts_file ]]; then
-    touch -t "$(<$ts_file)" $ts_file
-    touch -d "$min_backup_interval" "$time_reference_file"
-
-    if [[ $ts_file -nt $time_reference_file ]]; then
-        log_error "Attempting backup to soon after previous backup"
-
-        exit 1
-    fi
-fi
-
-
-if ! ping -c 1 $ssh_host >/dev/null 2>&1; then
-    log_error "Unable to communicate with ssh server"
-    log "Scheduling backup to be rerun later"
-
-    slack_message "Backup failed, unable to communicate with ssh server"
-    slack_message "Scheduling backup to be rerun"
-
-    add_scheduling
-    exit 2
-fi
-
+require_backup_interval
+verify_ssh_host
 
 if ! mountpoint -q $backup_src; then
-    mount_backup_device
+    mount_device $backup_src
+    unmount_src=true
 fi
 
 
-log "Creating backup"
-
-
-borg create                 \
-    --warning               \
-    --filter E              \
-    --compression zlib,5    \
-    --exclude-from $exclude_file    \
-    --exclude-caches        \
-                            \
-    ::'mybook-{now}'        \
-    ${backup_src}           \
-    2>&1 | timestamp
-
+create_backup "mybook" "zlib,5"
 backup_exit=$?
 
-
-log "Pruning borg repository"
-
-borg prune                  \
-    --warning               \
-    --prefix 'mybook-'      \
-    --keep-daily    7       \
-    --keep-weekly   4       \
-    --keep-monthly  12      \
-    2>&1 | timestamp
-
+prune_repository "mybook" 
 prune_exit=$?
-
 
 borg_exit=$(( backup_exit > prune_exit ? backup_exit : prune_exit ))
 

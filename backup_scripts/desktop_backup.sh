@@ -1,12 +1,13 @@
 #!/bin/bash
 
 script_directory="/etc/backup_scripts"
-# script_file="${script_directory}/desktop_backup.sh"
-exclude_file="${script_directory}/root.exclude"
 library_file="${script_directory}/backup_library.sh"
 
 # shellcheck source=/dev/null
 source $library_file
+
+# script_file="${script_directory}/desktop_backup.sh"
+exclude_file="${script_directory}/root.exclude"
 
 log_directory="/var/log/backup_logs"
 ts_file="${log_directory}/desktop.ts"
@@ -14,57 +15,43 @@ log_file="${log_directory}/root.log"
 
 pid_file="/var/run/desktop-backup.pid"
 
-min_backup_interval="-6 hours"
-time_reference_file=$(mktemp)
+backup_dst="/hdd/mybook"
+backup_src="/"
+unmount_dst=false
 
-backup_mount="/hdd/mybook"
-unmount=false
-
-export BORG_REPO="${backup_mount}/Borg_Backups/pascal_desktop"
+export BORG_REPO="${backup_dst}/Borg_Backups/pascal_desktop"
 export BORG_PASSPHRASE=""
 export BORG_KEY_FILE="/root/.config/borg/keys/mybook_desktop"
-
-function mount_backup_device() {
-    log "Mounting backup device"
-
-    if ! mount $backup_mount || ! mountpoint -q $backup_mount; then
-        log_error "Unable to mount backup device"
-        slack_message "Backup failed, unable to mount backup target."
-        exit 2
-    fi
-
-    unmount=true
-}
-
-function unmount_backup_device() {
-    if [[ "$unmount" = true ]]; then
-        log "Unmounting backup device"
-        umount $backup_mount
-    fi
-
-    unmount=false
-}
 
 function finish() {
     exit_code=$?
 
     if [[ $exit_code -eq 0 ]]; then
-        date +%Y%m%d%H%M > $ts_file
+        set_timestamp
     fi
 
-    unmount_backup_device
+    if [[ "$unmount_dst" = true ]]; then
+        unmount_device $backup_dst
+        unmount_dst=false
+    fi
     
     if [[ $exit_code -eq 0 ]]; then
         log "Finishing backup procedure"
     else
-        log "Backup procedure failed"
+        log "Backup procedure failed with exit code $exit_code"
     fi
+
     blank_line
 }
 
 function terminate() {
-    log_error "The backup procedure was terminated by a signal"
-    unmount_backup_device
+    log_error "The backup procedure was interrupted by a signal"
+
+    if [[ "$unmount_dst" = true ]]; then
+        unmount_device $backup_dst
+        unmount_dst=false
+    fi
+
     blank_line
 }
 
@@ -74,71 +61,27 @@ trap 'trap "" EXIT; terminate' \
     HUP INT QUIT TERM
 
 
-if [[ -f $pid_file ]] && kill -0 "$(cat $pid_file)" 2>/dev/null; then
-    echo "Different instance of backup already running"
-    exit 0
-fi
+require_single_instance
 
-echo $$ > $pid_file
-
-if [[ ! -d $log_directory ]]; then
-    log "Creating backup log directory"
-    mkdir -p $log_directory
-fi
-
-if [[ ! -d $backup_mount ]]; then
-    log "Creating mount point for backup device"
-    mkdir -p $backup_mount
-fi
+require_directory $log_directory "log directory"
+require_directory $backup_dst "mount point for backup device"
 
 
 log "Starting backup procedure"
 
+require_backup_interval
 
-if [[ -f $ts_file ]]; then
-    touch -t "$(<$ts_file)" $ts_file
-    touch -d "$min_backup_interval" "$time_reference_file"
-
-    if [[ $ts_file -nt $time_reference_file ]]; then
-        log_error "Attempting backup to soon after previous backup"
-
-        exit 1
-    fi
+if ! mountpoint -q $backup_dst; then
+    mount_device $backup_dst
+    unmount_dst=true
 fi
 
 
-if ! mountpoint -q $backup_mount; then
-    mount_backup_device
-fi
-
-
-log "Creating backup"
-
-borg create                     \
-    --warning                   \
-    --filter E                  \
-    --compression lz4           \
-    --exclude-from $exclude_file    \
-    --exclude-caches            \
-                                \
-    ::'pascal_desktop-{now}'    \
-    / 2>&1 | timestamp
-
+create_backup "pascal_desktop" "lz4"
 backup_exit=$?
 
-
-log "Pruning borg repository"
-
-borg prune                      \
-    --warning                   \
-    --prefix 'pascal_desktop-'  \
-    --keep-daily    7           \
-    --keep-weekly   4           \
-    --keep-monthly  12          \
-    2>&1 | timestamp
-
+prune_repository "pascal_desktop"
 prune_exit=$?
-
 
 borg_exit=$(( backup_exit > prune_exit ? backup_exit : prune_exit ))
 
