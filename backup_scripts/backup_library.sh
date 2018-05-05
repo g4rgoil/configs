@@ -1,42 +1,56 @@
 #!/bin/bash
 
-declare ts_file         # File that stores the timestamp for the 
 declare log_file        # Contains the log for the current backup
-declare pid_file        # Contains pid of currently running backup
-declare job_file        # Contains at job id if one is created
-declare ssh_host        # User name to use one remote borg server
-declare backup_src      # Path to the directory that needs to be backed up
-declare script_file     # Path to the currently running script
 declare exclude_file    # Contains exclude patterns for borg (one per line)
 
 slack_url="https://hooks.slack.com/services/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"
 tformat="%Y-%m-%d %H:%M:%S"
 
-
 backup_interval="-6 hours"
 reference_file=$(mktemp)
 
+
+# Send a message with the specified string to slack
+#
+# $1: the string to send
 function slack_message() {
     curl -X POST --data-urlencode "payload={'text': '$(hostname): ${1?}'}" \
         $slack_url >/dev/null 2>&1
 }
 
+
+# Add a timestamp to the beginning of each line and print it to the log file
 function timestamp() {
     ts "[${tformat}]" >> "$log_file"
 }
 
+
+# Print the specified string to the log file
+#
+# $1: the string to print
 function log() {
     echo -e "${1?}" | timestamp
 }
 
+
+# Print the specified string as error to the log file
+#
+# $1: the string to print
 function log_error() {
     log "ERROR: ${1?}"
 }
 
+
+# Print a blank line to the log file
 function blank_line() {
     echo "" >> "$log_file"
 }
 
+
+# Create the specified directory if it doesn't exist
+#
+# $1: the directory to create
+# $2: the name of the directory (used for printing a log message)
 function require_directory() {
     if [[ ! -d "${1?}" ]]; then
         log "Creating ${2?}"
@@ -44,91 +58,141 @@ function require_directory() {
     fi
 }
 
+
+# Return 0 if there is no process with the id in the specified file, 1 otherwise
+#
+# $1: the file with the pid in it
 function require_single_instance() {
-    if [[ -f "$pid_file" ]] && kill -0 "$(cat "$pid_file")" 2>/dev/null; then
+    if [[ -f "${1?}" ]] && kill -0 "$(cat "$1")" 2>/dev/null; then
         echo "Different instance of backup already running"
-        exit 0
+        return 1
     fi
 
-    echo $$ > "$pid_file"
+    echo $$ > "$1"
 }
 
+
+# Return 0 if the last backup was less than $backup_interval ago, 1 otherwise
+#
+# $1: the file with the time of the last backup in it
 function require_backup_interval() {
-    if [[ -f "$ts_file" ]]; then
-        touch -t "$(<"$ts_file")" "$ts_file"
+    if [[ -f "${1?}" ]]; then
+        touch -t "$(<"$1")" "$1"
         touch -d "$backup_interval" "$reference_file"
 
-        if [[ "$ts_file" -nt $reference_file ]]; then
+        if [[ "$1" -nt $reference_file ]]; then
             log_error "Attempting backup to soon after previous backup"
 
-            exit 1
+            return 1
         fi
     fi
 }
 
+
+# Write the current timestamp to the specified file
+#
+# $1: the file to store the timestamp in
 function set_timestamp() {
-    date +%Y%m%d%H%M > "$ts_file"
+    date +%Y%m%d%H%M > "${1?}"
 }
 
+
+# Return 0 if the specified host can be pinged, 1 otherwise
+#
+# $1: the ssh host to ping
 function verify_ssh_host() {
-    if ! ping -c 1 "$ssh_host" >/dev/null 2>&1; then
+    if ! ping -c 1 "${1?}" >/dev/null 2>&1; then
         log_error "Unable to communicate with ssh server"
         log "Scheduling backup to be rerun later"
 
         slack_message "Backup failed, unable to communicate with ssh server"
         slack_message "Scheduling backup to be rerun"
 
-        add_scheduling
-        exit 2
+        return 1
     fi
 }
 
+
+# Remove the at job with the id in the specified file, and delete the file
+#
+# $1: the file with the at id in it
 function remove_scheduling() {
-    if [[ -f "$job_file" ]]; then
-        job_id=$(<"$job_file")
+    if [[ -f "${1?}" ]]; then
+        local job_id
+        job_id=$(<"$1")
         at -r "$job_id" >/dev/null 2>&1
-        rm "$job_file" >/dev/null 2>&1
+        rm "$1" >/dev/null 2>&1
     fi
 }
 
+
+# Create an at job that executes the specified script, and write the id to the 
+# specified file
+#
+# $1: the script to exectue
+# $2: the file to write the id to
 function add_scheduling() {
-    echo "/bin/bash $script_file" | \
+    echo "/bin/bash ${2?}" | \
         at now + 1 hour 2>&1 |      \
         tail -1 |                   \
         cut -f2 -d" " >             \
-        "$job_file"
+        "${1?}"
 }
 
+
+# Return 0 if mounting the device at the specified mountpoint is succesful, 
+# 1 otherwise
+#
+# $1: the mount point
 function mount_device() {
     log "Mounting ${1?}"
 
     if ! mount "$1" || ! mountpoint -q "$1"; then
         log_error "Unable to mount $1"
         slack_message "Backup failed, unable to mount $1."
-        exit 2
+
+        return 1
     fi
 }
 
+
+# Unmount the device at the specified mountpoint
+#
+# $1: the mount point
 function unmount_device() {
     log "Unmounting ${1?}"
     umount "$1"
 }
 
+
+# Create a borg backup of the specified src directory, name the backup with the
+# specified prefix and compress it with the specified compression algorithm
+# This function uses the value in $BORG_REPO as the borg repository 
+# The value in $exclude_file is used as file that contains exclude_patterns
+#
+# $1: the source directory for the backup
+# $2: the prefix used to name the backup
+# $3: the algorithm used to compress the backup
 function create_backup() {
     log "Creating backup"
 
     borg create                 \
         --warning               \
         --filter E              \
-        --compression "${2?}"   \
+        --compression "${3?}"   \
         --exclude-from "$exclude_file"    \
         --exclude-caches        \
                                 \
-        ::"${1?}-{now}"         \
-        "$backup_src"           \
+        ::"${2?}-{now}"         \
+        "${1?}"                 \
         2>&1 | timestamp
 }
 
+
+# Prunes the borg repository specified in $BORG_REPO, only considers backups
+# with the specified prefix in their names
+#
+# $1: the prefix to use
 function prune_repository() {
     log "Pruning borg repository"
 

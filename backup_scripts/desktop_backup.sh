@@ -27,7 +27,7 @@ function finish() {
     exit_code=$?
 
     if [[ $exit_code -eq 0 ]]; then
-        set_timestamp
+        set_timestamp $ts_file
     fi
 
     if [[ "$unmount_dst" = true ]]; then
@@ -61,7 +61,9 @@ trap 'trap "" EXIT; terminate' \
     HUP INT QUIT TERM
 
 
-require_single_instance
+if ! require_single_instance $pid_file; then
+    exit 0
+fi
 
 require_directory $log_directory "log directory"
 require_directory $backup_dst "mount point for backup device"
@@ -69,15 +71,20 @@ require_directory $backup_dst "mount point for backup device"
 
 log "Starting backup procedure"
 
-require_backup_interval
+if ! require_backup_interval $ts_file; then
+    exit 1
+fi
 
 if ! mountpoint -q $backup_dst; then
-    mount_device $backup_dst
+    if ! mount_device $backup_dst; then
+        exit 2
+    fi
+
     unmount_dst=true
 fi
 
 
-create_backup "pascal_desktop" "lz4"
+create_backup $backup_src "pascal_desktop" "lz4"
 backup_exit=$?
 
 prune_repository "pascal_desktop"

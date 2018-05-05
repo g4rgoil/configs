@@ -33,7 +33,7 @@ function finish() {
     exit_code=$?
 
     if [[ $exit_code -eq 0 ]]; then
-        set_timestamp
+        set_timestamp $ts_file
     fi
     
     if [[ "$unmount_src" = true ]]; then
@@ -69,26 +69,36 @@ trap 'trap "" EXIT; terminate' \
     HUP INT QUIT TERM
 
 
-require_single_instance
+if ! require_single_instance $pid_file; then
+    exit 0
+fi
 
 require_directory $log_directory "log directory"
 require_directory $backup_src "mount point for mybook"
 
-remove_scheduling
+remove_scheduling $job_file
 
 log "Starting backup procedure"
 slack_message "Starting weekly mybook backup"
 
-require_backup_interval
-verify_ssh_host
+if ! require_backup_interval $ts_file; then
+    exit 1
+fi
+
+if ! verify_ssh_host $ssh_host; then
+    add_scheduling $job_file $script_file
+fi
 
 if ! mountpoint -q $backup_src; then
-    mount_device $backup_src
+    if ! mount_device $backup_src; then
+        exit 2
+    fi
+
     unmount_src=true
 fi
 
 
-create_backup "mybook" "zlib,5"
+create_backup $backup_src "mybook" "zlib,5"
 backup_exit=$?
 
 prune_repository "mybook" 
