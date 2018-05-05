@@ -3,7 +3,7 @@
 script_directory="/etc/backup_scripts"
 library_file="${script_directory}/backup_library.sh"
 
-# shellcheck source=/dev/null
+# shellcheck source=/etc/backup_scripts/backup_library.sh
 source $library_file
 
 # script_file="${script_directory}/desktop_backup.sh"
@@ -14,6 +14,8 @@ ts_file="${log_directory}/desktop.ts"
 log_file="${log_directory}/root.log"
 
 pid_file="/var/run/desktop-backup.pid"
+
+interval="-6 hours"
 
 backup_dst="/hdd/mybook"
 backup_src="/"
@@ -71,7 +73,7 @@ require_directory $backup_dst "mount point for backup device"
 
 log "Starting backup procedure"
 
-if ! require_backup_interval $ts_file; then
+if ! require_backup_interval $ts_file "$interval"; then
     exit 1
 fi
 

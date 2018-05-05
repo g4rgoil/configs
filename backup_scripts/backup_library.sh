@@ -6,9 +6,6 @@ declare exclude_file    # Contains exclude patterns for borg (one per line)
 slack_url="https://hooks.slack.com/services/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"
 tformat="%Y-%m-%d %H:%M:%S"
 
-backup_interval="-6 hours"
-reference_file=$(mktemp)
-
 
 # Send a message with the specified string to slack
 #
@@ -72,13 +69,17 @@ function require_single_instance() {
 }
 
 
-# Return 0 if the last backup was less than $backup_interval ago, 1 otherwise
+# Return 0 if the last backup was more that the specified time interval ago, 1 otherwise
 #
 # $1: the file with the time of the last backup in it
+# $2: The time interval to use
 function require_backup_interval() {
     if [[ -f "${1?}" ]]; then
+        local reference_file
+        reference_file=$(mktemp)
+
         touch -t "$(<"$1")" "$1"
-        touch -d "$backup_interval" "$reference_file"
+        touch -d "${2?}" "$reference_file"
 
         if [[ "$1" -nt $reference_file ]]; then
             log_error "Attempting backup to soon after previous backup"

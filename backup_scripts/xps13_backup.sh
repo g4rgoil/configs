@@ -3,7 +3,7 @@
 script_directory="/etc/backup_scripts"
 library_file="${script_directory}/backup_library.sh"
 
-# shellcheck source=/dev/null
+# shellcheck source=/etc/backup_scripts/backup_library.sh
 source $library_file
 
 script_file="${script_directory}/xps13_backup.sh"
@@ -15,6 +15,8 @@ log_file="${log_directory}/root.log"
 job_file="${log_directory}/xps13.job"
 
 pid_file="/var/run/xps13-backup.pid"
+
+interval="-6 hours"
 
 backup_src="/"
 
@@ -63,7 +65,7 @@ remove_scheduling $job_file
 
 log "Starting backup procedure"
 
-if ! require_backup_interval $ts_file; then
+if ! require_backup_interval $ts_file "$interval"; then
     exit 1
 fi
 

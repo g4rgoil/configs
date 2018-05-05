@@ -3,7 +3,7 @@
 script_directory="/etc/backup_scripts"
 library_file="${script_directory}/backup_library.sh"
 
-# shellcheck source=/dev/null
+# shellcheck source=/etc/backup_scripts/backup_library.sh
 source $library_file
 
 script_file="${script_directory}/xps13_backup.sh"
@@ -16,7 +16,7 @@ job_file="${log_directory}/mybook.job"
 
 pid_file="/var/run/xps13-backup.pid"
 
-min_backup_interval="-24 hours"
+interval="-24 hours"
 
 backup_src="/hdd/mybook"
 unmount_src=false
@@ -81,7 +81,7 @@ remove_scheduling $job_file
 log "Starting backup procedure"
 slack_message "Starting weekly mybook backup"
 
-if ! require_backup_interval $ts_file; then
+if ! require_backup_interval $ts_file "$interval"; then
     exit 1
 fi
 
