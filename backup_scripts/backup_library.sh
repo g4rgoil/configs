@@ -1,63 +1,64 @@
 #!/bin/bash
 
+declare ts_file         # File that stores the timestamp for the 
+declare log_file        # Contains the log for the current backup
+declare pid_file        # Contains pid of currently running backup
+declare job_file        # Contains at job id if one is created
+declare ssh_host        # User name to use one remote borg server
+declare backup_src      # Path to the directory that needs to be backed up
+declare script_file     # Path to the currently running script
+declare exclude_file    # Contains exclude patterns for borg (one per line)
+
 slack_url="https://hooks.slack.com/services/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"
 tformat="%Y-%m-%d %H:%M:%S"
 
-log_file=""
-ts_file=""
-job_file=""
-pid_file=""
-script_file=""
-exclude_file=""
-backup_src=""
-ssh_host=""
 
 backup_interval="-6 hours"
 reference_file=$(mktemp)
 
 function slack_message() {
-    curl -X POST --data-urlencode "payload={'text': '$(hostname): ${1}'}" \
+    curl -X POST --data-urlencode "payload={'text': '$(hostname): ${1?}'}" \
         $slack_url >/dev/null 2>&1
 }
 
 function timestamp() {
-    ts "[${tformat}]" >> $log_file
+    ts "[${tformat}]" >> "$log_file"
 }
 
 function log() {
-    echo -e "$1" | timestamp
+    echo -e "${1?}" | timestamp
 }
 
 function log_error() {
-    log "ERROR: $1"
+    log "ERROR: ${1?}"
 }
 
 function blank_line() {
-    echo "" >> $log_file
+    echo "" >> "$log_file"
 }
 
 function require_directory() {
-    if [[ ! -d "$1" ]]; then
-        log "Creating $2"
+    if [[ ! -d "${1?}" ]]; then
+        log "Creating ${2?}"
         mkdir -p "$1"
     fi
 }
 
 function require_single_instance() {
-    if [[ -f $pid_file ]] && kill -0 "$(cat $pid_file)" 2>/dev/null; then
+    if [[ -f "$pid_file" ]] && kill -0 "$(cat "$pid_file")" 2>/dev/null; then
         echo "Different instance of backup already running"
         exit 0
     fi
 
-    echo $$ > $pid_file
+    echo $$ > "$pid_file"
 }
 
 function require_backup_interval() {
-    if [[ -f $ts_file ]]; then
-        touch -t "$(<$ts_file)" $ts_file
+    if [[ -f "$ts_file" ]]; then
+        touch -t "$(<"$ts_file")" "$ts_file"
         touch -d "$backup_interval" "$reference_file"
 
-        if [[ $ts_file -nt $reference_file ]]; then
+        if [[ "$ts_file" -nt $reference_file ]]; then
             log_error "Attempting backup to soon after previous backup"
 
             exit 1
@@ -66,11 +67,11 @@ function require_backup_interval() {
 }
 
 function set_timestamp() {
-    date +%Y%m%d%H%M > $ts_file
+    date +%Y%m%d%H%M > "$ts_file"
 }
 
 function verify_ssh_host() {
-    if ! ping -c 1 $ssh_host >/dev/null 2>&1; then
+    if ! ping -c 1 "$ssh_host" >/dev/null 2>&1; then
         log_error "Unable to communicate with ssh server"
         log "Scheduling backup to be rerun later"
 
@@ -84,7 +85,7 @@ function verify_ssh_host() {
 
 function remove_scheduling() {
     if [[ -f "$job_file" ]]; then
-        job_id=$(<$job_file)
+        job_id=$(<"$job_file")
         at -r "$job_id" >/dev/null 2>&1
         rm "$job_file" >/dev/null 2>&1
     fi
@@ -95,11 +96,11 @@ function add_scheduling() {
         at now + 1 hour 2>&1 |      \
         tail -1 |                   \
         cut -f2 -d" " >             \
-        $job_file
+        "$job_file"
 }
 
 function mount_device() {
-    log "Mounting $1"
+    log "Mounting ${1?}"
 
     if ! mount "$1" || ! mountpoint -q "$1"; then
         log_error "Unable to mount $1"
@@ -109,7 +110,7 @@ function mount_device() {
 }
 
 function unmount_device() {
-    log "Unmounting $1"
+    log "Unmounting ${1?}"
     umount "$1"
 }
 
@@ -119,12 +120,12 @@ function create_backup() {
     borg create                 \
         --warning               \
         --filter E              \
-        --compression "$2"      \
-        --exclude-from $exclude_file    \
+        --compression "${2?}"   \
+        --exclude-from "$exclude_file"    \
         --exclude-caches        \
                                 \
-        ::"$1-{now}"            \
-        $backup_src             \
+        ::"${1?}-{now}"         \
+        "$backup_src"           \
         2>&1 | timestamp
 }
 
@@ -133,9 +134,9 @@ function prune_repository() {
 
     borg prune                  \
         --warning               \
-        --prefix "$1-"          \
+        --prefix "${1?}-"          \
         --keep-daily    7       \
         --keep-weekly   4       \
         --keep-monthly  12      \
-        >/dev/null 2>&1 # | timestamp 
+        >/dev/null 2>&1 | timestamp 
 }
