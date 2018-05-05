@@ -87,6 +87,8 @@ let g:ycm_global_ycm_extra_conf='/usr/share/vim/vimfiles/third_party/ycmd/cpp/yc
 
 let g:ycm_python_binary_path = '/usr/bin/python3'
 
+let g:syntastic_sh_shellcheck_args = "-x"
+
 "" File Type options
 autocmd BufNewFile,BufReadPost *.md,*.mkd set filetype=markdown
 let g:markdown_fenced_languages = ['javascript', 'go', 'php']
