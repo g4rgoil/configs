@@ -1,5 +1,12 @@
 #!/bin/bash
 
+export multiple_instance_exit=1
+export insufficient_interval_exit=2
+export connection_exit=3
+export mount_exit=4
+export borg_error_exit=5
+
+
 declare log_file        # Contains the log for the current backup
 declare exclude_file    # Contains exclude patterns for borg (one per line)
 

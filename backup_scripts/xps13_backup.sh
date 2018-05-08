@@ -56,7 +56,7 @@ trap 'trap "" EXIT; terminate' \
 
 
 if ! require_single_instance $pid_file; then
-    exit 0
+    exit $multiple_instance_exit
 fi
 
 require_directory $log_directory "log directory"
@@ -66,11 +66,12 @@ remove_scheduling $job_file
 log "Starting backup procedure"
 
 if ! require_backup_interval $ts_file "$interval"; then
-    exit 1
+    exit $insufficient_interval_exit
 fi
 
 if ! verify_ssh_host $ssh_host; then
     add_scheduling $job_file $script_file
+    exit $connection_exit
 fi
 
 create_backup $backup_src "pascal_xps13" "lz4"
@@ -83,7 +84,7 @@ borg_exit=$(( backup_exit > prune_exit ? backup_exit : prune_exit ))
 
 if [[ $borg_exit -gt 0 ]]; then
     log_error "Borg exited with non-zero exit code $borg_exit"
-    exit 3
+    exit $borg_error_exit
 fi
 
 exit 0

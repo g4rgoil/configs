@@ -64,7 +64,7 @@ trap 'trap "" EXIT; terminate' \
 
 
 if ! require_single_instance $pid_file; then
-    exit 0
+    exit $multiple_instance_exit
 fi
 
 require_directory $log_directory "log directory"
@@ -74,12 +74,12 @@ require_directory $backup_dst "mount point for backup device"
 log "Starting backup procedure"
 
 if ! require_backup_interval $ts_file "$interval"; then
-    exit 1
+    exit $insufficient_interval_exit
 fi
 
 if ! mountpoint -q $backup_dst; then
     if ! mount_device $backup_dst; then
-        exit 2
+        exit $mount_exit
     fi
 
     unmount_dst=true
@@ -96,7 +96,7 @@ borg_exit=$(( backup_exit > prune_exit ? backup_exit : prune_exit ))
 
 if [[ $borg_exit -gt 0 ]]; then
     log_error "Borg exited with non-zero exit code $borg_exit"
-    exit 3
+    exit $borg_exit
 fi
 
 exit 0
