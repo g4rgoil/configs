@@ -11,7 +11,7 @@ exclude_file="${script_directory}/root.exclude"
 
 log_directory="/var/log/backup_logs"
 ts_file="${log_directory}/xps13.ts"
-log_file="${log_directory}/root.log"
+log_file="${log_directory}/xps13.log"
 job_file="${log_directory}/xps13.job"
 
 pid_file="/var/run/xps13-backup.pid"
