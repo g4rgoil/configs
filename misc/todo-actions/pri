@@ -4,8 +4,11 @@ import sys
 import os
 import re
 
+from task import TaskFile
+
 todo_sh = os.environ['TODO_SH']
 todo_full_sh = os.environ['TODO_FULL_SH']
+todo_file = os.environ['TODO_FILE']
 
 usage = "%s pri ITEM# [ITEM# ...] PRIORITY" % todo_sh
 
@@ -35,5 +38,10 @@ if not re.fullmatch("^[a-zA-Z]$", priority):
     print("note: PRIORITY must be an alphanumerical character")
     sys.exit()
 
-for item in items:
-    os.system("%s command pri %s %s" % (todo_full_sh, item, priority))
+with TaskFile(todo_file) as task_file:
+    for item in items:
+        task = task_file.get_task(int(item))
+        print(task)
+        print("TODO: %s re-prioritized from (%s) to (%s)."
+              % (int(item), task.priority, priority))
+        task.set_priority(priority)

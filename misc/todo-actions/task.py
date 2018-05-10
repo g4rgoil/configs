@@ -229,6 +229,14 @@ class TaskFile(object):
         self.__path = path
         self.__tasks = []
 
+    def __enter__(self):
+        self.read()
+        return self
+
+    def __exit__(self, type, value, traceback):
+        self.write()
+
+    def read(self):
         with open(self.__path) as task_file:
             for line in task_file.readlines():
                 self.__tasks.append(Task.parse(line))
@@ -237,6 +245,9 @@ class TaskFile(object):
         with open(self.__path, mode='w') as task_file:
             for task in self.__tasks:
                 task_file.write(str(task) + "\n")
+
+    def get_task(self, i):
+        return self.__tasks[i-1]
 
     def sort(self):
         self.__tasks.sort(key=lambda task: str(task.description))

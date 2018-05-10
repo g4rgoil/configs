@@ -20,8 +20,6 @@ if sys.argv[1] == "usage":
     print(help_msg)
     sys.exit()
 
-target_file = todo_file
-
-task_file = TaskFile(target_file)
-task_file.sort()
-task_file.write()
+with TaskFile(todo_file) as task_file:
+    print("TODO: Sorted todo.txt file at '%s'" % todo_file)
+    task_file.sort()
