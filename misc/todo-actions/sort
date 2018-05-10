@@ -1,0 +1,25 @@
+#!/usr/bin/python
+
+import sys
+import os
+
+todo_sh = os.environ['TODO_SH']
+todo_full_sh = os.environ['TODO_FULL_SH']
+todo_dir = os.environ['TODO_DIR']
+todo_file = os.environ['TODO_FILE']
+
+usage = "%s sort" % todo_sh
+
+help_msg = """ sort:
+    sort
+      Sorts the todo.txt file.
+"""
+
+if sys.argv[1] == "usage":
+    print(help_msg)
+    sys.exit()
+
+target_file = todo_file
+
+with open(target_file) as file:
+    lines = [line.rstrip('\n').strip() for line in file]
