@@ -23,10 +23,6 @@
       "dst": "~/.pycodestylerc"
     },
     {
-      "src": "terminator",
-      "dst": "~/.config/terminator/config"
-    },
-    {
       "src": "warprc",
       "dst": "~/.warprc"
     },
