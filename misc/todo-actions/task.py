@@ -25,9 +25,11 @@ class Task(object):
     def __str__(self):
         task = "x " if self.done else ""
         task += "(%s) " % self.priority if self.priority is not None else ""
-        task += "%s " % self.completion if self.completion is not None else ""
-        task += "%s " % self.creation if self.creation is not None else ""
+        task += "%s " % self.completed if self.completed is not None else ""
+        task += "%s " % self.created if self.created is not None else ""
         task += "%s" % self.description
+
+        return task
 
     def __repr__(self):
         return "Task('" + self.__str__() + "')"
@@ -46,7 +48,8 @@ class Task(object):
             kwargs["priority"] = match.group(1)
             task = task[match.end():].lstrip()
 
-        match = re.match(r"(%s) ((%s) )?" % r"\d{4}-\d{2}-\d{2}", task)
+        regex = "({0}) (({0}) )?".format("\d{4}-\d{2}-\d{2}")
+        match = re.match(regex, task)
         if match is not None:
             # Check whether both or only one date is specified
             if match.group(3) is not None:
@@ -124,7 +127,7 @@ class Description(object):
         self.__description = description
 
     def __str__(self):
-        return self.description
+        return self.__description
 
     def __repr__(self):
         return "Description('%s')" % self.description
@@ -219,3 +222,22 @@ class Description(object):
 
         self.replace("(\s|^)%s:\S+(\s|$)" % key, " ")
         self.strip()
+
+
+class TaskFile(object):
+    def __init__(self, path):
+        self.__path = path
+        self.__tasks = []
+
+        with open(self.__path) as task_file:
+            for line in task_file.readlines():
+                self.__tasks.append(Task.parse(line))
+
+    def write(self):
+        with open(self.__path, mode='w') as task_file:
+            for task in self.__tasks:
+                task_file.write(str(task) + "\n")
+
+    def sort(self):
+        self.__tasks.sort(key=lambda task: str(task.description))
+        self.__tasks.sort(key=lambda task: task.priority)

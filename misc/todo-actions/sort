@@ -2,6 +2,7 @@
 
 import sys
 import os
+from task import TaskFile
 
 todo_sh = os.environ['TODO_SH']
 todo_full_sh = os.environ['TODO_FULL_SH']
@@ -21,5 +22,6 @@ if sys.argv[1] == "usage":
 
 target_file = todo_file
 
-with open(target_file) as file:
-    lines = [line.rstrip('\n').strip() for line in file]
+task_file = TaskFile(target_file)
+task_file.sort()
+task_file.write()
