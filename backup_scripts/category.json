@@ -1,0 +1,22 @@
+{
+  "category": {
+    "name": "backups",
+    "parser": {
+      "prog": "setup.py backups",
+      "usage": "setup.py backups [-h]",
+      "epilog": null,
+      "help": "set up files for the backp scripts",
+      "version": "0.1.0"
+    }
+  },
+  "files": [
+  ],
+  "directories": [
+    {
+      "root": true,
+      "src": ".",
+      "dst": "/etc/backup_scripts"
+    }
+  ]
+}
+
