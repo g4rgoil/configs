@@ -11,6 +11,10 @@
   },
   "files": [
     {
+      "src": "tmux.conf",
+      "dst": "~/.tmux.conf"
+    },
+    {
       "src": "latexmkrc",
       "dst": "~/.latexmkrc"
     },
