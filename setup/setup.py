@@ -2,6 +2,11 @@
 
 """ This module provides a command line interface for the setup script """
 
+import os
+import sys
+import pwd
+import subprocess
+
 from argparse import ArgumentParser
 from pathlib import Path
 
@@ -12,6 +17,52 @@ __version__ = "1.0.0"
 
 
 # Todo: users option
+
+
+def remove_user_options(argv=None):
+    if argv is None:
+        argv = sys.argv
+
+    args = []
+    skip_next = False
+
+    for i in range(len(argv)):
+        if skip_next:
+            skip_next = False
+            continue
+
+        if argv[i] in ("-u", "--user"):
+            skip_next = True
+        else:
+            args.append(argv[i])
+
+    return args
+
+
+def start_subprocess(args, user):
+    pw_record = pwd.getpwnam(user)
+    user_name = pw_record.pw_name
+    user_home = pw_record.pw_dir
+    uid = pw_record.pw_uid
+    gid = pw_record.pw_gid
+    cwd = os.getcwd()
+    env = os.environ.copy()
+    env["HOME"] = user_home
+    env["LOGNAME"] = user_name
+    env["PWD"] = cwd
+    env["USER"] = user_name
+    process = subprocess.Popen(
+            args, preexec_fn=demote(uid, gid), cwd=cwd, env=env
+    )
+
+    return process
+
+
+def demote(uid, gid):
+    def result():
+        os.setgid(gid)
+        os.setuid(uid)
+    return result
 
 
 class SetupArgParser(ArgumentParser):
@@ -36,9 +87,14 @@ class SetupArgParser(ArgumentParser):
     def parse_args(self, args=None, namespace=None):
         namespace = super().parse_args(args, namespace)
 
-        print(namespace.user)
+        if namespace.user is None:
+            return self.set_up(namespace)
 
-        self.set_up(namespace)
+        args = [sys.executable] + remove_user_options(sys.argv)
+
+        for user in namespace.user:
+            proc = start_subprocess(args, user)
+            proc.wait()
 
     def set_up(self, namespace):
         if namespace.category_name is not None:
@@ -103,7 +159,7 @@ class SetupArgParser(ArgumentParser):
                       help="the suffix, used when backing up files [: old]")
         group.add_argument("-s", "--suffix", **kwargs)
 
-        kwargs = dict(action="append", default=[], metavar="U",
+        kwargs = dict(action="append", default=None, metavar="U",
                       help="run for each user (specify once for each user)")
         group.add_argument("-u", "--user", **kwargs)
 
