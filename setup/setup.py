@@ -36,6 +36,11 @@ class SetupArgParser(ArgumentParser):
     def parse_args(self, args=None, namespace=None):
         namespace = super().parse_args(args, namespace)
 
+        print(namespace.user)
+
+        self.set_up(namespace)
+
+    def set_up(self, namespace):
         if namespace.category_name is not None:
             category = self.categories[namespace.category_name]
             category.create_utils(namespace)
@@ -98,9 +103,9 @@ class SetupArgParser(ArgumentParser):
                       help="the suffix, used when backing up files [: old]")
         group.add_argument("-s", "--suffix", **kwargs)
 
-        kwargs = dict(action="store", nargs="+", default=[], metavar="U",
-                      help="run for each of the specified users")
-        group.add_argument("--user", **kwargs)
+        kwargs = dict(action="append", default=[], metavar="U",
+                      help="run for each user (specify once for each user)")
+        group.add_argument("-u", "--user", **kwargs)
 
     def add_subparsers(self):
         """ Adds a subparser for each category defined in self.categories """
