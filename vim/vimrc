@@ -4,7 +4,7 @@
 
 set nocompatible
 set encoding=utf-8
-packadd! matchit
+"" packadd! matchit
 set backupext=.bak
 
 "" General
