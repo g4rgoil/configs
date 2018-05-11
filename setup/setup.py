@@ -60,8 +60,12 @@ def start_subprocess(args, user):
 
 def demote(uid, gid):
     def result():
-        os.setgid(gid)
-        os.setuid(uid)
+        try:
+            os.setgid(gid)
+            os.setuid(uid)
+        except PermissionError as e:
+            sys.exit(2)
+
     return result
 
 
@@ -93,8 +97,11 @@ class SetupArgParser(ArgumentParser):
         args = [sys.executable] + remove_user_options(sys.argv)
 
         for user in namespace.user:
-            proc = start_subprocess(args, user)
-            proc.wait()
+            try:
+                proc = start_subprocess(args, user)
+                proc.wait()
+            except subprocess.SubprocessError as e:
+                print("ERROR: Failed to run as '%s'." % user)
 
     def set_up(self, namespace):
         if namespace.category_name is not None:
