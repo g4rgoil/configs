@@ -41,7 +41,7 @@ export ZSH=~/.oh-my-zsh
 export UPDATE_ZSH_DAYS=7
 
 ZSH_THEME='powerlevel9k/powerlevel9k'
-plugins=(extract git thefuck vi-mode vundle wd zsh-syntax-highlighting zsh_reload rsync)
+plugins=(extract git thefuck vi-mode vundle wd zsh-syntax-highlighting zsh_reload rsync tmux)
 
 # Disable powerlevel9k if in virtual console 
 if [[ "$TERM" == "linux" ]]; then
