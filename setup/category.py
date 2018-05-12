@@ -406,9 +406,9 @@ class SetupUtils(object):
         if not self.backup:
             return
 
-        if not src.exists() and not src.is_symlink():
-            raise FileNotFoundError("Cannot backup '%s': No such file exists"
-                                    % str(src))
+        # if not src.exists() and not src.is_symlink():
+        #     raise FileNotFoundError("Cannot backup '%s': No such file exists"
+        #                             % str(src))
 
         dst = src.with_suffix(self.suffix)
         self.print_move(src, dst)
