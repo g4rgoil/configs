@@ -5,7 +5,7 @@
       "prog": "setup.py backups",
       "usage": "setup.py backups [-h]",
       "epilog": null,
-      "help": "set up files for the backp scripts",
+      "help": "set up backup scripts",
       "version": "0.1.0"
     }
   },

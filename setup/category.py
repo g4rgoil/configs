@@ -197,6 +197,12 @@ class CategoryAll(Category):
         self.parser.add_install_action(group=group, help=help)
 
 
+class CategoryBackups(Category):
+    """ Functionality for setting up backup_scripts on this system """
+
+    directory = "backup_scripts"
+
+
 class CategoryBash(Category):
     """ Functionality for setting up the bourne again shell on this system """
 
