@@ -25,6 +25,10 @@
     {
       "src": "ideavimrc",
       "dst": "~/.ideavimrc"
+    },
+    {
+      "src": "nvim.init",
+      "dst": "~/.config/nvim/init.vim"
     }
   ],
   "directories": [
