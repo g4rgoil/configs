@@ -27,6 +27,8 @@
           <option value="setup.category_vim" />
           <option value="categories.category.Category.*" />
           <option value="setup.category" />
+          <option value="category.MyHelpFormatter._metavar_formatter" />
+          <option value="argparse.HelpFormatter._format_args" />
         </list>
       </option>
     </inspection_tool>

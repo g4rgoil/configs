@@ -63,7 +63,7 @@ def demote(uid, gid):
         try:
             os.setgid(gid)
             os.setuid(uid)
-        except PermissionError as e:
+        except PermissionError:
             sys.exit(2)
 
     return result
@@ -170,7 +170,7 @@ class SetupArgParser(ArgumentParser):
                       help="run for each user (specify once for each user)")
         group.add_argument("-u", "--user", **kwargs)
 
-    def add_subparsers(self):
+    def add_subparsers(self, **kwargs):
         """ Adds a subparser for each category defined in self.categories """
         kwargs = dict(title="setup categories", dest="category_name",
                       parser_class=CategorySubParser)
