@@ -58,6 +58,18 @@ let g:airline_theme = 'luna'
 let g:airline#extensions#whitespace#enabled = 0
 "let g:airline#extensions#vimtex#enabled = 1
 
+"" Tmuxline configuration
+let g:tmuxline_preset = {
+    \'a'       : '#{session_name}',
+    \'b'       : '#{window_name}',
+    \'c'       : '',
+    \'win'     : ['#{window_index}', '#{window_name}#{?window_zoomed_flag,(Z),}'],
+    \'cwin'    : ['#{window_index}', '#{window_name}#{?window_zoomed_flag,(Z),}'],
+    \'x'       : '%F',
+    \'y'       : '%R',
+    \'z'       : '#{host}',
+    \'options' : {'status-justify' : 'left'}}
+
 "" Vimtex Configuration
 let g:vimtex_compiler_method = 'latexmk'
 " let g:vimtex_compiler_latexmk = {'build_dir' : './latexmk_out/'}
@@ -110,6 +122,7 @@ call vundle#begin()
 
     Plugin 'vim-airline/vim-airline'
     Plugin 'vim-airline/vim-airline-themes'
+    Plugin 'edkolev/tmuxline.vim'
     
     Plugin 'SirVer/ultisnips'
     Plugin 'honza/vim-snippets'
