@@ -46,8 +46,8 @@ set splitbelow
 set splitright
 
 "" Configure tab behaviour
-map <C-N> :tabp<CR>
-map <C-M> :tabn<CR>
+map <C-h> :tabp<CR>
+map <C-l> :tabn<CR>
 
 "" Airline Configuration
 set laststatus=2                                    " Always show status bar
@@ -60,19 +60,20 @@ let g:airline#extensions#whitespace#enabled = 0
 
 "" Tmuxline configuration
 let g:tmuxline_preset = {
-    \'a'       : '#{session_name}',
-    \'b'       : '#{window_name}',
-    \'c'       : '',
-    \'win'     : ['#{window_index}', '#{window_name}#{?window_zoomed_flag,(Z),}'],
-    \'cwin'    : ['#{window_index}', '#{window_name}#{?window_zoomed_flag,(Z),}'],
-    \'x'       : '%F',
-    \'y'       : '%R',
-    \'z'       : '#{host}',
-    \'options' : {'status-justify' : 'left'}}
+    \'a'        : '#{session_name}',
+    \'b'        : '#{window_name}',
+    \'c'        : '',
+    \'win'      : ['#{window_index}', '#{window_name}#{?window_zoomed_flag,[Z],}'],
+    \'cwin'     : ['#{window_index}', '#{window_name}#{?window_zoomed_flag,[Z],}'],
+    \'x'        : '',
+    \'y'        : '%F %R',
+    \'z'        : '#{host}',
+    \'options'  : {'status-justify' : 'left'}}
+
+    " \'x'        : ['#{sysstat_cpu}', '#{sysstat_mem}', '#{sysstat_loadavg}'],
 
 "" Vimtex Configuration
 let g:vimtex_compiler_method = 'latexmk'
-" let g:vimtex_compiler_latexmk = {'build_dir' : './latexmk_out/'}
 let g:vimtex_complete_close_braces = 1
 let g:vimtex_fold_enabled = 1
 let g:vimtex_fold_comments = 1
