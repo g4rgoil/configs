@@ -13,30 +13,28 @@ from pathlib import Path
 from category import CategoryCollection, CategorySubParser, MyHelpFormatter
 from category import parse_json_descriptor, __repo_dir__
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 
 
-# Todo: users option
+def remove_option_value_pair(collection, option):
+    index = -1
+    if option in collection:
+        index = collection.index(option)
+        del collection[index:index+2]
+
+    return index
 
 
 def remove_user_options(argv=None):
     if argv is None:
         argv = sys.argv
+    argv = argv.copy()
 
-    args = []
-    skip_next = False
+    while remove_option_value_pair(argv, "-u") != -1 and \
+            remove_option_value_pair(argv, "--user") != -1:
+        pass
 
-    for i in range(len(argv)):
-        if skip_next:
-            skip_next = False
-            continue
-
-        if argv[i] in ("-u", "--user"):
-            skip_next = True
-        else:
-            args.append(argv[i])
-
-    return args
+    return argv
 
 
 def start_subprocess(args, user):
@@ -45,12 +43,15 @@ def start_subprocess(args, user):
     user_home = pw_record.pw_dir
     uid = pw_record.pw_uid
     gid = pw_record.pw_gid
+
     cwd = os.getcwd()
+
     env = os.environ.copy()
     env["HOME"] = user_home
     env["LOGNAME"] = user_name
     env["PWD"] = cwd
     env["USER"] = user_name
+
     process = subprocess.Popen(
             args, preexec_fn=demote(uid, gid), cwd=cwd, env=env
     )

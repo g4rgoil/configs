@@ -510,8 +510,8 @@ class SetupUtils(object):
         elif dist == "debian":
             command = "apt --assume-yes install %s"
         else:
-            raise OSError("Cannot install packages: Unknown linux "
-                          "distribution '%s'" % dist)
+            raise OSError("Cannot install packages: Unknown or unsupported "
+                          "linux distribution '%s'" % dist)
 
         self._install_packages(command, *packages)
 
