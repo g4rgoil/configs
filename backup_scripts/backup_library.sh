@@ -9,8 +9,9 @@ export borg_error_exit=5
 
 declare log_file        # Contains the log for the current backup
 declare exclude_file    # Contains exclude patterns for borg (one per line)
+declare slack_url       # The variable to use as webhook, when sending messagaes to slack
 
-slack_url="https://hooks.slack.com/services/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"
+slack_hook_file="${HOME}/.slack-hook"
 tformat="%Y-%m-%d %H:%M:%S"
 
 
@@ -18,8 +19,25 @@ tformat="%Y-%m-%d %H:%M:%S"
 #
 # $1: the string to send
 function slack_message() {
+    if [[ -z $slack_url ]]; then
+        set_slack_url "$slack_hook_file"
+    fi
+
     curl -X POST --data-urlencode "payload={'text': '$(hostname): ${1?}'}" \
-        $slack_url >/dev/null 2>&1
+        "$slack_url" >/dev/null 2>&1
+}
+
+
+# Sets the value in $slack_url to the contets of the specified file
+#
+# $1: the file to use
+function set_slack_url() {
+    if [[ -f "${1?}" ]]; then 
+        slack_url="$(<"${1}")"
+    else
+        log_error "Plese create a file at '${1}' that contains your slack webhook"
+        slack_url=""
+    fi
 }
 
 
