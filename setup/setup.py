@@ -82,7 +82,8 @@ class SetupArgParser(ArgumentParser):
 
         try:
             self.categories = CategoryCollection()
-        except ValueError:
+        except ValueError as e:
+            print("An error occured while creatin the categories: " + e)
             self.exit(2)
 
         self.add_optional_arguments()
