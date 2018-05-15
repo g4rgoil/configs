@@ -237,6 +237,7 @@ class CategoryTmux(Category):
 
         self.install_dict = {
             "tpm": self._install_plugin_manager,
+            "powerline": self._install_powerline,
             "all": None
         }
 
@@ -262,6 +263,13 @@ class CategoryTmux(Category):
 
         self.utils.clone_repo(src_url, install_location,
                               name="Tmux Plugin Manger")
+
+    def _install_powerline(self):
+        install_location = Path("~/.tmux/powerline").expanduser()
+        src_url = "https://github.com/erikw/tmux-powerline"
+
+        self.utils.clone_repo(src_url, install_location,
+                              name="Tmux Powerline")
 
 
 class CategoryVim(Category):
