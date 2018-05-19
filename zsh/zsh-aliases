@@ -10,7 +10,7 @@ alias uninstall='sudo pacman -Rns'
 alias uninstall-force='sudo pacman -Rdd'
 
 # Some handy aliasses for everyday commands
-alias wheather='curl wttr.in/Karlsruhe'
+alias wttr='curl https://wttr.in/Karlsruhe'
 alias neofetch='neofetch --config ~/.neofetch-config'
 alias cdtemp='cd $(mktemp -d)'
 alias etemp='edit $(mktemp)'
@@ -21,7 +21,7 @@ alias vim2ps='vim -c "hardcopy > output.ps" -c quit'
 
 # Some power aliases
 alias die='shutdown now'
-# alias suspend='systemctl suspend'
+alias suspend='systemctl suspend'
 alias hibernate='systemctl hibernate'
 
 # Some Network aliases
@@ -43,15 +43,25 @@ alias la='ls -A'
 alias ll='ls -al'
 alias lr='ls -R'
 alias ldot='ls .*'
-alias lc='colorls'
 
-alias du='du -h'
+# Some colorls aliases
+alias colorls='colorls --group-directories-first'
+alias lc='colorls'
+alias lca='colorls --almost-all'
+alias lcl='colorls --long'
+alias lct='colorls --tree'
+alias lcd='colorls --dirs'
+alias lcf='colorls --files'
+alias lcgit='colorls --git-status'
+
+alias du='du -hs'
+alias df='df -h'
 alias rr='rm -r'
 
 # Some tree aliasses
 alias tree='tree -CF -L 5'
-alias Xtree='tree -X'
-alias Jtree='tree -J'
+alias treeX='tree -X'
+alias treeJ='tree -J'
 
 # Some random aliases
 alias ccc="clear"
@@ -87,13 +97,13 @@ alias sg='sgedit'
 
 alias pdf="$PDFVIEW"
 alias less="$PAGER"
-alias zless="$PAGER"
 alias page="$PAGER"
 
 # Some aliases to quickly edit certain files
 alias zshrc='edit ~/.zshrc'
 alias zsh-aliases='edit ~/.zsh-aliases'
-alias zshenv='edit /etc/zsh/zshenv'
+alias zsh-functions='edit ~/.zsh-functions'
+alias zshenv='edit ~/.zshenv'
 alias vimrc='edit ~/.vimrc'
 alias fstab='sudo edit /etc/fstab'
 
