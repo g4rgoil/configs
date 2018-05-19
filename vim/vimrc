@@ -59,16 +59,16 @@ let g:airline#extensions#whitespace#enabled = 0
 "let g:airline#extensions#vimtex#enabled = 1
 
 "" Tmuxline configuration
-let g:tmuxline_preset = {
-    \'a'        : '#{session_name}',
-    \'b'        : '#{window_name}',
-    \'c'        : '',
-    \'win'      : ['#{window_index}', '#{window_name}#{?window_zoomed_flag,[Z],}'],
-    \'cwin'     : ['#{window_index}', '#{window_name}#{?window_zoomed_flag,[Z],}'],
-    \'x'        : '',
-    \'y'        : '%F %R',
-    \'z'        : '#{host}',
-    \'options'  : {'status-justify' : 'left'}}
+"let g:tmuxline_preset = {
+"    \'a'        : '#{session_name}',
+"    \'b'        : '#{window_name}',
+"    \'c'        : '',
+"    \'win'      : ['#{window_index}', '#{window_name}#{?window_zoomed_flag,[Z],}'],
+"    \'cwin'     : ['#{window_index}', '#{window_name}#{?window_zoomed_flag,[Z],}'],
+"    \'x'        : '',
+"    \'y'        : '%F %R',
+"    \'z'        : '#{host}',
+"    \'options'  : {'status-justify' : 'left'}}
 
     " \'x'        : ['#{sysstat_cpu}', '#{sysstat_mem}', '#{sysstat_loadavg}'],
 
@@ -123,7 +123,7 @@ call vundle#begin()
 
     Plugin 'vim-airline/vim-airline'
     Plugin 'vim-airline/vim-airline-themes'
-    Plugin 'edkolev/tmuxline.vim'
+    " Plugin 'edkolev/tmuxline.vim'
     
     Plugin 'SirVer/ultisnips'
     Plugin 'honza/vim-snippets'

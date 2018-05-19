@@ -1,0 +1,54 @@
+#!/bin/bash
+
+# Default configuration file for tmux-powerline.
+# Modeline {
+#	 vi: foldmarker={,} foldmethod=marker foldlevel=0 tabstop=4 filetype=sh
+# }
+
+# General {
+	export TMUX_POWERLINE_DEBUG_MODE_ENABLED="false"
+	export TMUX_POWERLINE_PATCHED_FONT_IN_USE="true"
+	export TMUX_POWERLINE_THEME="mytheme"
+	export TMUX_POWERLINE_DIR_USER_THEMES="${HOME}/.tmux/powerline-themes"
+	export TMUX_POWERLINE_DIR_USER_SEGMENTS=""
+# }
+
+# battery.sh {
+	# How to display battery remaining. Can be {percentage, cute}.
+	export TMUX_POWERLINE_SEG_BATTERY_TYPE="percentage"
+	# How may hearts to show if cute indicators are used.
+	export TMUX_POWERLINE_SEG_BATTERY_NUM_HEARTS="5"
+# }
+
+# date.sh {
+	export TMUX_POWERLINE_SEG_DATE_FORMAT="%F"
+# }
+
+# time.sh {
+	export TMUX_POWERLINE_SEG_TIME_FORMAT="%H:%M"
+# }
+
+# disk_usage.sh {
+	export TMUX_POWERLINE_SEG_DISK_USAGE_FILESYSTEM="/"
+# }
+
+# hostname.sh {
+	export TMUX_POWERLINE_SEG_HOSTNAME_FORMAT="short"
+# }
+
+# now_playing.sh {
+	# Music player to use. Can be any of {audacious, banshee, cmus, itunes, lastfm, mocp, mpd, mpd_simple, pithos, rdio, rhythmbox, spotify, spotify_wine, file}.
+	export TMUX_POWERLINE_SEG_NOW_PLAYING_MUSIC_PLAYER="spotify"
+	# File to be read in case the song is being read from a file
+	export TMUX_POWERLINE_SEG_NOW_PLAYING_FILE_NAME=""
+	# Maximum output length.
+	export TMUX_POWERLINE_SEG_NOW_PLAYING_MAX_LEN="40"
+	# How to handle too long strings. Can be {trim, roll}.
+	export TMUX_POWERLINE_SEG_NOW_PLAYING_TRIM_METHOD="trim"
+	# Charcters per second to roll if rolling trim method is used.
+	export TMUX_POWERLINE_SEG_NOW_PLAYING_ROLL_SPEED="2"
+# }
+
+# pwd.sh {
+	export TMUX_POWERLINE_SEG_PWD_MAX_LEN="30"
+# }

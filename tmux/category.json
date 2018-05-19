@@ -13,8 +13,16 @@
     {
       "src": "tmux.conf",
       "dst": "~/.tmux.conf"
+    },
+    {
+      "src": "powerlinerc",
+      "dst": "~/.tmux-powerlinerc"
     }
   ],
   "directories": [
+      {
+        "src": "powerline-themes",
+        "dst": "~/.tmux/powerline-themes"
+      }
   ]
 }
