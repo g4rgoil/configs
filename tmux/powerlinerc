@@ -10,7 +10,7 @@
 	export TMUX_POWERLINE_PATCHED_FONT_IN_USE="true"
 	export TMUX_POWERLINE_THEME="mytheme"
 	export TMUX_POWERLINE_DIR_USER_THEMES="${HOME}/.tmux/powerline-themes"
-	export TMUX_POWERLINE_DIR_USER_SEGMENTS=""
+	export TMUX_POWERLINE_DIR_USER_SEGMENTS="${HOME}/.tmux/powerline-segments"
 # }
 
 # battery.sh {
