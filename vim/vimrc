@@ -25,15 +25,12 @@ syntax enable                   " Enable syntax highlighting
     " let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
 " endif
 
+"" Setting the cursor shape for vim and neovim
 if has('nvim')
     if exists("$TMUX")
         set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50
     endif
-endif
-
-
-"" Setting the cursor shape (vim only)
-if ! has('nvim')
+else
     if exists("$TMUX")
         set term=screen-256color
 
