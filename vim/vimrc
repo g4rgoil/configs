@@ -20,6 +20,31 @@ set tw=0                        " Don't use automatic line breaks
 set backspace=indent,eol,start  " Set the backspace to delete by default
 syntax enable                   " Enable syntax highlighting
 
+" if has('nvim')
+    " let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+    " let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
+" endif
+
+if has('nvim')
+    if exists("$TMUX")
+        set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50
+    endif
+endif
+
+
+"" Setting the cursor shape (vim only)
+if ! has('nvim')
+    if exists("$TMUX")
+        set term=screen-256color
+
+        let &t_SI = "\ePtmux;\e\e[5 q\e\\"
+        let &t_EI = "\ePtmux;\e\e[2 q\e\\"
+    else
+        let &t_SI = "\e[5 q"
+        let &t_EI = "\e[2 q"
+    endif
+endif
+
 "" Indentation
 if has('autocmd')
     filetype plugin indent on
