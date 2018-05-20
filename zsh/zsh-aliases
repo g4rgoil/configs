@@ -57,6 +57,7 @@ alias lcgit='colorls --git-status'
 alias du='du -hs'
 alias df='df -h'
 alias rr='rm -r'
+alias rf='rm -rf'
 
 # Some tree aliasses
 alias tree='tree -CF -L 5'
