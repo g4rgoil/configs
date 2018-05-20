@@ -1,0 +1,4 @@
+# rename-window scripting
+select-pane -t 0
+split-window -b -d -h -l 83 'nvim'
+split-window -d -v -p 50

@@ -21,6 +21,10 @@
   ],
   "directories": [
       {
+        "src": "layouts",
+        "dst": "~/.tmux/layouts"
+      },
+      {
         "src": "powerline-themes",
         "dst": "~/.tmux/powerline-themes"
       },

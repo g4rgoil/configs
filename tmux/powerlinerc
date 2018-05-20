@@ -50,5 +50,5 @@
 # }
 
 # pwd.sh {
-	export TMUX_POWERLINE_SEG_PWD_MAX_LEN="30"
+	export TMUX_POWERLINE_SEG_PWD_MAX_LEN="20"
 # }
