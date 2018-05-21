@@ -30,7 +30,7 @@ def remove_user_options(argv=None):
         argv = sys.argv
     argv = argv.copy()
 
-    while remove_option_value_pair(argv, "-u") != -1 and \
+    while remove_option_value_pair(argv, "-u") != -1 or \
             remove_option_value_pair(argv, "--user") != -1:
         pass
 
