@@ -1,0 +1,3 @@
+new-window -n system-monitor 'nload'
+split-window -b -d -h -p 45 's-tui'
+split-window -d -v -p 60 'htop'
