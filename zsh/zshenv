@@ -5,7 +5,7 @@ export GEM_HOME=$HOME/.gem
 
 export ZDOTDIR="$HOME"
 
-export TERM="screen-256color"
+# export TERM="screen-256color"
 
 export EDITOR=/usr/bin/nvim
 export VISUAL=/usr/bin/nvim
