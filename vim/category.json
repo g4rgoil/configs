@@ -43,6 +43,10 @@
     {
       "src": "ftdetect",
       "dst": "~/.vim/ftdetect"
+    },
+    {
+      "src": "ftdetect",
+      "dst": "~/.config/nvim/ftdetect"
     }
   ],
   "linters": {

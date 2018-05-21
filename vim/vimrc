@@ -25,6 +25,12 @@ syntax enable                   " Enable syntax highlighting
     " let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
 " endif
 
+" Add ~/.vim to runtimepath and packpath
+if has('nvim')
+    set runtimepath+=~/.vim/after runtimepath+=~/.vim
+    set packpath+=~/.vim/after packpath+=~/.vim
+endif
+
 "" Setting the cursor shape for vim and neovim
 if has('nvim')
     if exists("$TMUX")
@@ -80,20 +86,6 @@ let g:airline_theme = 'luna'
 let g:airline#extensions#whitespace#enabled = 0
 "let g:airline#extensions#vimtex#enabled = 1
 
-"" Tmuxline configuration
-"let g:tmuxline_preset = {
-"    \'a'        : '#{session_name}',
-"    \'b'        : '#{window_name}',
-"    \'c'        : '',
-"    \'win'      : ['#{window_index}', '#{window_name}#{?window_zoomed_flag,[Z],}'],
-"    \'cwin'     : ['#{window_index}', '#{window_name}#{?window_zoomed_flag,[Z],}'],
-"    \'x'        : '',
-"    \'y'        : '%F %R',
-"    \'z'        : '#{host}',
-"    \'options'  : {'status-justify' : 'left'}}
-
-    " \'x'        : ['#{sysstat_cpu}', '#{sysstat_mem}', '#{sysstat_loadavg}'],
-
 "" Vimtex Configuration
 let g:vimtex_compiler_method = 'latexmk'
 let g:vimtex_complete_close_braces = 1
@@ -125,11 +117,11 @@ let g:ycm_python_binary_path = '/usr/bin/python3'
 let g:syntastic_sh_shellcheck_args = "-x"
 
 "" File Type options
-autocmd BufNewFile,BufReadPost *.md,*.mkd set filetype=markdown
+" autocmd BufNewFile,BufReadPost *.md,*.mkd set filetype=markdown
 let g:markdown_fenced_languages = ['javascript', 'go', 'php']
 
-autocmd BufNewFile,BufReadPost *.asm set filetype=mips
-autocmd BufNewFile,BufReadPost *.coffee set filetype=coffee
+" autocmd BufNewFile,BufReadPost *.asm set filetype=mips
+" autocmd BufNewFile,BufReadPost *.coffee set filetype=coffee
 
 "" Plugins
 set rtp+=~/.vim/bundle/Vundle.vim
