@@ -54,10 +54,13 @@ alias lcd='colorls --dirs'
 alias lcf='colorls --files'
 alias lcgit='colorls --git-status'
 
+# Some filesystem aliases
 alias du='du -hs'
 alias df='df -h'
 alias rr='rm -r'
 alias rf='rm -rf'
+alias cp='cp -i'
+alias mv='mv -i'
 
 # Some tree aliasses
 alias tree='tree -CF -L 5'
@@ -70,8 +73,6 @@ alias ping='ping -c 5'
 alias openports='ss --all --numeric --processes --ipv4 --ipv6'
 alias ..='cd ..'
 alias q='exit'
-alias cp='cp -i'
-alias mv='mv -i'
 # alias rm='rm -I'
 alias scat='sudo cat'
 alias ccat='ccat --bg="dark" '
@@ -84,6 +85,10 @@ alias t='todo'
 alias tobuy='todo.sh -d ~/.todo/tobuy.config'
 alias tb='tobuy'
 alias tailf='tail -f'
+alias wordc='wc --words'
+alias linec='wc --lines'
+alias charc='wc --chars'
+alias bytec='wc --bytes'
 
 # Edit commands
 alias edit="$VISUAL"
