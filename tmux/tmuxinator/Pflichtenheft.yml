@@ -11,8 +11,7 @@ root: ~/repositories/pse-multifaktor/doc/Pflichtenheft
 
 # Project hooks
 # Runs on project start, always
-on_project_start: 
-  - zsh -c 'evince ~/repositories/pse-multifaktor/doc/Pflichtenheft/build/Pflichtenheft.pdf&'
+# on_project_start: zsh -c 'evince ~/repositories/pse-multifaktor/doc/Pflichtenheft/build/Pflichtenheft.pdf&'
 
 # Run on project start, the first time
 # on_project_first_start: command
@@ -48,7 +47,9 @@ startup_window: editor
 # post: tmux -CC attach -t Pflichtenheft
 
 windows:
-  - editor: nvim -c 'VimtexCompile'
+  - editor: 
+    - evince ./build/Pflichtenheft.pdf&
+    - nvim -c 'VimtexCompile' ./Pflichtenheft.tex
   - git:
       layout: even-horizontal
       panes:
