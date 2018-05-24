@@ -89,6 +89,7 @@ alias wordc='wc --words'
 alias linec='wc --lines'
 alias charc='wc --chars'
 alias bytec='wc --bytes'
+alias mux='tmuxinator'
 
 # Edit commands
 alias edit="$VISUAL"
