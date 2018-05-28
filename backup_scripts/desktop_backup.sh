@@ -11,7 +11,7 @@ exclude_file="${script_directory}/root.exclude"
 
 log_directory="/var/log/backup_logs"
 ts_file="${log_directory}/desktop.ts"
-log_file="${log_directory}/root.log"
+log_file="${log_directory}/desktop.log"
 
 pid_file="/var/run/desktop-backup.pid"
 
