@@ -490,14 +490,14 @@ class SetupUtils(object):
         self.error("Installing %s to '%s'..." % (name, str(path)))
 
         if path.exists():
-            if path.joinpath(".git").exists:
+            if path.joinpath(".git").exists():
                 return self.error("%s seems to already be installed" % name)
 
-            self.error("'%s' already exists, but is no git repo" % name)
+            self.error("'%s' already exists, but is no git repo" % path)
             if not self.confirm("Clone into the existing directory?", False):
-                return
+                return self.error("Skipping installtion of %s" % name)
 
-        path.mkdir(parents=True)
+        path.mkdir(parents=True, exist_ok=True)
 
         args = ["git", "clone", "-v", str(url), str(path)]
         process = self.run(args)
