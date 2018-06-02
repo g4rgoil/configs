@@ -409,29 +409,26 @@ class CategoryZsh(Category):
 
 class SetupUtils(object):
     def __init__(self, namespace=None):
-        def get_value_or_default(dictionary, key, default):
-            return dictionary[key] if key in dictionary else default
-
         args_dict = vars(namespace) if namespace is not None else {}
 
-        self.link = get_value_or_default(args_dict, "link", True)
+        self.link = args_dict.get("link", True)
 
-        dst_handling = get_value_or_default(args_dict, "dst_handling", "keep")
+        dst_handling = args_dict.get("dst_handling", "keep")
         self.keep = (dst_handling == "keep")
         self.backup = (dst_handling == "backup")
         self.delete = (dst_handling == "delete")
 
-        self.verbose = get_value_or_default(args_dict, "verbose", False)
-        self.quiet = get_value_or_default(args_dict, "quiet", False)
+        self.verbose = args_dict.get("verbose", False)
+        self.quiet = args_dict.get("quiet", False)
 
         if self.verbose:
             self.print = print
 
         if self.quiet:
             self.error = lambda *a, **kw: None
+            self.confirm = lambda m, d=True: d
 
-        self.suffix = "." + get_value_or_default(args_dict, "suffix",
-                                                 ["old"])[0].lstrip(".")
+        self.suffix = "." + args_dict.get("suffix", ["old"])[0].lstrip(".")
 
     def symlink(self, src: Path, dst: Path) -> None:
         """ Create a symlink called dst pointing to src. """
@@ -493,7 +490,12 @@ class SetupUtils(object):
         self.error("Installing %s to '%s'..." % (name, str(path)))
 
         if path.exists():
-            return self.error("%s seems to already be installed" % name)
+            if path.joinpath(".git").exists:
+                return self.error("%s seems to already be installed" % name)
+
+            self.error("'%s' already exists, but is no git repo" % name)
+            if not self.confirm("Clone into the existing directory?", False):
+                return
 
         path.mkdir(parents=True)
 
@@ -544,6 +546,16 @@ class SetupUtils(object):
     def error(self, *args, **kwargs):
         """ This method might be reassigned in the constructor """
         print("setup.py:", *args, file=sys.stderr, **kwargs)
+
+    def confirm(self, msg, default=True):
+        """ Waits for user input to confirm or uses the default. """
+        self.error(msg, "[Y/n]" if default else "[y/N]", end=" ")
+
+        user_input = input()
+        choices = {'y': True, 'Y': True, 'n': False, 'N': False}
+        choices[None] = choices[''] = default
+
+        return choices.get(user_input, not default)
 
     def print_create_symlink(self, src, dst):
         self.print("Creating link: '%s' -> '%s'" % (str(dst), str(src)))
