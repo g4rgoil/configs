@@ -17,6 +17,7 @@ __version__ = "1.1.0"
 
 
 def remove_option_value_pair(collection, option):
+    """ Removes the first option value pair from the collection. """
     index = -1
     if option in collection:
         index = collection.index(option)
@@ -26,6 +27,7 @@ def remove_option_value_pair(collection, option):
 
 
 def remove_user_options(argv=None):
+    """ Removes all -u and --user option value pairs from argv or sys.argv. """
     if argv is None:
         argv = sys.argv
     argv = argv.copy()
@@ -38,6 +40,7 @@ def remove_user_options(argv=None):
 
 
 def start_subprocess(args, user):
+    """ Executes the given arguments as the specified user. """
     pw_record = pwd.getpwnam(user)
     user_name = pw_record.pw_name
     user_home = pw_record.pw_dir
@@ -60,6 +63,7 @@ def start_subprocess(args, user):
 
 
 def demote(uid, gid):
+    """ Returns a functions that sets the uid and gid for the current user. """
     def result():
         try:
             os.setgid(gid)
@@ -125,6 +129,14 @@ class SetupArgParser(ArgumentParser):
 
         kwargs = dict(action="store_true", help="don't print anything")
         verbosity.add_argument("-q", "--quiet", **kwargs)
+
+        kwargs = dict(action="store_false", dest="confirm")
+        kwargs["help"] = "Bypass confirmation dialogs"
+        self.add_argument("--noconfirm", **kwargs)
+
+        kwargs = dict(action="store_true", dest="confirm")
+        kwargs["help"] = "Negate effects of previous --noconfirm"
+        self.add_argument("--confirm", **kwargs)
 
         kwargs = dict(action="help", help="show this help message and exit")
         self.add_argument("-h", "--help", **kwargs)

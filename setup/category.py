@@ -420,12 +420,15 @@ class SetupUtils(object):
 
         self.verbose = args_dict.get("verbose", False)
         self.quiet = args_dict.get("quiet", False)
+        self.confirm = args_dict.get("confirm", True)
 
         if self.verbose:
             self.print = print
 
         if self.quiet:
             self.error = lambda *a, **kw: None
+
+        if self.quiet or not self.confirm:
             self.confirm = lambda m, d=True: d
 
         self.suffix = "." + args_dict.get("suffix", ["old"])[0].lstrip(".")
