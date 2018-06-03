@@ -15,6 +15,14 @@
       "dst": "~/.tmux.conf"
     },
     {
+      "src": "tmux.local.conf",
+      "dst": "~/.tmux.local.conf"
+    },
+    {
+      "src": "tmux.remote.conf",
+      "dst": "~/.tmux.remote.conf"
+    },
+    {
       "src": "powerlinerc",
       "dst": "~/.tmux-powerlinerc"
     }
