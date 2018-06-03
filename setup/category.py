@@ -561,7 +561,7 @@ class SetupUtils(object):
         return choices.get(user_input, not default)
 
     def print_create_symlink(self, src, dst):
-        self.print("Creating link: '%s' -> '%s'" % (str(dst), str(src)))
+        self.print("Creating link: '%s' -> '%s'" % (str(src), str(dst)))
 
     def print_delete(self, file):
         self.print("Deleting file: '%s'" % str(file))
