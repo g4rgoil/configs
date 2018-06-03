@@ -4,10 +4,10 @@
 
 
 # Some pacman aliasses
-alias update='yaourt -Syua'
-alias install='sudo pacman -S'
-alias uninstall='sudo pacman -Rns'
-alias uninstall-force='sudo pacman -Rdd'
+alias update='aurman -Syu'
+alias install='aurman -S'
+alias uninstall='aurman -Rns'
+alias uninstall-force='aurman -Rdd'
 
 # Some handy aliasses for everyday commands
 alias wttr='curl https://wttr.in/Karlsruhe'
