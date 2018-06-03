@@ -29,7 +29,7 @@ fi
 
 
 # Source ssh session specific alias definition from ~/.bash_aliases.ssh
-if [[ -n "$SESSION_TPE" ]] && [[ -f ~/.zsh-aliases.ssh ]]; then
+if [[ "$SESSION_TPE" = "remote/ssh" ]] && [[ -f ~/.zsh-aliases.ssh ]]; then
     source ~/.zsh-aliases.ssh
 fi
     
