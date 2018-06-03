@@ -1,0 +1,5 @@
+#
+# ~/.ssh.zsh-aliases
+#
+
+alias tmux='tmux -L ssh'

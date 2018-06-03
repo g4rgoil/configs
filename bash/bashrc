@@ -27,6 +27,12 @@ if [[ -f ~/.bash-aliases ]]; then
     source ~/.bash-aliases
 fi
 
+
+# Source ssh session specific alias definition from ~/.bash_aliases.ssh
+if [[ -n "$SESSION_TPE" ]] && [[ -f ~/.zsh-aliases.ssh ]]; then
+    source ~/.zsh-aliases.ssh
+fi
+    
 # Try sourcing the git prompt 
 if [ -f /usr/share/git/completion/git-prompt.sh ]; then
     source /usr/share/git/completion/git-prompt.sh

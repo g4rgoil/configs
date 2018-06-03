@@ -18,6 +18,10 @@
       "src": "zsh-aliases",
       "dst": "~/.zsh-aliases"
     },
+    {
+      "src": "zsh-aliases.ssh",
+      "dst": "~/.zsh-aliases.ssh"
+    },
     { "src": "zsh-functions",
       "dst": "~/.zsh-functions"
     },
