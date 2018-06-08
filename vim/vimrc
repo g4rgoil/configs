@@ -137,7 +137,6 @@ call vundle#begin()
 
     Plugin 'vim-airline/vim-airline'
     Plugin 'vim-airline/vim-airline-themes'
-    " Plugin 'edkolev/tmuxline.vim'
     
     Plugin 'SirVer/ultisnips'
     Plugin 'honza/vim-snippets'
@@ -147,6 +146,7 @@ call vundle#begin()
     Plugin 'scrooloose/nerdtree'
     Plugin 'ap/vim-css-color'
     Plugin 'lervag/vimtex'
+    Plugin 'aklt/plantuml-syntax'
 
     Plugin 'harenome/vim-mipssyntax'
     Plugin 'vim-syntastic/syntastic'
