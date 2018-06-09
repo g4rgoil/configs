@@ -17,6 +17,20 @@
       "src": ".",
       "dst": "/etc/backup_scripts"
     }
-  ]
+  ],
+  "dependencies": {
+    "arch": [
+      "at",
+      "borg",
+      "curl",
+      "moreutils"
+    ],
+    "debian": [
+      "at",
+      "borgbackup",
+      "curl",
+      "moreutlis"
+    ]
+  }
 }
 

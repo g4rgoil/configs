@@ -202,6 +202,44 @@ class CategoryBackups(Category):
 
     directory = "backup_scripts"
 
+    def __init__(self):
+        super().__init__()
+
+        self.install_dict = {
+            "dependencies": self._install_dependencies,
+            "all": None
+        }
+
+    def add_subparser(self, subparsers):
+        super().add_subparser(subparsers)
+
+        group = self.parser.add_argument_group("backups specific options")
+
+        choices = self.install_dict.keys()
+        help = "install all specified categories; valid categories are " \
+               + ", ".join(choices)
+        self.parser.add_install_action(group=group, choices=choices, help=help)
+
+    def set_up(self, namespace=None):
+        super().set_up(namespace)
+
+        if namespace.install:
+            self.install(namespace.install)
+
+    @require_root
+    def _install_dependencies(self):
+        dependencies = self.descriptor["dependencies"]
+        dist = get_dist()
+
+        if dist not in dependencies:
+            raise OSError("Cannot install dependencies: Unknown linux "
+                          "distribution '%s'" % dist)
+
+        self.utils.install_packages(dist, *dependencies[dist])
+
+        if dist == "arch":
+            self.utils.run(["systemctl", "enable", "--now", "atd"])
+
 
 class CategoryBash(Category):
     """ Functionality for setting up the bourne again shell on this system """
