@@ -37,6 +37,10 @@
       "dst": "~/.todo/config"
     },
     {
+      "src": "pse.todo.cfg",
+      "dst": "~/.todo/pse.todo.config"
+    },
+    {
       "src": "tobuy.cfg",
       "dst": "~/.todo/tobuy.config"
     }
