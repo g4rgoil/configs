@@ -74,8 +74,8 @@ set splitbelow
 set splitright
 
 "" Configure tab behaviour
-map <C-h> :tabp<CR>
-map <C-l> :tabn<CR>
+map <C-n> :tabp<CR>
+map <C-m> :tabn<CR>
 
 "" Airline Configuration
 set laststatus=2                                    " Always show status bar
