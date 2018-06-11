@@ -114,6 +114,7 @@ class Category(object):
                 self.descriptor["directories"])
 
     def set_up(self, namespace=None):
+        self.delete_backups()
         self.back_up()
         self.delete()
         self.link()
@@ -160,8 +161,7 @@ class Category(object):
 
     def delete_backups(self):
         for mapping in self.files + self.directories:
-            mapping = mapping.with_suffix(self.utils.suffix)
-            self.utils.try_execute(lambda: mapping.delete_dst(self.utils))
+            self.utils.try_execute(lambda: mapping.delete_backup(self.utils))
 
     def install(self, keys):
         if "all" in keys:
@@ -475,6 +475,7 @@ class SetupUtils(object):
             self.confirm = lambda m, d=True: d
 
         self.suffix = "." + args_dict.get("suffix", ["old"])[0].lstrip(".")
+        self.delete_backups = args_dict.get("delete_backups", False)
 
     def symlink(self, src: Path, dst: Path) -> None:
         """ Create a symlink called dst pointing to src. """
@@ -515,7 +516,21 @@ class SetupUtils(object):
             return
 
         self.print_delete(file)
+        self._delete_file(file)
 
+    def delete_backup(self, file: Path) -> None:
+        if not self.delete_backups:
+            return
+
+        backup = file.with_suffix(self.suffix)
+
+        if not backup.exists() and not backup.is_symlink():
+            return
+
+        self.print_delete(backup)
+        self._delete_file(backup)
+
+    def _delete_file(self, file: Path) -> None:
         if file.is_file() or file.is_symlink():
             file.unlink()
         elif file.is_dir():
@@ -677,6 +692,10 @@ class FileMapping(object):
     def delete_dst(self, utils=None):
         if self.can_setup():
             self.require_utils(utils).delete_file(self.dst)
+
+    def delete_backup(self, utils=None):
+        if self.can_setup():
+            self.require_utils(utils).delete_backup(self.dst)
 
     def backup_dst(self, utils=None):
         if self.can_setup():

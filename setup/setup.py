@@ -176,9 +176,13 @@ class SetupArgParser(ArgumentParser):
         kwargs["help"] = "delete existing files"
         dst_handling.add_argument("-d", "--delete", **kwargs)
 
-        kwargs = dict(action="store", nargs=1, default=["old"], metavar="S",
-                      help="the suffix, used when backing up files [: old]")
+        kwargs = dict(action="store", nargs=1, default=["old"], metavar="S",)
+        kwargs["help"] = "the suffix, used when backing up files [: old]"
         group.add_argument("-s", "--suffix", **kwargs)
+
+        kwargs = dict(action="store_true", dest="delete_backups")
+        kwargs["help"] = "delete old backups of files"
+        group.add_argument("--delete-backups", **kwargs)
 
         kwargs = dict(action="append", default=None, metavar="U",
                       help="run for each user (specify once for each user)")
