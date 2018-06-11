@@ -158,6 +158,11 @@ class Category(object):
         for mapping in self.files + self.directories:
             self.utils.try_execute(lambda: mapping.delete_dst(self.utils))
 
+    def delete_backups(self):
+        for mapping in self.files + self.directories:
+            mapping = mapping.with_suffix(self.utils.suffix)
+            self.utils.try_execute(lambda: mapping.delete_dst(self.utils))
+
     def install(self, keys):
         if "all" in keys:
             keys = [k for k in self.install_dict.keys() if k != "all"]
@@ -660,6 +665,10 @@ class FileMapping(object):
 
     def can_setup(self):
         return self.is_privileged() and self.is_distribution()
+
+    def with_suffix(self, suffix):
+        dst = self.dst + suffix
+        return FileMapping(self.src, dst, self.root, self.distribution)
 
     def link(self, utils=None):
         if self.can_setup():
