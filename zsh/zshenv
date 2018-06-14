@@ -6,6 +6,7 @@ export GEM_HOME=$HOME/.gem
 export ZDOTDIR="$HOME"
 
 # export TERM="screen-256color"
+export PLANTUML_LIMIT_SIZE=8192
 
 export EDITOR=/usr/bin/nvim
 export VISUAL=/usr/bin/nvim
