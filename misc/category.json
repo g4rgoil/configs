@@ -43,6 +43,10 @@
     {
       "src": "tobuy.cfg",
       "dst": "~/.todo/tobuy.config"
+    },
+    {
+      "src": "yay.cfg",
+      "dst": "~/.config/yay/config.json"
     }
   ],
   "directories": [
