@@ -6,8 +6,7 @@
 usb_mount="/mnt/usb"
 hdd_mount="/mnt/hdd"
 tmp_mount="/mnt/tmp"
-mapper_usb="/dev/mapper/usb"
-mapper_hdd="/dev/mapper/hdd"
+luks_dev="/dev/mapper"
 
 
 function mount.usb() {
@@ -34,24 +33,13 @@ function umount.tmp() {
     sudo umount $tmp_mount
 }
 
-function luksMount.usb() {
-    if sudo cryptsetup luksOpen $1 usb; then
-        mount.usb $mapper_usb
+function luksMount() {
+    if sudo cryptsetup open ${2?} ${1?}; then
+        sudo mount "${luks_dev}/${1}" "/mnt/${1}"
     fi
 }
 
-function luksMount.hdd() {
-    if sudo cryptsetup luksOpen $1 hdd; then
-        mount.hdd $mapper_hdd
-    fi
-}
-
-function luksUmount.usb() {
-    umount.usb
-    sudo cryptsetup luksClose usb
-}
-
-function luksUmount.hdd() {
-    umount.hdd
-    sudo cryptsetup luksClose hdd
+function luksUmount() {
+    sudo umount "/mnt/${1?}"
+    sudo cryptsetup close $1
 }
