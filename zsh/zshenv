@@ -1,6 +1,6 @@
 # ~/.zshenv
 
-if hash ruby >/dev/null; then
+if hash ruby >/dev/null 2>&1; then
     PATH="$PATH:$(ruby -e 'print Gem.user_dir')/bin"
     export GEM_HOME=$HOME/.gem
 fi
