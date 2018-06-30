@@ -1,7 +1,9 @@
 # ~/.zshenv
 
-PATH="$PATH:$(ruby -e 'print Gem.user_dir')/bin"
-export GEM_HOME=$HOME/.gem
+if hash ruby >/dev/null; then
+    PATH="$PATH:$(ruby -e 'print Gem.user_dir')/bin"
+    export GEM_HOME=$HOME/.gem
+fi
 
 export ZDOTDIR="$HOME"
 
