@@ -4,6 +4,8 @@
 
 if [[ "$SESSION_TYPE" != "local" ]]; then
     alias tmux='tmux -L remote'
+else
+    alias tmux='tmux -L local'
 fi
 
 # Some pacman aliasses
