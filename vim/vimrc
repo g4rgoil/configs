@@ -150,6 +150,7 @@ call vundle#begin()
 
     Plugin 'harenome/vim-mipssyntax'
     Plugin 'vim-syntastic/syntastic'
+    Plugin 'tfnico/vim-gradle'
 
     Plugin 'tmhedberg/SimpylFold'
     Plugin 'Konfekt/FastFold'
