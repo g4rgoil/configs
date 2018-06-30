@@ -2,6 +2,9 @@
 # ~/.zsh_aliases
 #
 
+if [[ "$SESSION_TYPE" != "local" ]]; then
+    alias tmux='tmux -L remote'
+fi
 
 # Some pacman aliasses
 alias update='yay -Syu'
