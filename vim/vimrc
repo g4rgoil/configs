@@ -156,6 +156,7 @@ silent! call vundle#rc()
     Plugin 'Valloric/YouCompleteMe'
     Plugin 'rdnetto/YCM-Generator'
     Plugin 'freitass/todo.txt-vim'
+    Plugin 'Raimondi/delimitMate'
 
 "" Indentation
 if has('autocmd')
