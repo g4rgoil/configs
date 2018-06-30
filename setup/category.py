@@ -57,7 +57,7 @@ def get_dist():
 
 def parse_json_descriptor(path):
     """ Parses the specified json file and returns it as dict """
-    with open(path, "r", encoding="utf-8") as file:
+    with open(str(path), "r", encoding="utf-8") as file:
         json_file = json.load(file)
 
     return json_file
