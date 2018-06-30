@@ -85,7 +85,7 @@ class CategoryCollection(object):
 class Category(object):
     directory = None
 
-    def __init__(self, descriptor_path: Path = None):
+    def __init__(self, descriptor_path=None):
         self.name = None
         self.src_dir = None
         self.descriptor = None
@@ -98,7 +98,7 @@ class Category(object):
         self.utils = SetupUtils()
 
         if self.directory is not None:
-            self.src_dir: Path = require_repo_dir(self.directory)
+            self.src_dir = require_repo_dir(self.directory)
 
         if descriptor_path is not None:
             self.descriptor = parse_json_descriptor(descriptor_path)
@@ -477,7 +477,7 @@ class SetupUtils(object):
         self.suffix = "." + args_dict.get("suffix", ["old"])[0].lstrip(".")
         self.delete_backups = args_dict.get("delete_backups", False)
 
-    def symlink(self, src: Path, dst: Path) -> None:
+    def symlink(self, src, dst) -> None:
         """ Create a symlink called dst pointing to src. """
         if not self.link:
             return
@@ -497,7 +497,7 @@ class SetupUtils(object):
         dst.parent.mkdir(parents=True, exist_ok=True)
         dst.symlink_to(src)
 
-    def backup_file(self, src: Path) -> None:
+    def backup_file(self, src) -> None:
         if not self.backup:
             return
 
@@ -508,7 +508,7 @@ class SetupUtils(object):
         self.print_move(src, dst)
         os.rename(str(src), str(dst))
 
-    def delete_file(self, file: Path) -> None:
+    def delete_file(self, file) -> None:
         if not self.delete:
             return
 
@@ -518,7 +518,7 @@ class SetupUtils(object):
         self.print_delete(file)
         self._delete_file(file)
 
-    def delete_backup(self, file: Path) -> None:
+    def delete_backup(self, file) -> None:
         if not self.delete_backups:
             return
 
@@ -530,19 +530,19 @@ class SetupUtils(object):
         self.print_delete(backup)
         self._delete_file(backup)
 
-    def _delete_file(self, file: Path) -> None:
+    def _delete_file(self, file) -> None:
         if file.is_file() or file.is_symlink():
             file.unlink()
         elif file.is_dir():
             shutil.rmtree(str(file))
 
-    def run(self, args: List[str]) -> CompletedProcess:
+    def run(self, args) -> CompletedProcess:
         kwargs = dict(stdout=None if self.verbose else DEVNULL,
                       stderr=DEVNULL if self.quiet else None, check=False)
 
         return run(args, **kwargs)
 
-    def clone_repo(self, url: str, path: Path, name=None):
+    def clone_repo(self, url, path, name=None):
         if name is None:
             name = path.name
 
@@ -645,7 +645,7 @@ class FileMapping(object):
 
     utils = SetupUtils()
 
-    def __init__(self, src: Path, dst: Path, root=False, distribution=None):
+    def __init__(self, src, dst, root=False, distribution=None):
         """
         :param src: the absolute path to the file in the repository
         :param dst: the absolute path to the file on the system
@@ -669,7 +669,7 @@ class FileMapping(object):
         return "FileMapping(src='%s', dst='%s')" % (self.src, self.dst)
 
     @classmethod
-    def require_utils(cls, utils: SetupUtils) -> SetupUtils:
+    def require_utils(cls, utils) -> SetupUtils:
         return utils if utils is not None else cls.utils
 
     def is_privileged(self) -> bool:
