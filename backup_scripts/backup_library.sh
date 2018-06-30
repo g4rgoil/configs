@@ -165,6 +165,17 @@ function add_scheduling() {
         "${1?}"
 }
 
+# Prompts the user for a password entry
+#
+# $1: the message to prompt with
+# $2: the name variable to store the password in
+function require_password {
+    log "Quoting user for password"
+    echo -n "${1:-Enter password}: "
+    read -r -s "${2?}"
+    echo ""
+}
+
 
 # Return 0 if mounting the device at the specified mountpoint is succesful, 
 # 1 otherwise
