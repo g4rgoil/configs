@@ -26,12 +26,6 @@ fi
 if [[ -f ~/.bash-aliases ]]; then
     source ~/.bash-aliases
 fi
-
-
-# Source ssh session specific alias definition from ~/.bash_aliases.ssh
-if [[ "$SESSION_TPE" = "remote/ssh" ]] && [[ -f ~/.zsh-aliases.ssh ]]; then
-    source ~/.zsh-aliases.ssh
-fi
     
 # Try sourcing the git prompt 
 if [ -f /usr/share/git/completion/git-prompt.sh ]; then

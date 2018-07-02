@@ -25,10 +25,6 @@
     {
       "src": "bash-aliases",
       "dst": "~/.bash-aliases"
-    },
-    {
-      "src": "bash-aliases.ssh",
-      "dst": "~/.bash-aliases.ssh"
     }
   ],
   "directories": [

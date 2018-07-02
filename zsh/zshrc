@@ -119,11 +119,6 @@ if [[ -f ~/.zsh-aliases ]]; then
     source ~/.zsh-aliases
 fi
 
-# Source ssh session specific alias definition from ~/.zsh_aliases.ssh
-if [[ "$SESSION_TPE" = "remote/ssh" ]] && [[ -f ~/.zsh-aliases.ssh ]]; then
-    source ~/.zsh-aliases.ssh
-fi
-
 # Source user specific functions from ~/.zsh_functions
 if [[ -f ~/.zsh-functions ]]; then
     source ~/.zsh-functions
