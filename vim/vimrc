@@ -100,7 +100,7 @@ endif
 try
     colorscheme base16-darktooth
 catch /^Vim\%((\a\+)\)\=:E185/
-    " deal with it
+    colorscheme slate
 endtry
 
 set smarttab
