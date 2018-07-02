@@ -96,7 +96,12 @@ if has("termguicolors")
 endif
 
 "let base16colorspace=256  " Access colors present in 256 colorspace
-colorscheme base16-darktooth
+
+try
+    colorscheme base16-darktooth
+catch /^Vim\%((\a\+)\)\=:E185/
+    " deal with it
+endtry
 
 set smarttab
 set tabstop=4                   " Number of hard-tabstop spaces
