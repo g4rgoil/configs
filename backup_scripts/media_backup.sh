@@ -27,8 +27,13 @@ export BORG_PASSPHRASE=""
 export BORG_KEY_FILE="/root/.config/borg/keys/mybook_media"
 
 function unmount_backup_devices() {
-    ensure_unmounted $backup_src $unmount_src && unmount_src=""
-    ensure_unmounted $backup_dst $unmount_dst && unmount_dst=""
+    if ensure_unmounted $backup_src $unmount_src; then
+        unmount_src=""
+    fi
+
+    if ensure_unmounted $backup_dst $unmount_dst; then
+        unmount_dst=""
+    fi
 }
 
 function finish() {
@@ -53,7 +58,7 @@ function terminate() {
     unmount_backup_devices
 
     blank_line
-    exit $exit_code
+    exit $interrupt_exit
 }
 
 trap finish EXIT
@@ -75,11 +80,11 @@ if ! require_backup_interval $ts_file "$interval"; then
     exit $insufficient_interval_exit
 fi
 
-if ! ensure_mounted $backup_dst unmount_dst; then
+if ! ensure_mounted $backup_src unmount_src; then
     exit $mount_exit
 fi
 
-if ! ensure_mounted $backup_src unmount_src; then
+if ! ensure_mounted $backup_dst unmount_dst; then
     exit $mount_exit
 fi
 

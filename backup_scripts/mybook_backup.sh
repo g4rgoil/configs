@@ -19,7 +19,7 @@ pid_file="/var/run/xps13-backup.pid"
 interval="-24 hours"
 
 backup_src="/hdd/mybook"
-unmount_src=false
+unmount_src=""
 
 ssh_user="pascal"
 ssh_host="192.168.3.47"
@@ -28,20 +28,19 @@ export BORG_REPO="ssh://${ssh_user}@${ssh_host}/pool/pascal/borg-repository"
 export BORG_PASSPHRASE=""
 export BORG_KEY_FILE="/root/.config/borg/keys/zfsnas_mybook"
 
+function unmount_backup_devices() {
+    if ensure_unmounted $backup_src $unmount_src; then
+        unmount_src=""
+    fi
+}
 
 function finish() {
     exit_code=$?
 
-    if [[ $exit_code -eq 0 ]]; then
-        set_timestamp $ts_file
-    fi
-    
-    if [[ "$unmount_src" = true ]]; then
-        unmount_device $backup_src
-        unmount_src=false
-    fi
+    unmount_backup_devices
 
     if [[ $exit_code -eq 0 ]]; then
+        set_timestamp $ts_file
         log "Finishing backup procedure"
         slack_message "Finished weekly mybook backup"
     else
@@ -50,17 +49,16 @@ function finish() {
     fi
     
     blank_line
+    exit $exit_code
 }
 
 function terminate() {
     log_error "The backup procedure was interrupted by a signal"
     
-    if [[ "$unmount_src" = true ]]; then
-        unmount_device $backup_src
-        unmount_src=false
-    fi
+    unmount_backup_devices
     
     blank_line
+    exit $interrupt_exit
 }
 
 trap finish EXIT
@@ -90,14 +88,9 @@ if ! verify_ssh_host $ssh_host; then
     exit $connection_exit
 fi
 
-if ! mountpoint -q $backup_src; then
-    if ! mount_device $backup_src; then
-        exit $mount_exit
-    fi
-
-    unmount_src=true
+if ! ensure_mounted $backup_src unmount_src; then
+    exit $mount_exit
 fi
-
 
 create_backup $backup_src "mybook" "zlib,5"
 backup_exit=$?

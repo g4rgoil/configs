@@ -42,11 +42,13 @@ function finish() {
     fi
 
     blank_line
+    exit $exit_code
 }
 
 function terminate() {
     log_error "The backup procedure was interrupted by a signal"
     blank_line
+    exit $interrupt_exit
 }
 
 trap finish EXIT

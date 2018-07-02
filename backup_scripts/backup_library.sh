@@ -5,6 +5,7 @@ export insufficient_interval_exit=2
 export connection_exit=3
 export mount_exit=4
 export borg_error_exit=5
+export interrupt_exit=6
 
 
 declare log_file        # Contains the log for the current backup
@@ -224,9 +225,9 @@ function unmount_device() {
 # specified value name and unmounts it if necessary.
 #
 # $1: the mount point
-# $2: empty if not mounted, otherwise not empty
+# $2: empty if not mounted, otherwise not empty. If not specified, nothing is done.
 function ensure_unmounted() {
-    if [[ -n "${2?}" ]]; then
+    if [[ -n "$2" ]]; then
         unmount_device "${1?}"
         return 0
     fi

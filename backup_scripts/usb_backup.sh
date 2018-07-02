@@ -17,15 +17,18 @@ backup_src="${2:-/mnt/usb}"
 unmount_dst=false
 
 export BORG_REPO="${backup_dst}/Borg_Backups/pascal_usb"
-export BORG_KEY_FILE="/root/.config/borg/keys/mybook_usb"  # TODO
+export BORG_KEY_FILE="/root/.config/borg/keys/mybook_usb"
+
+function unmount_backup_devices() {
+    if ensure_unmounted $backup_dst $unmount_dst; then
+        unmount_dst=""
+    fi
+}
 
 function finish() {
     exit_code=$?
 
-    if [[ "$unmount_dst" = true ]]; then
-        unmount_device $backup_dst
-        unmount_dst=false
-    fi
+    unmount_backup_devices
     
     if [[ $exit_code -eq 0 ]]; then
         log "Finishing backup procedure"
@@ -34,17 +37,16 @@ function finish() {
     fi
 
     blank_line
+    exit $exit_code
 }
 
 function terminate() {
     log_error "The backup procedure was interrupted by a signal"
 
-    if [[ "$unmount_dst" = true ]]; then
-        unmount_device $backup_dst
-        unmount_dst=false
-    fi
+    unmount_backup_devices
 
     blank_line
+    exit $interrupt_exit
 }
 
 trap finish EXIT
@@ -53,18 +55,13 @@ trap 'trap "" EXIT; terminate' \
     HUP INT QUIT TERM
 
 
+log "Starting backup procedure"
+
 require_directory $log_directory "log directory"
 require_directory $backup_dst "mount point for backup device"
 
-
-log "Starting backup procedure"
-
-if ! mountpoint -q $backup_dst; then
-    if ! mount_device $backup_dst; then
-        exit $mount_exit
-    fi
-
-    unmount_dst=true
+if ensure_mounted $backup_dst unmount_dst; then
+    exit $mount_exit
 fi
 
 password=""
