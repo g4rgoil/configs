@@ -192,6 +192,24 @@ function mount_device() {
     fi
 }
 
+# Checks if the device at the specified mountpoint is mounted, mounts it
+# if necessary and checks if the mount was succesfull. If the the device
+# was mounted, 'true' is stored in the specified variable
+#
+# $1: the mount point
+# $2: the name of the variable
+function ensure_mounted() {
+    if ! mountpoint -q "${1?}"; then
+        if ! mount_device "$1"; then
+            return 1
+        fi
+
+        "$2"=true
+    fi
+
+    return 0
+}
+
 
 # Unmount the device at the specified mountpoint
 #
@@ -199,6 +217,21 @@ function mount_device() {
 function unmount_device() {
     log "Unmounting ${1?}"
     umount "$1"
+}
+
+
+# Checks if the device at the specified mountpoint was mounted, using the
+# specified value name and unmounts it if necessary.
+#
+# $1: the mount point
+# $2: empty if not mounted, otherwise not empty
+function ensure_unmounted() {
+    if [[ -n "${2?}" ]]; then
+        unmount_device "${1?}"
+        return 0
+    fi
+
+    return 1
 }
 
 
