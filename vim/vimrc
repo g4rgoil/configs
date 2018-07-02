@@ -4,11 +4,61 @@
 
 set nocompatible
 set encoding=utf-8
-"" packadd! matchit
 set backupext=.bak
+
+" Add ~/.vim to runtimepath and packpath
+if has('nvim')
+    set runtimepath+=~/.vim/after runtimepath+=~/.vim
+    set packpath+=~/.vim/after packpath+=~/.vim
+endif
 
 """ Filetyp turned back on after vundle did its thing
 filetype off
+
+"" Plugins
+set rtp+=~/.vim/bundle/Vundle.vim
+
+if filereadable(expand("~/.vim/bundle/Vundle.vim/autoload/vundle.vim"))
+    silent! call vundle#rc()
+        Plugin 'VundleVim/Vundle.vim'
+
+        Plugin 'junegunn/goyo.vim'
+        Plugin 'junegunn/vim-easy-align'
+
+        Plugin 'tpope/vim-surround'
+        Plugin 'tpope/vim-fugitive'
+
+        Plugin 'vim-airline/vim-airline'
+        Plugin 'vim-airline/vim-airline-themes'
+        Plugin 'chriskempson/base16-vim'
+        
+        Plugin 'SirVer/ultisnips'
+        Plugin 'honza/vim-snippets'
+        Plugin 'pgilad/vim-skeletons'
+        Plugin 'davidhalter/jedi-vim'
+
+        Plugin 'scrooloose/nerdtree'
+        Plugin 'ap/vim-css-color'
+        Plugin 'lervag/vimtex'
+        Plugin 'aklt/plantuml-syntax'
+
+        Plugin 'harenome/vim-mipssyntax'
+        Plugin 'vim-syntastic/syntastic'
+        Plugin 'tfnico/vim-gradle'
+
+        Plugin 'tmhedberg/SimpylFold'
+        Plugin 'Konfekt/FastFold'
+
+        Plugin 'Valloric/YouCompleteMe'
+        Plugin 'rdnetto/YCM-Generator'
+        Plugin 'freitass/todo.txt-vim'
+        Plugin 'Raimondi/delimitMate'
+endif
+
+"" Indentation
+if has('autocmd')
+    filetype plugin indent on
+endif
 
 "" General
 set ruler                       " Show row and column ruler information
@@ -22,17 +72,6 @@ set cmdheight=1                 " Number of lines at bottom of screen
 set tw=0                        " Don't use automatic line breaks
 set backspace=indent,eol,start  " Set the backspace to delete by default
 syntax enable                   " Enable syntax highlighting
-
-" if has('nvim')
-    " let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-    " let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
-" endif
-
-" Add ~/.vim to runtimepath and packpath
-if has('nvim')
-    set runtimepath+=~/.vim/after runtimepath+=~/.vim
-    set packpath+=~/.vim/after packpath+=~/.vim
-endif
 
 "" Setting the cursor shape for vim and neovim
 if has('nvim')
@@ -50,6 +89,14 @@ else
         let &t_EI = "\e[2 q"
     endif
 endif
+
+""" Setting support for True color
+if has("termguicolors")
+    set termguicolors
+endif
+
+"let base16colorspace=256  " Access colors present in 256 colorspace
+colorscheme base16-darktooth
 
 set smarttab
 set tabstop=4                   " Number of hard-tabstop spaces
@@ -108,59 +155,11 @@ let g:UltiSnipsSnippetDirectories=["UltiSnips"]
 
 "" ycm (you complete me) configuration
 let g:ycm_global_ycm_extra_conf='/usr/share/vim/vimfiles/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
-" let g:ycm_server_python_interpreter='/bin/python2'
 
 let g:ycm_python_binary_path = '/usr/bin/python3'
 
 let g:syntastic_sh_shellcheck_args = "-x"
 
 "" File Type options
-" autocmd BufNewFile,BufReadPost *.md,*.mkd set filetype=markdown
 let g:markdown_fenced_languages = ['javascript', 'go', 'php']
 
-" autocmd BufNewFile,BufReadPost *.asm set filetype=mips
-" autocmd BufNewFile,BufReadPost *.coffee set filetype=coffee
-
-"" Plugins
-set rtp+=~/.vim/bundle/Vundle.vim
-
-if filereadable(expand("~/.vim/bundle/Vundle.vim/autoload/vundle.vim"))
-    silent! call vundle#rc()
-        Plugin 'VundleVim/Vundle.vim'
-
-        Plugin 'junegunn/goyo.vim'
-        Plugin 'junegunn/vim-easy-align'
-
-        Plugin 'tpope/vim-surround'
-        Plugin 'tpope/vim-fugitive'
-
-        Plugin 'vim-airline/vim-airline'
-        Plugin 'vim-airline/vim-airline-themes'
-        
-        Plugin 'SirVer/ultisnips'
-        Plugin 'honza/vim-snippets'
-        Plugin 'pgilad/vim-skeletons'
-        Plugin 'davidhalter/jedi-vim'
-
-        Plugin 'scrooloose/nerdtree'
-        Plugin 'ap/vim-css-color'
-        Plugin 'lervag/vimtex'
-        Plugin 'aklt/plantuml-syntax'
-
-        Plugin 'harenome/vim-mipssyntax'
-        Plugin 'vim-syntastic/syntastic'
-        Plugin 'tfnico/vim-gradle'
-
-        Plugin 'tmhedberg/SimpylFold'
-        Plugin 'Konfekt/FastFold'
-
-        Plugin 'Valloric/YouCompleteMe'
-        Plugin 'rdnetto/YCM-Generator'
-        Plugin 'freitass/todo.txt-vim'
-        Plugin 'Raimondi/delimitMate'
-endif
-
-"" Indentation
-if has('autocmd')
-    filetype plugin indent on
-endif
