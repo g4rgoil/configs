@@ -43,3 +43,13 @@ function luksUmount() {
     sudo umount "/mnt/${1?}"
     sudo cryptsetup close $1
 }
+
+function show_colors() {
+    for i in {0..255}; do
+        printf "\x1b[38;5;${i}mcolour%03d\x1b[0m " "$i"
+
+        if [[ $(( ($i + 1) % 8 )) -eq 0 ]]; then
+            echo ""
+        fi
+    done
+}
