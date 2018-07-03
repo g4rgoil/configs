@@ -6,7 +6,7 @@ library_file="${script_directory}/backup_library.sh"
 # shellcheck source=/etc/backup_scripts/backup_library.sh
 source $library_file
 
-exclude_file="${script_directory}/usb.exclude"
+exclude_file=<(echo "")
 
 log_directory="/var/log/backup_logs"
 log_file="${log_directory}/usb.log"
