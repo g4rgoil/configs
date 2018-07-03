@@ -36,8 +36,14 @@ class Task(object):
 
     @classmethod
     def parse(cls, task):
-        task = task.strip()
+        if task is None:
+            return None
+
+        task = task.strip().rstrip("\n")
         kwargs = dict()
+
+        if task == "":
+            return None
 
         if task.startswith("x "):
             kwargs["done"] = True
@@ -241,6 +247,8 @@ class TaskFile(object):
             for line in task_file.readlines():
                 self.__tasks.append(Task.parse(line))
 
+        self.__tasks = list(filter((None).__ne__, self.__tasks))
+
     def write(self):
         with open(self.__path, mode='w') as task_file:
             for task in self.__tasks:
@@ -250,5 +258,5 @@ class TaskFile(object):
         return self.__tasks[i-1]
 
     def sort(self):
-        self.__tasks.sort(key=lambda task: str(task.description))
+        self.__tasks.sort(key=lambda task: str(task.description).lower())
         self.__tasks.sort(key=lambda task: task.priority)
