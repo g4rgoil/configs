@@ -279,7 +279,6 @@ class CategoryTmux(Category):
         super().__init__()
 
         self.install_dict = {
-            "tpm": self._install_plugin_manager,
             "powerline": self._install_powerline,
             "all": None
         }
@@ -299,13 +298,6 @@ class CategoryTmux(Category):
 
         if namespace.install:
             self.install(namespace.install)
-
-    def _install_plugin_manager(self):
-        install_location = Path("~/.tmux/plugins/tpm").expanduser()
-        src_url = "https://github.com/tmux-plugins/tpm"
-
-        self.utils.clone_repo(src_url, install_location,
-                              name="Tmux Plugin Manger")
 
     def _install_powerline(self):
         install_location = Path("~/.tmux/powerline").expanduser()
