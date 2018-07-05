@@ -58,6 +58,7 @@ endif
 "" Indentation
 if has('autocmd')
     filetype plugin indent on
+    autocmd FileType c,cpp,java,php,python,bash,sh autocmd BufWritePre <buffer> %s/\s\+$//e
 endif
 
 "" General
@@ -67,6 +68,7 @@ set listchars=tab:>-,trail:-    " Show tabs as >--- and trailing spaces as -
 set linebreak                   " Break lines at work
 set showbreak=+++               " Wrap-broken line prefix
 set textwidth=120               " Line wrap (after cols)
+set wrap
 set showmatch                   " Highlight matching braces
 set cmdheight=1                 " Number of lines at bottom of screen
 set tw=0                        " Don't use automatic line breaks
