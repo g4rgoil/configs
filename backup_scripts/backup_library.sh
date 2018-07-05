@@ -33,7 +33,7 @@ function slack_message() {
 #
 # $1: the file to use
 function set_slack_url() {
-    if [[ -f "${1?}" ]]; then 
+    if [[ -f "${1?}" ]]; then
         slack_url="$(<"${1}")"
     else
         log_error "Plese create a file at '${1}' that contains your slack webhook"
@@ -53,6 +53,7 @@ function timestamp() {
 # $1: the string to print
 function log() {
     echo -e "${1?}" | timestamp
+    echo -e "${1?}"
 }
 
 
@@ -61,6 +62,7 @@ function log() {
 # $1: the string to print
 function log_error() {
     log "ERROR: ${1?}"
+    >&2 echo "ERROR: ${1?}" >/dev/null
 }
 
 
@@ -153,7 +155,7 @@ function remove_scheduling() {
 }
 
 
-# Create an at job that executes the specified script, and write the id to the 
+# Create an at job that executes the specified script, and write the id to the
 # specified file
 #
 # $1: the script to exectue
@@ -178,7 +180,7 @@ function require_password {
 }
 
 
-# Return 0 if mounting the device at the specified mountpoint is succesful, 
+# Return 0 if mounting the device at the specified mountpoint is succesful,
 # 1 otherwise
 #
 # $1: the mount point
@@ -238,7 +240,7 @@ function ensure_unmounted() {
 
 # Create a borg backup of the specified src directory, name the backup with the
 # specified prefix and compress it with the specified compression algorithm
-# This function uses the value in $BORG_REPO as the borg repository 
+# This function uses the value in $BORG_REPO as the borg repository
 # The value in $exclude_file is used as file that contains exclude_patterns
 #
 # $1: the source directory for the backup
@@ -273,5 +275,5 @@ function prune_repository() {
         --keep-daily    7       \
         --keep-weekly   4       \
         --keep-monthly  12      \
-        >/dev/null 2>&1 | timestamp 
+        >/dev/null 2>&1 | timestamp
 }
