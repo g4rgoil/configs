@@ -593,6 +593,9 @@ class SetupUtils(object):
         self._install_packages("gem install %s --no-user-install", *packages)
 
     def _install_packages(self, command, *packages):
+        if len(packages) == 0:
+            return
+
         process = self.run(shlex.split(command % " ".join(packages)))
 
         if process.returncode != 0:
