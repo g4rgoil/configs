@@ -81,7 +81,6 @@
       "phplint"
     ],
     "pip": [
-      "flake8"
     ],
     "gem": [
       "mdl",
