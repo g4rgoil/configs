@@ -258,5 +258,13 @@ class TaskFile(object):
         return self.__tasks[i-1]
 
     def sort(self):
+        self.sort_by_description()
+        self.sort_by_priority()
+
+    def sort_by_description(self):
         self.__tasks.sort(key=lambda task: str(task.description).lower())
-        self.__tasks.sort(key=lambda task: task.priority)
+
+    def sort_by_priority(self):
+        self.__tasks.sort(key=lambda task: "" if task.priority is None
+                          else task.priority)
+        self.__tasks.sort(key=lambda task: task.priority is None)

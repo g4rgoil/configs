@@ -13,7 +13,10 @@ usage = "%s sort" % todo_sh
 
 help_msg = """ sort:
     sort
-      Sorts the todo.txt file.
+      Sorts the todo.txt file. Sorts the tasks by priority.
+      Tasks with the same priority are sorted using their description.
+      If a task has no priority, it will be put at the end of the file.
+      Empty lines will be delted.
 """
 
 if sys.argv[1] == "usage":
