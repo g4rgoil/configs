@@ -6,7 +6,7 @@
       "usage": "setup.py backups [-h]",
       "epilog": null,
       "help": "set up backup scripts",
-      "version": "0.1.0"
+      "version": "1.0.0"
     }
   },
   "files": [

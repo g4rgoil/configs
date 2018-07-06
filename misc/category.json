@@ -6,7 +6,7 @@
       "usage": "setup.py misc [-h] [--install arg [arg ...]]",
       "epilog": null,
       "help": "set up files for miscellaneous programs",
-      "version": "0.5.0"
+      "version": "1.0.0"
     }
   },
   "files": [

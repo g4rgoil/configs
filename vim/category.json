@@ -6,7 +6,7 @@
       "usage": "setup.py vim [-h] [--install arg [arg ...]]",
       "epilog": null,
       "help": "set up files and plugins for the vim text editor",
-      "version": "1.1.0"
+      "version": "1.2.0"
     }
   },
   "files": [

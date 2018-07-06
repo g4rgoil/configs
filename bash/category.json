@@ -6,7 +6,7 @@
       "usage": "setup.py bash [-h]",
       "epilog": null,
       "help": "set up files for the bourne again shell",
-      "version": "0.1.0"
+      "version": "1.0.0"
     }
   },
   "files": [
