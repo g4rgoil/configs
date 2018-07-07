@@ -7,7 +7,7 @@ library_file="${script_directory}/backup_library.sh"
 source $library_file
 
 script_file="${script_directory}/xps13_backup.sh"
-exclude_file="${script_directory}/root.exclude"
+pattern_file="${script_directory}/root.pattern"
 
 log_directory="/var/log/backup_logs"
 ts_file="${log_directory}/xps13.ts"
@@ -34,7 +34,7 @@ function finish() {
     if [[ $exit_code -eq 0 ]]; then
         set_timestamp $ts_file
     fi
-    
+
     if [[ $exit_code -eq 0 ]]; then
         log "Finishing backup procedure"
     else
