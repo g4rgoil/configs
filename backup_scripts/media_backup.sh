@@ -7,7 +7,7 @@ library_file="${script_directory}/backup_library.sh"
 source $library_file
 
 # script_file="${script_directory}/media_backup.sh"
-exclude_file="${script_directory}/media.exclude"
+pattern_file="${script_directory}/media.pattern"
 
 log_directory="/var/log/backup_logs"
 ts_file="${log_directory}/media.ts"
