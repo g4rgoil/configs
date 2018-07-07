@@ -7,7 +7,8 @@ library_file="${script_directory}/backup_library.sh"
 source $library_file
 
 # script_file="${script_directory}/desktop_backup.sh"
-exclude_file="${script_directory}/root.exclude"
+# exclude_file="${script_directory}/root.exclude"
+pattern_file="${script_directory}/root.pattern"
 
 log_directory="/var/log/backup_logs"
 ts_file="${log_directory}/desktop.ts"
