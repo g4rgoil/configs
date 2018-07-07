@@ -1,0 +1,7 @@
+# Set default pattern style
+P sh
+
+# Set pattern root
+R /hdd/mybook
+
+/HDD_Backups
