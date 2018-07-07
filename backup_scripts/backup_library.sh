@@ -14,6 +14,7 @@ declare slack_url       # The variable to use as webhook, when sending messagaes
 
 slack_hook_file="${HOME}/.slack-hook"
 tformat="%Y-%m-%d %H:%M:%S"
+empty_file="$(mktemp)"
 
 
 # Send a message with the specified string to slack
@@ -249,15 +250,16 @@ function ensure_unmounted() {
 function create_backup() {
     log "Creating backup"
 
-    borg create                 \
-        --warning               \
-        --filter E              \
-        --compression "${3?}"   \
-        --exclude-from "$exclude_file"    \
-        --exclude-caches        \
-                                \
-        ::"${2?}-{now}"         \
-        "${1?}"                 \
+    borg create             \
+        --warning           \
+        --filter E          \
+        --compression "${3:-lz4}"   \
+        --exclude-from "${exclude_file:-$empty_file}"   \
+        --patterns-from "${pattern_file:-$empty_file}"  \
+        --exclude-caches    \
+                            \
+        ::"${2?}-{now}"     \
+        "${1?}"             \
         2>&1 | timestamp
 }
 
