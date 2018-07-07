@@ -22,6 +22,7 @@ alias etemp='edit $(mktemp)'
 alias cpumonitor='sudo s-tui'
 alias gpumonitor='nvidia-smi -l 5'
 alias networkmonitor='nload'
+alias diskmonitor='iotop'
 alias vim2ps='vim -c "hardcopy > output.ps" -c quit'
 
 # Some power aliases
