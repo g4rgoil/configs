@@ -6,8 +6,6 @@ library_file="${script_directory}/backup_library.sh"
 # shellcheck source=/etc/backup_scripts/backup_library.sh
 source $library_file
 
-exclude_file=<(echo "")
-
 log_directory="/var/log/backup_logs"
 log_file="${log_directory}/usb.log"
 
@@ -29,7 +27,7 @@ function finish() {
     exit_code=$?
 
     unmount_backup_devices
-    
+
     if [[ $exit_code -eq 0 ]]; then
         log "Finishing backup procedure"
     else
