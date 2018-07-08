@@ -12,7 +12,7 @@ log_file="${log_directory}/usb.log"
 backup_dst="/hdd/mybook"
 prefix="${1:-unkown}"
 backup_src="${2:-/mnt/usb}"
-unmount_dst=false
+unmount_dst=""
 
 export BORG_REPO="${backup_dst}/Borg_Backups/pascal_usb"
 export BORG_KEY_FILE="/root/.config/borg/keys/mybook_usb"
@@ -58,7 +58,7 @@ log "Starting backup procedure"
 require_directory $log_directory "log directory"
 require_directory $backup_dst "mount point for backup device"
 
-if ensure_mounted $backup_dst unmount_dst; then
+if ! ensure_mounted $backup_dst unmount_dst; then
     exit $mount_exit
 fi
 
