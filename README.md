@@ -30,7 +30,7 @@ Configuration files for the Bourne-Again Shell (bash).
 Configuration files for tmux, tmux-powerline and tmuxinator.
 
 - `tmux/tmux.conf` - mainly key bindings for tmux, sources either tmux.local.conf
-  or tmux.remote.conf depending on the value in `$SESSION_TYPE`
+  or tmux.remote.conf
 - `tmux/tmux.local.conf` - configuration for local tmux sessions, sources
   tmux-powerline and tmux-plugin-manager
 - `tmux/tmux.remote.conf` - configuration for remote tmux session, provides basic
@@ -83,8 +83,6 @@ Various backup scripts, mostly using borg to backup my systems and data.
   hard drive on our local server
 - `backup_scripts/usb_backup.sh` - creates a backup of a USB stick on my external
   hard drive
-- `backup_scripts/game_save_backup.sh` - deprecated backup script that will be
-  removed in the future
 - `backup_scripts/*.pattern` - contains patterns used by borg to include and
   exclude files
 
