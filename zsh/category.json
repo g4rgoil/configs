@@ -15,6 +15,10 @@
       "dst": "~/.zshrc"
     },
     {
+      "src": "oh-my-zsh-config",
+      "dst": "~/.oh-my-zsh-config"
+    },
+    {
       "src": "zsh-aliases",
       "dst": "~/.zsh-aliases"
     },
