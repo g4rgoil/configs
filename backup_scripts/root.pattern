@@ -5,11 +5,11 @@ P sh
 R /
 
 # Directories directly under the root of the file system
-- /dev/
-- /proc/
-- /sys/
-- /tmp/
-- /run/
+! /dev/
+! /proc/
+! /sys/
+! /tmp/
+! /run/
 - /mnt/
 - /media/
 - /hdd/

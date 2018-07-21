@@ -250,17 +250,20 @@ function ensure_unmounted() {
 function create_backup() {
     log "Creating backup"
 
-    borg create             \
-        --warning           \
-        --filter E          \
+    local rc
+    rc=$(borg --show-rc create  \
+        --warning               \
+        --filter E              \
         --compression "${3:-lz4}"   \
         --exclude-from "${exclude_file:-$empty_file}"   \
         --patterns-from "${pattern_file:-$empty_file}"  \
-        --exclude-caches    \
-                            \
-        ::"${2?}-{now}"     \
-        "${1?}"             \
-        2>&1 | timestamp
+        --exclude-caches        \
+                                \
+        ::"${2?}-{now}"         \
+        "${1?}"                 \
+        2>&1 | tee >(timestamp) | tail -1 | awk 'NF>1{print $NF}')
+
+    return "$rc"
 }
 
 
@@ -271,11 +274,14 @@ function create_backup() {
 function prune_repository() {
     log "Pruning borg repository"
 
-    borg prune                  \
+    local rc
+    rc=$(borg --show-rc prune   \
         --warning               \
-        --prefix "${1?}-"          \
+        --prefix "${1?}-"       \
         --keep-daily    7       \
         --keep-weekly   4       \
         --keep-monthly  12      \
-        >/dev/null 2>&1 | timestamp
+        2>&1 | tee >(timestamp) | tail -1 | awk 'NF>1{print $NF}')
+
+    return "$rc"
 }

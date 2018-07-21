@@ -82,14 +82,17 @@ fi
 create_backup $backup_src "pascal_desktop" "lz4"
 backup_exit=$?
 
+if [[ $backup_exit -gt 0 ]]; then
+    log_error "Borg create exited with non-zero exit code $backup_exit"
+    exit $borg_error_exit
+fi
+
 prune_repository "pascal_desktop"
 prune_exit=$?
 
-borg_exit=$(( backup_exit > prune_exit ? backup_exit : prune_exit ))
-
-if [[ $borg_exit -gt 0 ]]; then
-    log_error "Borg exited with non-zero exit code $borg_exit"
-    exit $borg_exit
+if [[ $backup_exit -gt 0 ]]; then
+    log_error "Borg prune exited with non-zero exit code $prune_exit"
+    exit $borg_error_exit
 fi
 
 exit 0
