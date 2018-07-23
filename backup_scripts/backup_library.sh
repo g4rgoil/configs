@@ -261,7 +261,7 @@ function create_backup() {
                                 \
         ::"${2?}-{now}"         \
         "${1?}"                 \
-        2>&1 | tee >(timestamp) | tail -1 | awk 'NF>1{print $NF}')
+        2>&1 | tee >(head -n -1 | timestamp) | tail -1 | awk 'NF>1{print $NF}')
 
     return "$rc"
 }
@@ -281,7 +281,7 @@ function prune_repository() {
         --keep-daily    7       \
         --keep-weekly   4       \
         --keep-monthly  12      \
-        2>&1 | tee >(timestamp) | tail -1 | awk 'NF>1{print $NF}')
+        2>&1 | tee >(head -n -1 | timestamp) | tail -1 | awk 'NF>1{print $NF}')
 
     return "$rc"
 }
