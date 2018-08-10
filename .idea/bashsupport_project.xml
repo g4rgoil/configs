@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BashSupportProjectSettings">
+    <option name="globalVariables">
+      <set>
+        <option value="borg_error_exit" />
+        <option value="connection_exit" />
+        <option value="insufficient_interval_exit" />
+        <option value="interrupt_exit" />
+        <option value="mount_exit" />
+        <option value="multiple_instance_exit" />
+        <option value="permission_error" />
+      </set>
+    </option>
+  </component>
+</project>

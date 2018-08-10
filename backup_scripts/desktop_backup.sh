@@ -4,7 +4,7 @@ script_directory="/etc/backup_scripts"
 library_file="${script_directory}/backup_library.sh"
 
 # shellcheck source=/etc/backup_scripts/backup_library.sh
-source $library_file
+source ${library_file}
 
 # script_file="${script_directory}/desktop_backup.sh"
 pattern_file="${script_directory}/root.pattern"
@@ -26,7 +26,7 @@ export BORG_PASSPHRASE=""
 export BORG_KEY_FILE="/root/.config/borg/keys/mybook_desktop"
 
 function unmount_backup_devices() {
-    if ensure_unmounted $backup_dst $unmount_dst; then
+    if ensure_unmounted ${backup_dst} ${unmount_dst}; then
         unmount_dst=""
     fi
 }
@@ -36,8 +36,8 @@ function finish() {
 
     unmount_backup_devices
 
-    if [[ $exit_code -eq 0 ]]; then
-        set_timestamp $ts_file
+    if [[ ${exit_code} -eq 0 ]]; then
+        set_timestamp ${ts_file}
         log "Finishing backup procedure"
     else
         log "Backup procedure failed with exit code $exit_code"
@@ -45,7 +45,7 @@ function finish() {
     fi
 
     blank_line
-    exit $exit_code
+    exit ${exit_code}
 }
 
 function terminate() {
@@ -54,7 +54,7 @@ function terminate() {
     unmount_backup_devices
 
     blank_line
-    exit $interrupt_exit
+    exit ${interrupt_exit}
 }
 
 trap finish EXIT
@@ -66,38 +66,38 @@ trap 'trap "" EXIT; terminate' \
 log "Starting backup procedure"
 
 if ! require_root; then
-    exit $permission_error
+    exit ${permission_error}
 fi
 
-if ! require_single_instance $pid_file; then
-    exit $multiple_instance_exit
+if ! require_single_instance ${pid_file}; then
+    exit ${multiple_instance_exit}
 fi
 
-require_directory $log_directory "log directory"
-require_directory $backup_dst "mount point for backup device"
+require_directory ${log_directory} "log directory"
+require_directory ${backup_dst} "mount point for backup device"
 
-if ! require_backup_interval $ts_file "$interval"; then
-    exit $insufficient_interval_exit
+if ! require_backup_interval ${ts_file} "$interval"; then
+    exit ${insufficient_interval_exit}
 fi
 
-if ! ensure_mounted $backup_dst unmount_dst; then
-    exit $mount_exit
+if ! ensure_mounted ${backup_dst} unmount_dst; then
+    exit ${mount_exit}
 fi
 
-create_backup $backup_src "pascal_desktop" "lz4"
+create_backup ${backup_src} "pascal_desktop" "lz4"
 backup_exit=$?
 
-if [[ $backup_exit -gt 0 ]]; then
+if [[ ${backup_exit} -gt 0 ]]; then
     log_error "Borg create exited with non-zero exit code $backup_exit"
-    exit $borg_error_exit
+    exit ${borg_error_exit}
 fi
 
 prune_repository "pascal_desktop"
 prune_exit=$?
 
-if [[ $backup_exit -gt 0 ]]; then
+if [[ ${backup_exit} -gt 0 ]]; then
     log_error "Borg prune exited with non-zero exit code $prune_exit"
-    exit $borg_error_exit
+    exit ${borg_error_exit}
 fi
 
 exit 0

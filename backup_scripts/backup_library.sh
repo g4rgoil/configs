@@ -251,8 +251,6 @@ function ensure_mounted() {
 
         "$2"=true
     fi
-
-    return 0
 }
 
 
@@ -274,8 +272,9 @@ function unmount_device() {
 # $2: empty if not mounted, otherwise not empty. If not specified, nothing is done.
 function ensure_unmounted() {
     local device="${1?}"
+    local is_mounted=$2
 
-    if [[ -n "$2" ]]; then
+    if [[ -n "$is_mounted" ]]; then
         unmount_device "$device"
         return 0
     fi

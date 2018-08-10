@@ -4,7 +4,7 @@ script_directory="/etc/backup_scripts"
 library_file="${script_directory}/backup_library.sh"
 
 # shellcheck source=/etc/backup_scripts/backup_library.sh
-source $library_file
+source ${library_file}
 
 script_file="${script_directory}/xps13_backup.sh"
 exclude_file="${script_directory}/mybook.exclude"
@@ -29,7 +29,7 @@ export BORG_PASSPHRASE=""
 export BORG_KEY_FILE="/root/.config/borg/keys/zfsnas_mybook"
 
 function unmount_backup_devices() {
-    if ensure_unmounted $backup_src $unmount_src; then
+    if ensure_unmounted ${backup_src} ${unmount_src}; then
         unmount_src=""
     fi
 }
@@ -39,8 +39,8 @@ function finish() {
 
     unmount_backup_devices
 
-    if [[ $exit_code -eq 0 ]]; then
-        set_timestamp $ts_file
+    if [[ ${exit_code} -eq 0 ]]; then
+        set_timestamp ${ts_file}
         log "Finishing backup procedure"
         slack_message "Finished weekly mybook backup"
     else
@@ -49,7 +49,7 @@ function finish() {
     fi
 
     blank_line
-    exit $exit_code
+    exit ${exit_code}
 }
 
 function terminate() {
@@ -58,7 +58,7 @@ function terminate() {
     unmount_backup_devices
 
     blank_line
-    exit $interrupt_exit
+    exit ${interrupt_exit}
 }
 
 trap finish EXIT
@@ -71,32 +71,32 @@ log "Starting backup procedure"
 slack_message "Starting weekly mybook backup"
 
 if ! require_root; then
-    exit $permission_error
+    exit ${permission_error}
 fi
 
-if ! require_single_instance $pid_file; then
-    exit $multiple_instance_exit
+if ! require_single_instance ${pid_file}; then
+    exit ${multiple_instance_exit}
 fi
 
-require_directory $log_directory "log directory"
-require_directory $backup_src "mount point for mybook"
+require_directory ${log_directory} "log directory"
+require_directory ${backup_src} "mount point for mybook"
 
-remove_scheduling $job_file
+remove_scheduling ${job_file}
 
-if ! require_backup_interval $ts_file "$interval"; then
-    exit $insufficient_interval_exit
+if ! require_backup_interval ${ts_file} "$interval"; then
+    exit ${insufficient_interval_exit}
 fi
 
-if ! verify_ssh_host $ssh_host; then
-    add_scheduling $job_file $script_file
-    exit $connection_exit
+if ! verify_ssh_host ${ssh_host}; then
+    add_scheduling ${job_file} ${script_file}
+    exit ${connection_exit}
 fi
 
-if ! ensure_mounted $backup_src unmount_src; then
-    exit $mount_exit
+if ! ensure_mounted ${backup_src} unmount_src; then
+    exit ${mount_exit}
 fi
 
-create_backup $backup_src "mybook" "zlib,5"
+create_backup ${backup_src} "mybook" "zlib,5"
 backup_exit=$?
 
 prune_repository "mybook"
@@ -104,9 +104,9 @@ prune_exit=$?
 
 borg_exit=$(( backup_exit > prune_exit ? backup_exit : prune_exit ))
 
-if [[ $borg_exit -gt 0 ]]; then
+if [[ ${borg_exit} -gt 0 ]]; then
     log_error "Borg exited with non-zero exit code $borg_exit"
-    exit $borg_error_exit
+    exit ${borg_error_exit}
 fi
 
 exit 0
