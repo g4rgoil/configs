@@ -87,7 +87,7 @@ prune_exit=$?
 
 borg_exit=$(( backup_exit > prune_exit ? backup_exit : prune_exit ))
 
-if [[ $borg_exit -gt 0 ]]; then
+if [[ ${borg_exit} -gt 0 ]]; then
     log_error "Borg exited with non-zero exit code $borg_exit"
     exit $borg_error_exit
 fi

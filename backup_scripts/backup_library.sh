@@ -10,11 +10,12 @@ export permission_error=12
 
 
 declare log_file        # Contains the log for the current backup
-declare exclude_file    # Contains exclude patterns for borg (one per line)
+declare exclude_file    # Contains exclude patterns for borg (one per line) TODO Remove
+declare pattern_file    # Contains patterns for borg
 declare slack_url       # The variable to use as webhook, when sending messagaes to slack
 
 slack_hook_file="${HOME}/.slack-hook"
-tformat="%Y-%m-%d %H:%M:%S"
+time_format="%Y-%m-%d %H:%M:%S"
 empty_file="$(mktemp)"
 
 
@@ -22,11 +23,13 @@ empty_file="$(mktemp)"
 #
 # $1: the string to send
 function slack_message() {
-    if [[ -z $slack_url ]]; then
+    if [[ -z "${slack_url}" ]]; then
         set_slack_url "$slack_hook_file"
     fi
 
-    curl -X POST --data-urlencode "payload={'text': '$(hostname): ${1?}'}" \
+    local text="${1?}"
+
+    curl -X POST --data-urlencode "payload={'text': '$(hostname): ${text}'}" \
         "$slack_url" >/dev/null 2>&1
 }
 
@@ -35,10 +38,12 @@ function slack_message() {
 #
 # $1: the file to use
 function set_slack_url() {
-    if [[ -f "${1?}" ]]; then
-        slack_url="$(<"${1}")"
+    local file="${1?}"
+
+    if [[ -f "$file" ]]; then
+        slack_url="$(<"$file")"
     else
-        log_error "Plese create a file at '${1}' that contains your slack webhook"
+        log_error "Please create a file at '$file' containing your slack webhook."
         slack_url=""
     fi
 }
@@ -46,7 +51,7 @@ function set_slack_url() {
 
 # Add a timestamp to the beginning of each line and print it to the log file
 function timestamp() {
-    ts "[${tformat}]" >> "$log_file"
+    ts "[${time_format}]" >> "$log_file"
 }
 
 
@@ -54,8 +59,10 @@ function timestamp() {
 #
 # $1: the string to print
 function log() {
-    echo -e "${1?}" | timestamp
-    echo -e "${1?}"
+    local text="${1?}"
+
+    echo -e "$text" | timestamp
+    echo -e "$text"
 }
 
 
@@ -63,8 +70,10 @@ function log() {
 #
 # $1: the string to print
 function log_error() {
-    log "ERROR: ${1?}"
-    >&2 echo "ERROR: ${1?}" >/dev/null
+    local text="${1?}"
+
+    log "ERROR: $text"
+    >&2 echo "ERROR: $text" >/dev/null
 }
 
 
@@ -79,9 +88,12 @@ function blank_line() {
 # $1: the directory to create
 # $2: the name of the directory (used for printing a log message)
 function require_directory() {
-    if [[ ! -d "${1?}" ]]; then
-        log "Creating ${2?}"
-        mkdir -p "$1"
+    local directory="${1?}"
+    local name="${2?}"
+
+    if [[ ! -d "$directory" ]]; then
+        log "Creating $name"
+        mkdir -p "$directory"
     fi
 }
 
@@ -91,8 +103,6 @@ function require_root() {
         log_error "User has insufficient permissions for backup."
         return 1
     fi
-
-    return 0
 }
 
 
@@ -100,12 +110,14 @@ function require_root() {
 #
 # $1: the file with the pid in it
 function require_single_instance() {
-    if [[ -f "${1?}" ]] && kill -0 "$(cat "$1")" 2>/dev/null; then
+    local pid_file="${1?}"
+
+    if [[ -f "$pid_file" ]] && kill -0 "$(cat "$pid_file")" 2>/dev/null; then
         echo "Different instance of backup already running"
         return 1
     fi
 
-    echo $$ > "$1"
+    echo $$ > "$pid_file"
 }
 
 
@@ -114,14 +126,17 @@ function require_single_instance() {
 # $1: the file with the time of the last backup in it
 # $2: The time interval to use
 function require_backup_interval() {
-    if [[ -f "${1?}" ]]; then
+    local timestamp_file="${1?}"
+    local interval="${2?}"
+
+    if [[ -f "$timestamp_file" ]]; then
         local reference_file
         reference_file=$(mktemp)
 
-        touch -t "$(<"$1")" "$1"
-        touch -d "${2?}" "$reference_file"
+        touch -t "$(<"$timestamp_file")" "$timestamp_file"
+        touch -d "$interval" "$reference_file"
 
-        if [[ "$1" -nt $reference_file ]]; then
+        if [[ "$timestamp_file" -nt "$reference_file" ]]; then
             log_error "Attempting backup to soon after previous backup"
 
             return 1
@@ -134,7 +149,9 @@ function require_backup_interval() {
 #
 # $1: the file to store the timestamp in
 function set_timestamp() {
-    date +%Y%m%d%H%M > "${1?}"
+    local timestamp_file="${1?}"
+
+    date +%Y%m%d%H%M > "$timestamp_file"
 }
 
 
@@ -142,7 +159,9 @@ function set_timestamp() {
 #
 # $1: the ssh host to ping
 function verify_ssh_host() {
-    if ! ping -c 1 "${1?}" >/dev/null 2>&1; then
+    local host="${1?}"
+
+    if ! ping -c 1 "$host" >/dev/null 2>&1; then
         log_error "Unable to communicate with ssh server"
         log "Scheduling backup to be rerun later"
 
@@ -158,11 +177,14 @@ function verify_ssh_host() {
 #
 # $1: the file with the at id in it
 function remove_scheduling() {
-    if [[ -f "${1?}" ]]; then
+    job_file="${1?}"
+
+    if [[ -f "$job_file" ]]; then
         local job_id
-        job_id=$(<"$1")
+        job_id=$(<"$job_file")
+
         at -r "$job_id" >/dev/null 2>&1
-        rm "$1" >/dev/null 2>&1
+        rm "$job_file" >/dev/null 2>&1
     fi
 }
 
@@ -170,23 +192,28 @@ function remove_scheduling() {
 # Create an at job that executes the specified script, and write the id to the
 # specified file
 #
-# $1: the script to exectue
-# $2: the file to write the id to
+# $1: the file to write the id to
+# $2: the script to execute
 function add_scheduling() {
-    echo "/bin/bash ${2?}" | \
+    local job_file="${1?}"
+    local script_file="${2?}"
+
+    echo "/bin/bash $script_file" | \
         at now + 1 hour 2>&1 |      \
         tail -1 |                   \
-        cut -f2 -d" " >             \
-        "${1?}"
+        cut -f2 -d" " > "$job_file"
 }
 
 # Prompts the user for a password entry
 #
 # $1: the message to prompt with
-# $2: the name variable to store the password in
+# $2: the name of the variable to store the password in
 function require_password {
     log "Quoting user for password"
-    echo -n "${1:-Enter password}: "
+
+    local message="${1:-Enter password}: "
+
+    echo -n "$message"
     read -r -s "${2?}"
     echo ""
 }
@@ -197,11 +224,12 @@ function require_password {
 #
 # $1: the mount point
 function mount_device() {
-    log "Mounting ${1?}"
+    local device="${1?}"
+    log "Mounting $device"
 
-    if ! mount "$1" || ! mountpoint -q "$1"; then
-        log_error "Unable to mount $1"
-        slack_message "Backup failed, unable to mount $1."
+    if ! mount "$device" || ! mountpoint -q "$device"; then
+        log_error "Unable to mount $device"
+        slack_message "Backup failed, unable to mount $device."
 
         return 1
     fi
@@ -214,8 +242,10 @@ function mount_device() {
 # $1: the mount point
 # $2: the name of the variable
 function ensure_mounted() {
-    if ! mountpoint -q "${1?}"; then
-        if ! mount_device "$1"; then
+    local device="${1?}"
+
+    if ! mountpoint -q "$device"; then
+        if ! mount_device "$device"; then
             return 1
         fi
 
@@ -230,8 +260,10 @@ function ensure_mounted() {
 #
 # $1: the mount point
 function unmount_device() {
-    log "Unmounting ${1?}"
-    umount "$1"
+    local device="${1?}"
+
+    log "Unmounting $device"
+    umount "$device"
 }
 
 
@@ -241,8 +273,10 @@ function unmount_device() {
 # $1: the mount point
 # $2: empty if not mounted, otherwise not empty. If not specified, nothing is done.
 function ensure_unmounted() {
+    local device="${1?}"
+
     if [[ -n "$2" ]]; then
-        unmount_device "${1?}"
+        unmount_device "$device"
         return 0
     fi
 
@@ -261,17 +295,23 @@ function ensure_unmounted() {
 function create_backup() {
     log "Creating backup"
 
+    local source_dir="${1?}"
+    local prefix="${2?}"
+    local compression="${3:-lz4}"
+    local excludes="${exclude_file:-$empty_file}"
+    local patterns="${pattern_file:-$empty_file}"
+
     local rc
-    rc=$(borg --show-rc create  \
-        --warning               \
-        --filter E              \
-        --compression "${3:-lz4}"   \
-        --exclude-from "${exclude_file:-$empty_file}"   \
-        --patterns-from "${pattern_file:-$empty_file}"  \
-        --exclude-caches        \
-                                \
-        ::"${2?}-{now}"         \
-        "${1?}"                 \
+    rc=$(borg --show-rc create          \
+        --warning                       \
+        --filter E                      \
+        --compression "$compression"    \
+        --exclude-from "$excludes"      \
+        --patterns-from "$patterns"     \
+        --exclude-caches                \
+                                        \
+        ::"${prefix}-{now}"             \
+        "$source_dir"                   \
         2>&1 | tee >(head -n -1 | timestamp) | tail -1 | awk 'NF>1{print $NF}')
 
     return "$rc"
@@ -285,10 +325,12 @@ function create_backup() {
 function prune_repository() {
     log "Pruning borg repository"
 
+    local prefix="${1?}-"
+
     local rc
     rc=$(borg --show-rc prune   \
         --warning               \
-        --prefix "${1?}-"       \
+        --prefix "$prefix"      \
         --keep-daily    7       \
         --keep-weekly   4       \
         --keep-monthly  12      \
