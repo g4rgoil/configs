@@ -56,6 +56,11 @@ trap finish EXIT
 trap 'trap "" EXIT; terminate' \
     HUP INT QUIT TERM
 
+log "Starting backup procedure"
+
+if ! require_root; then
+    exit $permission_error
+fi
 
 if ! require_single_instance $pid_file; then
     exit $multiple_instance_exit
@@ -64,8 +69,6 @@ fi
 require_directory $log_directory "log directory"
 
 remove_scheduling $job_file
-
-log "Starting backup procedure"
 
 if ! require_backup_interval $ts_file "$interval"; then
     exit $insufficient_interval_exit

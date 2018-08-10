@@ -69,6 +69,10 @@ trap 'trap "" EXIT; terminate' \
 
 log "Starting backup procedure"
 
+if ! require_root; then
+    exit $permission_error
+fi
+
 if ! require_single_instance $pid_file; then
     exit $multiple_instance_exit
 fi

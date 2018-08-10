@@ -67,6 +67,13 @@ trap 'trap "" EXIT; terminate' \
     HUP INT QUIT TERM
 
 
+log "Starting backup procedure"
+slack_message "Starting weekly mybook backup"
+
+if ! require_root; then
+    exit $permission_error
+fi
+
 if ! require_single_instance $pid_file; then
     exit $multiple_instance_exit
 fi
@@ -75,9 +82,6 @@ require_directory $log_directory "log directory"
 require_directory $backup_src "mount point for mybook"
 
 remove_scheduling $job_file
-
-log "Starting backup procedure"
-slack_message "Starting weekly mybook backup"
 
 if ! require_backup_interval $ts_file "$interval"; then
     exit $insufficient_interval_exit

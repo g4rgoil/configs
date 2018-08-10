@@ -6,6 +6,7 @@ export connection_exit=3
 export mount_exit=4
 export borg_error_exit=5
 export interrupt_exit=6
+export permission_error=12
 
 
 declare log_file        # Contains the log for the current backup
@@ -82,6 +83,16 @@ function require_directory() {
         log "Creating ${2?}"
         mkdir -p "$1"
     fi
+}
+
+# Return 0 if the current user is root (UID == 0), 1 otherwise
+function require_root() {
+    if [[ $EUID -ne 0 ]]; then
+        log_error "User has insufficient permissions for backup."
+        return 1
+    fi
+
+    return 0
 }
 
 

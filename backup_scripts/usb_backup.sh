@@ -55,6 +55,10 @@ trap 'trap "" EXIT; terminate' \
 
 log "Starting backup procedure"
 
+if ! require_root; then
+    exit $permission_error
+fi
+
 require_directory $log_directory "log directory"
 require_directory $backup_dst "mount point for backup device"
 

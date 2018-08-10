@@ -10,6 +10,31 @@
     }
   },
   "files": [
+    {
+      "root": true,
+      "src": "./desktop_backup.sh",
+      "dst": "/usr/bin/desktop-backup"
+    },
+    {
+      "root": true,
+      "src": "./media_backup.sh",
+      "dst": "/usr/bin/media-backup"
+    },
+    {
+      "root": true,
+      "src": "./xps13_backup.sh",
+      "dst": "/usr/bin/xps13-backup"
+    },
+    {
+      "root": true,
+      "src": "./mybook_backup.sh",
+      "dst": "/usr/bin/mybook-backup"
+    },
+    {
+      "root": true,
+      "src": "./usb_backup.sh",
+      "dst": "/usr/bin/usb-backup"
+    }
   ],
   "directories": [
     {
