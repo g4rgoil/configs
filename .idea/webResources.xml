@@ -12,6 +12,7 @@
             <path value="file://$PROJECT_DIR$/bash" />
             <path value="file://$PROJECT_DIR$/backup_scripts" />
             <path value="file://$PROJECT_DIR$/setup/resources" />
+            <path value="file://$PROJECT_DIR$/tmux" />
           </resourceRoots>
         </entryData>
       </entry>
