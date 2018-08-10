@@ -41,6 +41,7 @@ function finish() {
         log "Finishing backup procedure"
     else
         log "Backup procedure failed with exit code $exit_code"
+        slack_message "Desktop backup failed"
     fi
 
     blank_line

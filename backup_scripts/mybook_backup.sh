@@ -22,7 +22,7 @@ backup_src="/hdd/mybook"
 unmount_src=""
 
 ssh_user="pascal"
-ssh_host="192.168.3.47"
+ssh_host="192.168.3.30"
 
 export BORG_REPO="ssh://${ssh_user}@${ssh_host}/pool/pascal/borg-repository"
 export BORG_PASSPHRASE=""
@@ -47,16 +47,16 @@ function finish() {
         log "Backup procedure failed with exit code $exit_code"
         slack_message "Weekly mybook backup failed"
     fi
-    
+
     blank_line
     exit $exit_code
 }
 
 function terminate() {
     log_error "The backup procedure was interrupted by a signal"
-    
+
     unmount_backup_devices
-    
+
     blank_line
     exit $interrupt_exit
 }
@@ -95,7 +95,7 @@ fi
 create_backup $backup_src "mybook" "zlib,5"
 backup_exit=$?
 
-prune_repository "mybook" 
+prune_repository "mybook"
 prune_exit=$?
 
 borg_exit=$(( backup_exit > prune_exit ? backup_exit : prune_exit ))
