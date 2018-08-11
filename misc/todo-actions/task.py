@@ -105,6 +105,9 @@ class Task(object):
         if new_char <= "Z":
             self.set_priority(new_char)
 
+    def has_priority(self):
+        return self.priority is not None
+
     def set_creation_date(self, date=None):
         if date is None:
             date = datetime.date.today()

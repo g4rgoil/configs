@@ -1,0 +1,47 @@
+#!/usr/bin/python
+
+import os
+import sys
+
+from task import TaskFile
+
+todo_sh = os.environ['TODO_SH']
+todo_full_sh = os.environ['TODO_FULL_SH']
+todo_dir = os.environ['TODO_DIR']
+todo_file = os.environ['TODO_FILE']
+
+usage = "%s inc ITEM# [ITEM# ...]" % todo_sh
+
+help_msg = """  Increment priority:
+    inc ITEM# [ITEM# ...]
+      Increments the priority of every line specified as ITEM#. If the task
+      already has the highest priority, its priority is not changed. If the
+      task has no priority, no priority will be added.
+"""
+
+if sys.argv[1] == "usage":
+    print(help_msg)
+    sys.exit()
+
+items = sys.argv[2:]
+
+for item in items:
+    if not item.isdigit():
+        print(usage)
+        print("note: ITEM# must be a valid digit")
+        sys.exit()
+
+with TaskFile(todo_file) as task_file:
+    for item in items:
+        task = task_file.get_task(int(item))
+        print(task)
+
+        if not task.has_priority():
+            print("note: %s not re-prioritised" % (int(item)))
+        else:
+            old_priority = task.priority
+            task.inc_priority()
+
+            print("note: %s re-prioritised from (%s) to (%s)."
+                  % (int(item), old_priority, task.priority))
+

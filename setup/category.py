@@ -685,7 +685,7 @@ class FileMapping(object):
 
     def with_suffix(self, suffix):
         dst = self.dst + suffix
-        return FileMapping(self.src, dst, self.root, self.distribution)
+        return FileMapping(self.src, dst, self.root, self.distributions)
 
     def link(self, utils=None):
         if self.can_setup():
