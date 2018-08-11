@@ -129,6 +129,8 @@ set splitright
 map <C-n> :tabp<CR>
 map <C-m> :tabn<CR>
 
+nnoremap <S-T> :NERDTreeToggle<CR>
+
 "" Airline Configuration
 set laststatus=2                                    " Always show status bar
 let g:airline#extensions#tabline#enabled = 1
