@@ -102,7 +102,7 @@ class Category(object):
         if descriptor_path is not None:
             self.descriptor = parse_json_descriptor(descriptor_path)
         elif self.src_dir is not None:
-            path = Path(self.src_dir, "category.json")
+            path = Path(self.src_dir, ".category.json")
             self.descriptor = parse_json_descriptor(path)
 
         if self.descriptor is not None:
