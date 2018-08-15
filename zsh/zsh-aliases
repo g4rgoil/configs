@@ -110,6 +110,7 @@ alias g='gedit'
 alias sg='sgedit'
 
 alias pdf="$PDFVIEW"
+alias pdf-present="pdfpc"
 alias less="$PAGER"
 alias page="$PAGER"
 
