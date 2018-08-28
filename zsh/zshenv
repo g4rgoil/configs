@@ -9,6 +9,7 @@ export ZDOTDIR="$HOME"
 
 export TERM="xterm-256color"
 export PLANTUML_LIMIT_SIZE=8192
+export MOPIDYSERVER="dasbier@raven2611:6680"
 
 export EDITOR=/usr/bin/nvim
 export VISUAL=/usr/bin/nvim

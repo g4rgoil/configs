@@ -8,6 +8,8 @@ else
     alias tmux='tmux -L local'
 fi
 
+alias holdmybeer='sudo'
+
 # Some pacman aliasses
 alias update='yay -Syu'
 alias install='yay -S'
