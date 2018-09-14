@@ -15,8 +15,9 @@ export EDITOR=/usr/bin/nvim
 export VISUAL=/usr/bin/nvim
 export GRAPHICAL=/usr/bin/gvim
 
-export PAGER=/usr/local/bin/nvimpager
+export PAGER=/usr/bin/nvimpager
 export PDFVIEW=/usr/bin/evince
+export IMAGEVIEW=/usr/bin/eog
 
 export LANG=en_US.UTF-8
 
