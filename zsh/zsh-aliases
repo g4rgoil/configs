@@ -10,11 +10,10 @@ fi
 
 alias holdmybeer='sudo'
 
-# Some pacman aliasses
+# Some package manager aliases
 alias update='yay -Syu'
 alias install='yay -S'
 alias uninstall='yay -R'
-alias uninstall-force='yay -Rdd'
 
 # Some handy aliasses for everyday commands
 alias wttr='curl https://wttr.in/Karlsruhe'
@@ -25,7 +24,7 @@ alias cpumonitor='sudo s-tui'
 alias gpumonitor='nvidia-smi -l 5'
 alias networkmonitor='nload'
 alias diskmonitor='iotop'
-alias vim2ps='vim -c "hardcopy > output.ps" -c quit'
+alias vim2ps='/usr/bin/vim -c "hardcopy > output.ps" -c quit'
 
 # Some power aliases
 alias die='shutdown now'
@@ -76,6 +75,7 @@ alias treeX='tree -X'
 alias treeJ='tree -J'
 
 # Some random aliases
+alias clear="clear && clear"
 alias ccc="clear"
 alias ping='ping -c 5'
 alias openports='ss --all --numeric --processes --ipv4 --ipv6'
@@ -84,6 +84,7 @@ alias q='exit'
 # alias rm='rm -I'
 alias scat='sudo cat'
 alias ccat='ccat --bg="dark" '
+alias ncat='nvimpager -c'
 alias vim='echo "Use \"e\" you idiot" && vim'
 alias svim='echo "use \"se\" you bloody idiot" && sudo vim'
 alias v='vim'
@@ -131,7 +132,7 @@ alias -g G='| grep'
 alias -g L="| less"
 alias -g M="| most"
 alias -g NE="2> /dev/null"
-alias -g NUL="> /dev/null 1>&1"
+alias -g NUL="> /dev/null 2>&1"
 
 if is-at-least 4.2.0; then
   # open browser on urls
@@ -149,11 +150,12 @@ if is-at-least 4.2.0; then
   fi
 
   _media_fts=(ape avi flv m4a mkv mov mp3 mpeg mpg ogg ogm rm wav webm)
-  for ft in $_media_fts; do alias -s $ft=vlc; done
+  for ft in $_media_fts; do alias -s $ft=cvlc; done
+
+  _document_fts=(pdf ps)
+  for ft in $_document_fts; do alias -s $ft=$PDFVIEW; done
 
   #read documents
-  alias -s pdf=$PDFVIEW
-  alias -s ps=gv
   alias -s dvi=xdvi
   alias -s chm=xchm
   alias -s djvu=djview
@@ -161,8 +163,8 @@ if is-at-least 4.2.0; then
   #list whats inside packed file
   alias -s zip="unzip -l"
   alias -s rar="unrar l"
-  alias -s tar="tar tf"
-  alias -s tar.gz="tar tzf"
+  alias -s tar="tar -tf"
+  alias -s tar.gz="tar -tzf"
   alias -s ace="unace l"
 fi
 
