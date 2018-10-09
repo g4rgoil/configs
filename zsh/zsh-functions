@@ -48,17 +48,17 @@ function background-dl() {
     youtube-dl $1 >/dev/null &
 }
 
-function pause_history() {
-    export HISTFILE_BACKUP="$HISTFILE"
-    unset HISTFILE
-}
+# function pause_history() {
+#     export HISTFILE_BACKUP="$HISTFILE"
+#     export HISTFILE="/dev/null"
+# }
 
-function resume_history() {
-    if [[ -n "$HISTFILE_BACKUP" ]]; then
-        export HISTFILE="$HISTFILE_BACKUP"
-    fi
-    unset HISTFILE_BACKUP
-}
+# function resume_history() {
+#     if [[ -n "$HISTFILE_BACKUP" ]]; then
+#         export HISTFILE="$HISTFILE_BACKUP"
+#     fi
+#     unset HISTFILE_BACKUP
+# }
 
 function show_colors() {
     for i in {0..255}; do
