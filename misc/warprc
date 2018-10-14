@@ -16,8 +16,6 @@ nfs:/mnt/nfs
 todo:~/MEGA/todo
 mega:~/MEGA
 hdd:/mnt/hdd
-dbs:~/University/dbs
-eir:~/University/eir
-pse:~/University/pse
-pse-repo:~/repositories/pse-multifaktor
-entwurf:~/repositories/pse-multifaktor/doc/Entwurf
+hm:~/University/hm
+tgi:~/University/tgi
+wt:~/University/wt
