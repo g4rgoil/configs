@@ -82,8 +82,6 @@ if has('nvim')
     endif
 else
     if exists("$TMUX")
-        set term=screen-256color
-
         let &t_SI = "\ePtmux;\e\e[5 q\e\\"
         let &t_EI = "\ePtmux;\e\e[2 q\e\\"
     else
