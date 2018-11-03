@@ -2,7 +2,7 @@
 P sh
 
 # Set pattern root
-R /hdd/media
+# R /hdd/media/
 
-- /System Volume Information
-- /lib
+- /hdd/media/System Volume Information
+- /hdd/media/lib

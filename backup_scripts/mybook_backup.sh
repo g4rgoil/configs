@@ -7,7 +7,7 @@ library_file="${script_directory}/backup_library.sh"
 source ${library_file}
 
 script_file="${script_directory}/xps13_backup.sh"
-exclude_file="${script_directory}/mybook.exclude"
+pattern_file="${script_directory}/mybook.pattern"
 
 log_directory="/var/log/backup_logs"
 ts_file="${log_directory}/mybook.ts"
@@ -22,11 +22,12 @@ backup_src="/hdd/mybook"
 unmount_src=""
 
 ssh_user="pascal"
-ssh_host="192.168.3.30"
+ssh_host="192.168.1.42"
+ssh_port="2222"
 
-export BORG_REPO="ssh://${ssh_user}@${ssh_host}/pool/pascal/borg-repository"
+export BORG_REPO="ssh://${ssh_user}@${ssh_host}:${ssh_port}/pool/usr/pascal/planck_mybook"
 export BORG_PASSPHRASE=""
-export BORG_KEY_FILE="/root/.config/borg/keys/zfsnas_mybook"
+export BORG_KEY_FILE="/root/.config/borg/keys/planck_mybook"
 
 function unmount_backup_devices() {
     if ensure_unmounted ${backup_src} ${unmount_src}; then
@@ -96,7 +97,7 @@ if ! ensure_mounted ${backup_src} unmount_src; then
     exit ${mount_exit}
 fi
 
-create_backup ${backup_src} "mybook" "zlib,5"
+create_backup ${backup_src} "mybook" "zlib,9"
 backup_exit=$?
 
 prune_repository "mybook"

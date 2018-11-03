@@ -2,6 +2,11 @@
 P sh
 
 # Set pattern root
-R /hdd/mybook
+# R /hdd/mybook/
 
-- /HDD_Backups
+- /hdd/mybook/GameSaveManager
+
++ /hdd/mybook/Borg_Backups/pascal_desktop/
++ /hdd/mybook/Borg_Backups/pascal_xps13/
+
+- /hdd/mybook/Borg_Backups/
