@@ -84,7 +84,7 @@ if ! ensure_mounted ${backup_dst} unmount_dst; then
     exit ${mount_exit}
 fi
 
-create_backup ${backup_src} "pascal_desktop" "lz4"
+create_backup ${backup_src} "pascal_desktop" "zstd,10"
 backup_exit=$?
 
 if [[ ${backup_exit} -gt 0 ]]; then

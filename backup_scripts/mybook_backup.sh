@@ -97,7 +97,7 @@ if ! ensure_mounted ${backup_src} unmount_src; then
     exit ${mount_exit}
 fi
 
-create_backup ${backup_src} "mybook" "zlib,9"
+create_backup ${backup_src} "mybook" "none"
 backup_exit=$?
 
 prune_repository "mybook"
