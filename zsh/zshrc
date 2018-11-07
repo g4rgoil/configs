@@ -47,17 +47,22 @@ if [[ -f /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.
     source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 fi
 
-# Source global alias definitions from /etc/zsh/zsh_aliases
+# Source global alias definitions from /etc/zsh/zsh-aliases
 if [[ -f /etc/zsh/zsh-aliases ]]; then
     source /etc/zsh/zsh-aliases
 fi
+#
+# Source global functionsfrom /etc/zsh/zsh-functions
+if [[ -f /etc/zsh/zsh-aliases ]]; then
+    source /etc/zsh/zsh-functions
+fi
 
-# Source user specific alias definitions from ~/.zsh_aliases
+# Source user specific alias definitions from ~/.zsh-aliases
 if [[ -f ~/.zsh-aliases ]]; then
     source ~/.zsh-aliases
 fi
 
-# Source user specific functions from ~/.zsh_functions
+# Source user specific functions from ~/.zsh-functions
 if [[ -f ~/.zsh-functions ]]; then
     source ~/.zsh-functions
 fi
