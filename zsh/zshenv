@@ -18,6 +18,7 @@ export GRAPHICAL=/usr/bin/gvim
 export PAGER=/usr/bin/nvimpager
 export PDFVIEW=/usr/bin/evince
 export IMAGEVIEW=/usr/bin/eog
+export FILEMANAGER=/usr/bin/fff
 
 export LANG=en_US.UTF-8
 

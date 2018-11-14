@@ -116,6 +116,7 @@ alias pdf="$PDFVIEW"
 alias pdf-present="pdfpc"
 alias less="$PAGER"
 alias page="$PAGER"
+alias filemanager="$FILEMANAGER"
 
 # Some aliases to quickly edit certain files
 alias zshrc='edit ~/.zshrc'
