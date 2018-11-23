@@ -16,14 +16,14 @@ from category import parse_json_descriptor, __repo_dir__
 __version__ = "1.1.0"
 
 
-def remove_option_value_pair(collection, option):
+def remove_kv_pair(collection, option):
     """ Removes the first option value pair from the collection. """
     index = -1
     if option in collection:
         index = collection.index(option)
         del collection[index:index+2]
 
-    return index
+    return index != -1
 
 
 def remove_user_options(argv=None):
@@ -32,8 +32,7 @@ def remove_user_options(argv=None):
         argv = sys.argv
     argv = argv.copy()
 
-    while remove_option_value_pair(argv, "-u") != -1 or \
-            remove_option_value_pair(argv, "--user") != -1:
+    while remove_kv_pair(argv, "-u") or remove_kv_pair(argv, "--user"):
         pass
 
     return argv
@@ -75,7 +74,7 @@ def demote(uid, gid):
 
 
 class SetupArgParser(ArgumentParser):
-    """ This class provides an argument parser for for the setup script """
+    """ This class provides an argument parser for for the setup script."""
 
     def __init__(self):
         path = Path(__repo_dir__, "setup", "resources", "parser.json")
