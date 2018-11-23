@@ -1,76 +1,26 @@
 #!/usr/bin/env python3
 
 """ This module provides a command line interface for the setup script """
-
-import os
-import sys
-import pwd
+import glob
+import importlib
 import subprocess
-
+import sys
 from argparse import ArgumentParser
+from os.path import abspath, basename, dirname, isfile, join, splitext
 from pathlib import Path
 
 from category import CategoryCollection, CategorySubParser, MyHelpFormatter
-from category import parse_json_descriptor, __repo_dir__
+from utils import __repo_dir__, parse_json_descriptor, remove_user_options, \
+    start_subprocess
 
 __version__ = "1.1.0"
 
+category_dir = join(dirname(abspath(__file__)), "categories")
+sys.path.append(category_dir)
 
-def remove_kv_pair(collection, option):
-    """ Removes the first option value pair from the collection. """
-    index = -1
-    if option in collection:
-        index = collection.index(option)
-        del collection[index:index+2]
-
-    return index != -1
-
-
-def remove_user_options(argv=None):
-    """ Removes all -u and --user option value pairs from argv or sys.argv. """
-    if argv is None:
-        argv = sys.argv
-    argv = argv.copy()
-
-    while remove_kv_pair(argv, "-u") or remove_kv_pair(argv, "--user"):
-        pass
-
-    return argv
-
-
-def start_subprocess(args, user):
-    """ Executes the given arguments as the specified user. """
-    pw_record = pwd.getpwnam(user)
-    user_name = pw_record.pw_name
-    user_home = pw_record.pw_dir
-    uid = pw_record.pw_uid
-    gid = pw_record.pw_gid
-
-    cwd = os.getcwd()
-
-    env = os.environ.copy()
-    env["HOME"] = user_home
-    env["LOGNAME"] = user_name
-    env["PWD"] = cwd
-    env["USER"] = user_name
-
-    process = subprocess.Popen(
-            args, preexec_fn=demote(uid, gid), cwd=cwd, env=env
-    )
-
-    return process
-
-
-def demote(uid, gid):
-    """ Returns a functions that sets the uid and gid for the current user. """
-    def result():
-        try:
-            os.setgid(gid)
-            os.setuid(uid)
-        except PermissionError:
-            sys.exit(2)
-
-    return result
+for file in glob.iglob(join(category_dir, "**/*.py"), recursive=True):
+    if isfile(file):
+        importlib.import_module(splitext(basename(file))[0])
 
 
 class SetupArgParser(ArgumentParser):
@@ -86,7 +36,7 @@ class SetupArgParser(ArgumentParser):
         try:
             self.categories = CategoryCollection()
         except ValueError as e:
-            print("An error occured while creatin the categories: " + e)
+            print("An error occurred while creating the categories: " + e)
             self.exit(2)
 
         self.add_optional_arguments()
@@ -175,7 +125,7 @@ class SetupArgParser(ArgumentParser):
         kwargs["help"] = "delete existing files"
         dst_handling.add_argument("-d", "--delete", **kwargs)
 
-        kwargs = dict(action="store", nargs=1, default=["old"], metavar="S",)
+        kwargs = dict(action="store", nargs=1, default=["old"], metavar="S", )
         kwargs["help"] = "the suffix, used when backing up files [: old]"
         group.add_argument("-s", "--suffix", **kwargs)
 
