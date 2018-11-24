@@ -1,18 +1,16 @@
 #!/usr/bin/env python3
 
 """ This module provides a command line interface for the setup script """
-import glob
-import importlib
+
 import subprocess
 import sys
 
 from argparse import ArgumentParser, Namespace
-from os.path import abspath, basename, dirname, isfile, join, splitext
 from pathlib import Path
 
 from category import CategoryCollection, CategorySubParser, MyHelpFormatter
 from utils import __repo_dir__, parse_json_descriptor, remove_user_options, \
-    start_subprocess
+    start_subprocess, load_categories
 
 __version__ = "1.1.0"
 
@@ -147,13 +145,7 @@ class SetupArgParser(ArgumentParser):
 
 
 if __name__ == "__main__":
-    category_dir = join(dirname(abspath(__file__)), "categories")
-    sys.path.append(category_dir)
-
-    for file in glob.iglob(join(category_dir, "**/*.py"), recursive=True):
-        if isfile(file):
-            importlib.import_module(splitext(basename(file))[0])
-
+    load_categories()
     arg_parser = SetupArgParser()
     arg_parser.parse_args()
 

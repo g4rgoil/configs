@@ -2,6 +2,8 @@
 
 """ This modules provides utility classes and functions """
 
+import glob
+import importlib
 import json
 import os
 import pwd
@@ -12,12 +14,22 @@ import subprocess
 import sys
 
 from pathlib import Path
+from os.path import abspath, basename, dirname, isfile, join, splitext
 from subprocess import CompletedProcess, DEVNULL, run
 from typing import Callable, Optional
 
 __version__ = "1.1.0"
 
 __repo_dir__ = Path(__file__).parents[1]
+
+
+def load_categories() -> None:
+    category_dir = join(dirname(abspath(__file__)), "categories")
+    sys.path.append(category_dir)
+
+    for file in glob.iglob(join(category_dir, "**/*.py"), recursive=True):
+        if isfile(file):
+            importlib.import_module(splitext(basename(file))[0])
 
 
 def require_repo_dir(name) -> Path:
