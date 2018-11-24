@@ -127,7 +127,6 @@ alias vimrc='edit ~/.vimrc'
 alias fstab='se /etc/fstab'
 
 if [[ $0 == *"zsh"* ]]; then
-    echo "foobar"
     # Some global aliases
     alias -g H='| head'
     alias -g T='| tail'
