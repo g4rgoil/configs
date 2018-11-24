@@ -5,7 +5,7 @@
       "prog": "setup.py zsh",
       "usage": "setup.py zsh [-h] [--install arg [arg ...]]",
       "epilog": null,
-      "help": "set up files and plugins for the Z shell",
+      "help": "set up files and plugins for the Z Shell",
       "version": "1.0.0"
     }
   },

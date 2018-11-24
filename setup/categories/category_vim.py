@@ -25,7 +25,7 @@ class CategoryVim(Category):
             "all": None
         }
 
-    def add_subparser(self, subparsers):
+    def add_subparser(self, subparsers) -> None:
         super().add_subparser(subparsers)
 
         group = self.parser.add_argument_group("vim specific options")
@@ -35,19 +35,19 @@ class CategoryVim(Category):
                + ", ".join(choices)
         self.parser.add_install_action(group=group, choices=choices, help=help)
 
-    def set_up(self, namespace=None):
+    def set_up(self, namespace=None) -> None:
         super().set_up(namespace)
 
         if namespace.install:
             self.install(namespace.install)
 
-    def _install_plugin_manager(self):
+    def _install_plugin_manager(self) -> None:
         install_location = Path("~/.vim/bundle/Vundle.vim").expanduser()
         src_url = "https://github.com/VundleVim/Vundle.vim.git"
 
         self.utils.clone_repo(src_url, install_location, name="Vundle")
 
-    def _install_plugins(self):
+    def _install_plugins(self) -> None:
         self.utils.error("Installing plugins with Vundle...")
 
         args = split("vim -c PluginInstall -c PluginUpdate "
@@ -58,7 +58,7 @@ class CategoryVim(Category):
             self.utils.error("Failed to install plugins: Exited with code %s"
                              % proc.returncode)
 
-    def _install_ycm(self):
+    def _install_ycm(self) -> None:
         self.utils.error("Installing YouCompleteMe...")
 
         ycm_installer = Path("~/.vim/bundle/YouCompleteMe/"
@@ -73,7 +73,7 @@ class CategoryVim(Category):
                              "Exited with code %s" % proc.returncode)
 
     @require_root
-    def _install_linters(self):
+    def _install_linters(self) -> None:
         linters = self.descriptor["linters"]
         dist = get_dist()
 

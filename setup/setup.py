@@ -5,7 +5,8 @@ import glob
 import importlib
 import subprocess
 import sys
-from argparse import ArgumentParser
+
+from argparse import ArgumentParser, Namespace
 from os.path import abspath, basename, dirname, isfile, join, splitext
 from pathlib import Path
 
@@ -15,16 +16,9 @@ from utils import __repo_dir__, parse_json_descriptor, remove_user_options, \
 
 __version__ = "1.1.0"
 
-category_dir = join(dirname(abspath(__file__)), "categories")
-sys.path.append(category_dir)
-
-for file in glob.iglob(join(category_dir, "**/*.py"), recursive=True):
-    if isfile(file):
-        importlib.import_module(splitext(basename(file))[0])
-
 
 class SetupArgParser(ArgumentParser):
-    """ This class provides an argument parser for for the setup script."""
+    """ This class provides an argument parser for for the setup script """
 
     def __init__(self):
         path = Path(__repo_dir__, "setup", "resources", "parser.json")
@@ -36,14 +30,14 @@ class SetupArgParser(ArgumentParser):
         try:
             self.categories = CategoryCollection()
         except ValueError as e:
-            print("An error occurred while creating the categories: " + e)
+            print("An error occurred while creating the categories: " + str(e))
             self.exit(2)
 
         self.add_optional_arguments()
         self.add_setup_options()
         self.add_subparsers()
 
-    def parse_args(self, args=None, namespace=None):
+    def parse_args(self, args=None, namespace=None) -> Namespace:
         namespace = super().parse_args(args, namespace)
 
         if namespace.user is None:
@@ -58,19 +52,21 @@ class SetupArgParser(ArgumentParser):
             except subprocess.SubprocessError as e:
                 print("ERROR: Failed to run as '%s'." % user)
 
-    def set_up(self, namespace):
+        return namespace
+
+    def set_up(self, namespace) -> Namespace:
         if namespace.category_name is not None:
             category = self.categories[namespace.category_name]
             category.create_utils(namespace)
             category.set_up(namespace)
-
         else:
             self.print_usage()
 
         return namespace
 
-    def add_optional_arguments(self):
+    def add_optional_arguments(self) -> None:
         """ Adds optional arguments to the parser """
+
         verbosity = self.add_mutually_exclusive_group(required=False)
 
         kwargs = dict(action="store_true", help="be more verbose")
@@ -94,8 +90,9 @@ class SetupArgParser(ArgumentParser):
                       version="setup.py %s" % self.descriptor["version"])
         self.add_argument("--version", **kwargs)
 
-    def add_setup_options(self):
+    def add_setup_options(self) -> None:
         """ Adds options for modifying the setup process """
+
         group = self.add_argument_group("setup options")
 
         src_handling = group.add_mutually_exclusive_group(required=False)
@@ -137,8 +134,9 @@ class SetupArgParser(ArgumentParser):
                       help="run for each user (specify once for each user)")
         group.add_argument("-u", "--user", **kwargs)
 
-    def add_subparsers(self, **kwargs):
+    def add_subparsers(self, **kwargs) -> None:
         """ Adds a subparser for each category defined in self.categories """
+
         kwargs = dict(title="setup categories", dest="category_name",
                       parser_class=CategorySubParser)
         subparsers = super().add_subparsers(**kwargs)
@@ -149,6 +147,13 @@ class SetupArgParser(ArgumentParser):
 
 
 if __name__ == "__main__":
+    category_dir = join(dirname(abspath(__file__)), "categories")
+    sys.path.append(category_dir)
+
+    for file in glob.iglob(join(category_dir, "**/*.py"), recursive=True):
+        if isfile(file):
+            importlib.import_module(splitext(basename(file))[0])
+
     arg_parser = SetupArgParser()
     arg_parser.parse_args()
 

@@ -22,7 +22,7 @@ class CategoryZsh(Category):
             "all": None
         }
 
-    def add_subparser(self, subparsers):
+    def add_subparser(self, subparsers) -> None:
         super().add_subparser(subparsers)
 
         group = self.parser.add_argument_group("zsh specific options")
@@ -32,25 +32,25 @@ class CategoryZsh(Category):
                + ", ".join(choices)
         self.parser.add_install_action(group=group, choices=choices, help=help)
 
-    def set_up(self, namespace=None):
+    def set_up(self, namespace=None) -> None:
         super().set_up(namespace)
 
         if namespace.install:
             self.install(namespace.install)
 
-    def _install_oh_my_zsh(self):
+    def _install_oh_my_zsh(self) -> None:
         install_location = Path("~/.oh-my-zsh")
         src_url = "git://github.com/robbyrussell/oh-my-zsh.git"
 
         self.utils.clone_repo(src_url, install_location, name="oh-my-zsh")
 
-    def _install_powerlevel9k(self):
+    def _install_powerlevel9k(self) -> None:
         install_location = Path("~/.oh-my-zsh/custom/themes/powerlevel9k")
         src_url = "https://github.com/bhilburn/powerlevel9k.git"
 
         self.utils.clone_repo(src_url, install_location, name="Powerlevel9k")
 
-    def _install_syntax_highlighting(self):
+    def _install_syntax_highlighting(self) -> None:
         install_location = Path("~/.oh-my-zsh/custom/plugins/"
                                 "zsh-syntax-highlighting")
         src_url = "https://github.com/zsh-users/zsh-syntax-highlighting.git"

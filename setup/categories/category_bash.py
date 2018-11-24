@@ -13,5 +13,5 @@ class CategoryBash(Category):
     def __init__(self):
         super().__init__()
 
-    def set_up(self, namespace=None):
+    def set_up(self, namespace=None) -> None:
         super().set_up(namespace)

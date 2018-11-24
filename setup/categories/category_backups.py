@@ -19,7 +19,7 @@ class CategoryBackups(Category):
             "all": None
         }
 
-    def add_subparser(self, subparsers):
+    def add_subparser(self, subparsers) -> None:
         super().add_subparser(subparsers)
 
         group = self.parser.add_argument_group("backups specific options")
@@ -29,14 +29,14 @@ class CategoryBackups(Category):
                + ", ".join(choices)
         self.parser.add_install_action(group=group, choices=choices, help=help)
 
-    def set_up(self, namespace=None):
+    def set_up(self, namespace=None) -> None:
         super().set_up(namespace)
 
         if namespace.install:
             self.install(namespace.install)
 
     @require_root
-    def _install_dependencies(self):
+    def _install_dependencies(self) -> None:
         dependencies = self.descriptor["dependencies"]
         dist = get_dist()
 
