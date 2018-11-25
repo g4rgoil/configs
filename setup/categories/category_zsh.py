@@ -15,28 +15,8 @@ class CategoryZsh(Category):
     def __init__(self):
         super().__init__()
 
-        self.install_dict = {
-            "oh-my-zsh": self._install_oh_my_zsh,
-            "powerline": self._install_powerlevel9k,
-            "fish": self._install_syntax_highlighting,
-            "all": None
-        }
-
-    def add_subparser(self, subparsers) -> None:
-        super().add_subparser(subparsers)
-
-        group = self.parser.add_argument_group("zsh specific options")
-
-        choices = self.install_dict.keys()
-        help = "install the specified categories; valid categories are " \
-               + ", ".join(choices)
-        self.parser.add_install_action(group=group, choices=choices, help=help)
-
     def set_up(self, namespace=None) -> None:
         super().set_up(namespace)
-
-        if namespace.install:
-            self.install(namespace.install)
 
     def _install_oh_my_zsh(self) -> None:
         install_location = Path("~/.oh-my-zsh")

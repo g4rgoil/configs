@@ -7,7 +7,9 @@
       "epilog": null,
       "help": "set up files for all categories",
       "version": "1.0.0"
-    }
+    },
+    "install": [
+    ]
   },
   "files": {
   },

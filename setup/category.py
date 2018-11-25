@@ -3,8 +3,9 @@
 """ This module provides classes for setting up this system """
 
 import operator
+import argparse
 
-from argparse import ArgumentParser, HelpFormatter, ZERO_OR_MORE
+from argparse import ArgumentParser, ZERO_OR_MORE
 from pathlib import Path
 from typing import List
 
@@ -15,6 +16,8 @@ __version__ = "1.1.0"
 
 
 class CategoryCollection(object):
+    """ Provides a collection of all available (imported) categories """
+
     def __init__(self):
         instances = [c() for c in Category.__subclasses__()]
         self.dict = dict(sorted([(i.name, i) for i in instances],
@@ -35,10 +38,13 @@ class CategoryCollection(object):
 
 
 class Category(object):
+    """ Provides a base class for all categories that can be set up """
+
     directory = None
 
     def __init__(self, descriptor_path=None):
         self.name = None
+        self.help = None
         self.src_dir = None
         self.descriptor = None
 
@@ -60,6 +66,33 @@ class Category(object):
 
         if self.descriptor is not None:
             self.name = self.descriptor["category"]["name"]
+            self.help = self.descriptor["category"]["parser"]["help"]
+
+            if len(self.descriptor["category"]["install"]):
+                self.install_dict["all"] = {
+                    "help": "install all other available options",
+                    "handler": None
+                }
+
+            for install_option in self.descriptor["category"]["install"]:
+                self.install_dict[install_option["name"]] = {
+                    "help": install_option["help"],
+                    "handler": install_option["handler"]
+                }
+
+            if len(self.install_dict):
+                epilog = "available install options:\n"
+                epilog += "  {%s}\n" % ",".join(self.install_dict.keys())
+
+                for install_option, option_dict in self.install_dict.items():
+                    epilog += str.ljust(4 * " " + install_option, 24)
+                    epilog += option_dict["help"] + "\n"
+
+                temp = self.descriptor["category"]["parser"]["epilog"]
+                if temp is not None:
+                    epilog += "\n" + temp
+
+                self.descriptor["category"]["parser"]["epilog"] = epilog
 
             self.files = self.parse_file_mapping_list(self.descriptor["files"])
             self.directories = self.parse_file_mapping_list(
@@ -71,12 +104,26 @@ class Category(object):
         self.delete()
         self.link()
 
+        if namespace.install and len(self.install_dict):
+            self.install(namespace.install)
+
     def add_subparser(self, subparsers) -> None:
         if self.descriptor is None:
             raise ValueError("The descriptor dictionary has not been set")
 
         descriptor = self.descriptor["category"]
         self.parser = subparsers.add_parser(self.name, **descriptor["parser"])
+
+        if len(self.install_dict):
+            self.add_install_option()
+
+    def add_install_option(self):
+        group = self.parser.add_argument_group(self.name + " specific options")
+
+        choices = self.install_dict.keys()
+        help = "install the specified arguments; see below for information " \
+               "about available options"
+        self.parser.add_install_action(group=group, choices=choices, help=help)
 
     def parse_file_mapping_list(self, dictionary_list) -> List[FileMapping]:
         return [self.parse_file_mapping(d) for d in dictionary_list]
@@ -122,13 +169,13 @@ class Category(object):
                 continue
 
             try:
-                self.install_dict[key]()
+                getattr(self, self.install_dict[key]["handler"])()
             except PermissionError as e:
                 self.utils.error("Install %s:" % key, str(e))
 
 
 class CategoryAll(Category):
-    """ Functionality for setting up all other categories on this machine """
+    """ Functionality for setting up all other (imported) categories """
 
     directory = None
 
@@ -169,12 +216,12 @@ class CategorySubParser(ArgumentParser):
     def add_install_action(self, group=None, choices=None, help=None) -> None:
         group = self if group is None else group
 
-        kwargs = dict(nargs="*", action="store", default=[], metavar="args",
+        kwargs = dict(nargs="*", action="store", default=[], metavar="opt",
                       choices=choices, help=help)
         group.add_argument("--install", **kwargs)
 
 
-class MyHelpFormatter(HelpFormatter):
+class MyHelpFormatter(argparse.RawDescriptionHelpFormatter):
     def _format_args(self, action, default_metavar):
         get_metavar = self._metavar_formatter(action, default_metavar)
 

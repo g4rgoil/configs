@@ -14,26 +14,8 @@ class CategoryBackups(Category):
     def __init__(self):
         super().__init__()
 
-        self.install_dict = {
-            "dependencies": self._install_dependencies,
-            "all": None
-        }
-
-    def add_subparser(self, subparsers) -> None:
-        super().add_subparser(subparsers)
-
-        group = self.parser.add_argument_group("backups specific options")
-
-        choices = self.install_dict.keys()
-        help = "install all specified categories; valid categories are " \
-               + ", ".join(choices)
-        self.parser.add_install_action(group=group, choices=choices, help=help)
-
     def set_up(self, namespace=None) -> None:
         super().set_up(namespace)
-
-        if namespace.install:
-            self.install(namespace.install)
 
     @require_root
     def _install_dependencies(self) -> None:

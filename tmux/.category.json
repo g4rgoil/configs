@@ -7,7 +7,19 @@
       "epilog": null,
       "help": "set up files and plugins for tmux",
       "version": "1.0.0"
-    }
+    },
+    "install": [
+      {
+        "name": "tpm",
+        "help": "install tpm, the tmux plugin manager",
+        "handler": "_install_plugin_manager"
+      },
+      {
+        "name": "powerline",
+        "help": "install tmux powerline, the status bar configuration for tmux",
+        "handler": "_install_powerline"
+      }
+    ]
   },
   "files": [
     {

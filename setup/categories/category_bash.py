@@ -6,7 +6,7 @@ __version__ = "1.0.0"
 
 
 class CategoryBash(Category):
-    """ Functionality for setting up the bourne again shell on this system """
+    """ Functionality for setting up the Bourne Again Shell on this system """
 
     directory = "bash"
 

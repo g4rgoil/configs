@@ -7,7 +7,14 @@
       "epilog": null,
       "help": "set up backup scripts",
       "version": "1.0.0"
-    }
+    },
+    "install": [
+      {
+        "name": "dependencies",
+        "help": "install dependencies required for the backup scripts to work",
+        "handler": "_install_dependencies"
+      }
+    ]
   },
   "files": [
     {

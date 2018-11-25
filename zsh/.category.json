@@ -7,7 +7,24 @@
       "epilog": null,
       "help": "set up files and plugins for the Z Shell",
       "version": "1.0.0"
-    }
+    },
+    "install": [
+      {
+        "name": "oh-my-zsh",
+        "help": "install oh-my-zsh, the framework used to manage your zsh configuration",
+        "handler": "_install_oh_my_zsh"
+      },
+      {
+        "name": "powerline",
+        "help": "install powerlevel9k, the powerline theme for zsh",
+        "handler": "_install_powerlevel9k"
+      },
+      {
+        "name": "fish",
+        "help": "install Fish Shell like syntax highlighting for zsh",
+        "handler": "_install_syntax_highlighting"
+      }
+    ]
   },
   "files": [
     {

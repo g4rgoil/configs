@@ -7,7 +7,29 @@
       "epilog": null,
       "help": "set up files and plugins for the vim text editor",
       "version": "1.2.0"
-    }
+    },
+    "install": [
+      {
+        "name": "linters",
+        "help": "install a number of linters for various programming languages (requires pip, npm and gem)",
+        "handler": "_install_linters"
+      },
+      {
+        "name": "plugins",
+        "help": "install and update all vim plugins (requires vundle to be installed)",
+        "handler": "_install_plugins"
+      },
+      {
+        "name": "vundle",
+        "help": "install Vundle, the plug-in manager for Vim",
+        "handler": "_install_plugin_manager"
+      },
+      {
+        "name": "ycm",
+        "help": "install YouCompleteMe, the code completion engine for Vim",
+        "handler": "_install_completion"
+      }
+    ]
   },
   "files": [
     {
