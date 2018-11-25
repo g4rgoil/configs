@@ -2,8 +2,9 @@
 
 """ This module provides classes for setting up this system """
 
-import operator
 import argparse
+import operator
+import re
 
 from argparse import ArgumentParser, ZERO_OR_MORE
 from pathlib import Path
@@ -41,6 +42,13 @@ class Category(object):
     """ Provides a base class for all categories that can be set up """
 
     directory = None
+
+    class _ChoicesContainer(list):
+        def __contains__(self, item):
+            if ":" in item:
+                item = item.split(":", 1)[1]
+
+            return super().__contains__(item)
 
     def __init__(self, descriptor_path=None):
         self.name = None
@@ -120,9 +128,9 @@ class Category(object):
     def add_install_option(self):
         group = self.parser.add_argument_group(self.name + " specific options")
 
-        choices = self.install_dict.keys()
+        choices = self._ChoicesContainer(self.install_dict.keys())
         help = "install the specified arguments; see below for information " \
-               "about available options"
+               "on the available options"
         self.parser.add_install_action(group=group, choices=choices, help=help)
 
     def parse_file_mapping_list(self, dictionary_list) -> List[FileMapping]:
@@ -161,6 +169,9 @@ class Category(object):
             self.utils.try_execute(lambda: mapping.delete_backup(self.utils))
 
     def install(self, keys) -> None:
+        keys = [k[max(0, k.find(":") + 1):] for k in keys if ":" not in k
+                or str.startswith(k, self.name + ":")]
+
         if "all" in keys:
             keys = [k for k in self.install_dict.keys() if k != "all"]
 
@@ -194,8 +205,11 @@ class CategoryAll(Category):
 
         group = self.parser.add_argument_group("all specific options")
 
-        help = "values to pass to the install action of each category; for " \
-               "available values consult the help message for each category"
+        help = "install the specified arguments; consult the help messages " \
+               "of other categories for information on the available " \
+               "options; to reference an option of a specific category you " \
+               "may prefix the option with the name of the category " \
+               "(eg. vim:plugins)."
         self.parser.add_install_action(group=group, help=help)
 
 
