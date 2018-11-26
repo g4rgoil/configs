@@ -4,7 +4,6 @@
 
 import argparse
 import operator
-import re
 
 from argparse import ArgumentParser, ZERO_OR_MORE
 from pathlib import Path
@@ -13,7 +12,7 @@ from typing import List
 from utils import SetupUtils, FileMapping, require_repo_dir, \
     parse_json_descriptor, __repo_dir__
 
-__version__ = "1.1.0"
+__version__ = "2.0.0"
 
 
 class CategoryCollection(object):
@@ -209,7 +208,7 @@ class CategoryAll(Category):
                "of other categories for information on the available " \
                "options; to reference an option of a specific category you " \
                "may prefix the option with the name of the category " \
-               "(eg. vim:plugins)."
+               "(eg. vim:plugins)"
         self.parser.add_install_action(group=group, help=help)
 
 

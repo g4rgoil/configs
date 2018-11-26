@@ -12,7 +12,7 @@ from category import CategoryCollection, CategorySubParser, MyHelpFormatter
 from utils import __repo_dir__, parse_json_descriptor, remove_user_options, \
     start_subprocess, load_categories
 
-__version__ = "1.1.0"
+__version__ = "1.2.0"
 
 
 class SetupArgParser(ArgumentParser):

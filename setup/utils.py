@@ -18,7 +18,7 @@ from os.path import abspath, basename, dirname, isfile, join, splitext
 from subprocess import CompletedProcess, DEVNULL, run
 from typing import Callable, Optional
 
-__version__ = "1.1.0"
+__version__ = "1.2.0"
 
 __repo_dir__ = Path(__file__).parents[1]
 
@@ -147,10 +147,7 @@ class SetupUtils(object):
 
         self.verbose = args_dict.get("verbose", False)
         self.quiet = args_dict.get("quiet", False)
-        self.confirm = args_dict.get("confirm", True)
-
-        if self.quiet or not self.confirm:
-            self.confirm = lambda m, d=True: d
+        self.confirm = args_dict.get("confirm", True)  # TODO implement
 
         self.suffix = "." + args_dict.get("suffix", ["old"])[0].lstrip(".")
         self.delete_backups = args_dict.get("delete_backups", False)

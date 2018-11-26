@@ -30,6 +30,8 @@
           <option value="setup.category" />
           <option value="category.MyHelpFormatter._metavar_formatter" />
           <option value="argparse.HelpFormatter._format_args" />
+          <option value="curses.LINES" />
+          <option value="curses.COLS" />
         </list>
       </option>
     </inspection_tool>
