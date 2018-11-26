@@ -3,7 +3,7 @@
     "name": "backups",
     "parser": {
       "prog": "setup.py backups",
-      "usage": "setup.py backups [-h]",
+      "usage": "setup.py backups [-h] [--install opt [opt ...]]",
       "epilog": null,
       "help": "set up backup scripts",
       "version": "1.0.0"

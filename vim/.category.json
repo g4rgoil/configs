@@ -3,7 +3,7 @@
     "name": "vim",
     "parser": {
       "prog": "setup.py vim",
-      "usage": "setup.py vim [-h] [--install arg [arg ...]]",
+      "usage": "setup.py vim [-h] [--install opt [opt ...]]",
       "epilog": null,
       "help": "set up files and plugins for the vim text editor",
       "version": "1.2.0"

@@ -3,7 +3,7 @@
     "name": "misc",
     "parser": {
       "prog": "setup.py misc",
-      "usage": "setup.py misc [-h] [--install arg [arg ...]]",
+      "usage": "setup.py misc [-h] [--install opt [opt ...]]",
       "epilog": null,
       "help": "set up files for miscellaneous programs",
       "version": "1.0.0"

@@ -3,7 +3,7 @@
     "name": "all",
     "parser": {
       "prog": "setup.py all",
-      "usage": "setup.py [<global options>] all [-h]",
+      "usage": "setup.py [<global options>] all [-h] [--install opt [opt ...]]",
       "epilog": null,
       "help": "set up files for all categories",
       "version": "1.0.0"

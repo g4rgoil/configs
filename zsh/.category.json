@@ -3,7 +3,7 @@
     "name": "zsh",
     "parser": {
       "prog": "setup.py zsh",
-      "usage": "setup.py zsh [-h] [--install arg [arg ...]]",
+      "usage": "setup.py zsh [-h] [--install opt [opt ...]]",
       "epilog": null,
       "help": "set up files and plugins for the Z Shell",
       "version": "1.0.0"

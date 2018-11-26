@@ -3,7 +3,7 @@
     "name": "tmux",
     "parser": {
       "prog": "setup.py tmux",
-      "usage": "setup.py tmux [-h] [--install arg [arg ...]]",
+      "usage": "setup.py tmux [-h] [--install opt [opt ...]]",
       "epilog": null,
       "help": "set up files and plugins for tmux",
       "version": "1.0.0"
