@@ -75,16 +75,16 @@ class Category(object):
             self.name = self.descriptor["category"]["name"]
             self.help = self.descriptor["category"]["parser"]["help"]
 
-            if len(self.descriptor["category"]["install"]):
-                self.install_dict["all"] = {
-                    "help": "install all other available options",
-                    "handler": None
-                }
-
             for install_option in self.descriptor["category"]["install"]:
                 self.install_dict[install_option["name"]] = {
                     "help": install_option["help"],
                     "handler": install_option["handler"]
+                }
+
+            if len(self.install_dict):
+                self.install_dict["all"] = {
+                    "help": "install all other available options",
+                    "handler": None
                 }
 
             if len(self.install_dict):
