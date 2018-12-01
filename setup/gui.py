@@ -6,14 +6,18 @@ import curses
 import locale
 import math
 import signal
+import subprocess
 import sys
-from curses import A_NORMAL, A_STANDOUT, A_BOLD
-from typing import Set, Tuple
+from curses import newwin, A_NORMAL, A_STANDOUT, A_BOLD
+from os.path import abspath, dirname, join
+from typing import Set, Tuple, List
+from subprocess import Popen, PIPE, STDOUT
 
 from category import CategoryCollection, Category
 from utils import load_categories
 
 __version__ = "0.1.0"
+__setup_script__ = join(dirname(abspath(__file__)), "setup.py")
 
 locale.setlocale(locale.LC_ALL, "")
 
@@ -23,7 +27,6 @@ class CategoryGui(object):
 
     def __init__(self):
         self.outer_window = None
-        self.window = None
 
         try:
             self.categories = CategoryCollection()
@@ -120,7 +123,7 @@ class SelectCategoryWindow(object):
         self.height = len(self.gui.categories.dict) + 8
         self.top_left = (2, int(curses.COLS / 2) - math.ceil(width / 2))
 
-        self.window = curses.newwin(self.height, self.width, *self.top_left)
+        self.window = newwin(self.height, self.width, *self.top_left)
         self.init_window()
 
     @classmethod
@@ -145,13 +148,52 @@ class SelectCategoryWindow(object):
         return current, button
 
     @staticmethod
-    def handle_selection(key, current, limit, selection) -> Set[Category]:
-        if key == ord("t") or key in CategoryGui.enter_keys:
-            return selection ^ {current}
-        elif key == ord("T"):
+    def handle_selection(key, current, limit, selection) -> Set[int]:
+        if key == ord("T"):
             return set() if len(selection) == limit else set(range(0, limit))
 
+        if current < limit:
+            if key == ord("t") or key in CategoryGui.enter_keys:
+                return selection ^ {current}
+
         return selection
+
+    def get_categories_from_selection(self, selection) -> List[Category]:
+        return [c for i, c in enumerate(self.gui.categories) if i in selection]
+
+    def handle_button(self, key, button, selection):
+        if len(selection) and button != -1 and key in CategoryGui.enter_keys:
+            categories = self.get_categories_from_selection(selection)
+            handler = [self.handle_link_button, self.handle_backup_button,
+                       self.handle_delete_button, self.handle_install_button]
+
+            handler[button](categories)
+
+    def handle_link_button(self, categories):
+        self.run_subprocess(*[[
+            sys.executable, __setup_script__, "-v", "--link", "--keep",
+            c.name] for c in categories])
+
+    def handle_backup_button(self, categories):
+        self.run_subprocess(*[[
+            sys.executable, __setup_script__, "-v", "--no-link", "--backup",
+            c.name] for c in categories])
+
+    def handle_delete_button(self, categories):
+        self.run_subprocess(*[[
+            sys.executable, __setup_script__, "-v", "--no-link", "--delete",
+            c.name] for c in categories ])
+
+    def handle_install_button(self, categories):
+        pass
+
+    def run_subprocess(self, *args):
+        SubprocessWindow(*args).main_loop()
+
+        self.gui.outer_window.touchwin()
+        self.gui.outer_window.refresh()
+        self.window.touchwin()
+        self.window.refresh()
 
     def init_window(self):
         self.window.border()
@@ -175,8 +217,7 @@ class SelectCategoryWindow(object):
             self.gui.handle_global_keys(key)
             current, button = self.handle_movement(key, current, button, limit)
             selection = self.handle_selection(key, current, limit, selection)
-
-        # return [c for i, c in enumerate(self.categories) if i in selected]
+            self.handle_button(key, button, selection)
 
     def draw_categories(self, current, selection):
         for i, c in enumerate(self.gui.categories):
@@ -202,6 +243,64 @@ class SelectCategoryWindow(object):
             self.window.addstr(" " + b + " ", decoration)
 
         self.window.refresh()
+
+
+class SubprocessWindow(object):
+    def __init__(self, *arguments):
+        if isinstance(arguments[0], str):
+            self.arguments = [arguments]
+        else:
+            self.arguments = arguments
+
+        self.width = math.ceil(curses.COLS / 1.5)
+        self.height = math.ceil(curses.LINES / 1.5)
+
+        self.output_line = self.height - 3
+
+        start_x = int(curses.COLS / 2) - math.ceil(self.width / 2)
+        start_y = int(curses.LINES / 2) - math.ceil(self.height / 2)
+        self.outer_start = (start_y, start_x)
+        self.start = (start_y + 1, start_x + 2)
+
+        self.outer_window = newwin(self.height, self.width, *self.outer_start)
+        self.window = newwin(self.height - 2, self.width - 4, *self.start)
+        self.init_window()
+
+    def print_line(self, s=None):
+        self.window.scroll()
+        self.window.addstr(self.output_line, 0, "" if s is None else s)
+
+    def init_window(self):
+        self.outer_window.border()
+        self.outer_window.refresh()
+        self.window.scrollok(True)
+
+    def kill_window(self):
+        del self.window
+        del self.outer_window
+
+    def main_loop(self):
+        for args in self.arguments:
+            self.print_line(" ".join(args))
+
+            process = Popen(args, stdout=PIPE, stderr=STDOUT)
+            self.dump_output(process)
+            self.print_line()
+
+        self.print_line()
+        self.print_line("Press any key to exit")
+
+        self.window.getch()
+        self.kill_window()
+
+    def dump_output(self, process):
+        while True:
+            line = process.stdout.readline()
+            if line != b"" and line is not None:
+                self.print_line(line.decode("UTF-8").rstrip("\n"))
+                self.window.refresh()
+            else:
+                break
 
 
 if __name__ == "__main__":

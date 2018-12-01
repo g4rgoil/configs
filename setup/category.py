@@ -111,8 +111,9 @@ class Category(object):
         self.delete()
         self.link()
 
-        if namespace.install and len(self.install_dict):
-            self.install(namespace.install)
+        if "install" in namespace:
+            if namespace.install and len(self.install_dict):
+                self.install(namespace.install)
 
     def add_subparser(self, subparsers) -> None:
         if self.descriptor is None:
