@@ -22,7 +22,7 @@ backup_src="/hdd/mybook"
 unmount_src=""
 
 ssh_user="pascal"
-ssh_host="192.168.1.42"
+ssh_host="192.168.1.53"
 ssh_port="2222"
 
 export BORG_REPO="ssh://${ssh_user}@${ssh_host}:${ssh_port}/pool/usr/pascal/planck_mybook"
