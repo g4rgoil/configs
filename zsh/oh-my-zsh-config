@@ -7,7 +7,7 @@ ZSH_THEME='powerlevel9k/powerlevel9k'
 plugins=(
     extract
     git
-    thefuck
+    # thefuck
     vi-mode
     vundle
     wd
