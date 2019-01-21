@@ -61,6 +61,11 @@ alias lcd='colorls --dirs'
 alias lcf='colorls --files'
 alias lcgit='colorls --git-status'
 
+# Some pydf aliases
+alias cdf='pydf -h'
+alias cdfa='cdf -a'
+alias cdfi='cdf -i'
+
 # Some filesystem aliases
 alias du='du -hs'
 alias df='df -h'
