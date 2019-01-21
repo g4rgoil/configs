@@ -78,3 +78,4 @@ Various templates used to create system specific configuration files.
 
 - [`templates/git-setup-hook`](templates/git-setup-hook) - git hook that automatically runs the setup script, runs after every commit and push if placed and named correctly
 - [`templates/xinitrc`](templates/xinitrc) - basic xinitrc, based on the one provided by LightDM
+- `templates/*.ascii` - ASCII banners for various ssh servers
