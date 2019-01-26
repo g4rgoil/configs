@@ -21,13 +21,18 @@ interval="-24 hours"
 backup_src="/hdd/mybook"
 unmount_src=""
 
+repo_path="/pool/usr/pascal/planck_mybook"
+
 ssh_user="pascal"
 ssh_host="192.168.1.53"
 ssh_port="2222"
 
-export BORG_REPO="ssh://${ssh_user}@${ssh_host}:${ssh_port}/pool/usr/pascal/planck_mybook"
+export BORG_REPO="ssh://${ssh_user}@${ssh_host}:${ssh_port}${repo_path}"
 export BORG_PASSPHRASE=""
 export BORG_KEY_FILE="/root/.config/borg/keys/planck_mybook"
+
+declare original_size
+declare new_size
 
 function unmount_backup_devices() {
     if ensure_unmounted ${backup_src} ${unmount_src}; then
@@ -42,6 +47,10 @@ function finish() {
 
     if [[ ${exit_code} -eq 0 ]]; then
         set_timestamp ${ts_file}
+
+        log "Repo size increased from ${original_size} to ${new_size}"
+        slack_message "Repo size increased from ${original_size} to ${new_size}"
+
         log "Finishing backup procedure"
         slack_message "Finished weekly mybook backup"
     else
@@ -97,11 +106,15 @@ if ! ensure_mounted ${backup_src} unmount_src; then
     exit ${mount_exit}
 fi
 
+original_size=$(ssh -p"${ssh_port}" "${ssh_user}@${ssh_host}" "du -hs ${repo_path}" | cut -f1)
+
 create_backup ${backup_src} "mybook" "none"
 backup_exit=$?
 
 prune_repository "mybook"
 prune_exit=$?
+
+new_size=$(ssh -p"${ssh_port}" "${ssh_user}@${ssh_host}" "du -hs ${repo_path}" | cut -f1)
 
 borg_exit=$(( backup_exit > prune_exit ? backup_exit : prune_exit ))
 
