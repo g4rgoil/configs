@@ -20,7 +20,7 @@ export PDFVIEW=/usr/bin/evince
 export IMAGEVIEW=/usr/bin/eog
 export FILEMANAGER=/usr/bin/fff
 
-export FZF_DEFAULT_OPTS='--height 50% --multi --border --preview="head -n25 {}"'
+export FZF_DEFAULT_OPTS='--height 50% --multi --border'
 
 export LANG=en_US.UTF-8
 
