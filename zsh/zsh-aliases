@@ -1,6 +1,10 @@
+#           _                 _ _                     
+#   _______| |__         __ _| (_) __ _ ___  ___  ___ 
+#  |_  / __| '_ \ _____ / _` | | |/ _` / __|/ _ \/ __|
+#   / /\__ \ | | |_____| (_| | | | (_| \__ \  __/\__ \
+#  /___|___/_| |_|      \__,_|_|_|\__,_|___/\___||___/
 #
-# ~/.zsh_aliases
-#
+
 
 if [[ "$SESSION_TYPE" != "local" ]]; then
     alias tmux='tmux -L remote'
@@ -10,16 +14,10 @@ fi
 
 alias holdmybeer='sudo'
 
-# Some package manager aliases
-alias update='yay -Syu'
-alias install='yay -S'
-alias uninstall='yay -R'
-
 # Some handy aliasses for everyday commands
+alias update='yay -Syu'
 alias wttr='curl https://wttr.in/Karlsruhe'
 alias neofetch='neofetch --config ~/.neofetch-config'
-alias cdtemp='cd $(mktemp -d)'
-alias etemp='edit $(mktemp)'
 alias cpumonitor='sudo s-tui'
 alias gpumonitor='nvidia-smi -l 5'
 alias networkmonitor='nload'
@@ -28,8 +26,6 @@ alias vim2ps='/usr/bin/vim -c "hardcopy > output.ps" -c quit'
 
 # Some power aliases
 alias die='shutdown now'
-alias suspend='systemctl suspend'
-alias hibernate='systemctl hibernate'
 
 # Some Network aliases
 alias wifiedit='kde5-nm-connection-editor'
@@ -44,14 +40,7 @@ alias dim="xbacklight -dec 10"
 alias brighten="xbacklight -inc 10"
 
 # Some ls aliasses
-alias ls='ls -CF --color=auto'
-alias l='ls'
-alias la='ls -A'
-alias ll='ls -al'
-alias lr='ls -R'
-alias ldot='ls .*'
-
-# Some colorls aliases
+alias ls='ls -hNCF --color=auto --group-directories-first'
 alias colorls='colorls --group-directories-first'
 alias lc='colorls'
 alias lca='colorls --almost-all'
@@ -61,42 +50,24 @@ alias lcd='colorls --dirs'
 alias lcf='colorls --files'
 alias lcgit='colorls --git-status'
 
-# Some pydf aliases
-alias cdf='pydf -h'
-alias cdfa='cdf -a'
-alias cdfi='cdf -i'
-
 # Some filesystem aliases
 alias du='du -hs'
 alias df='df -h'
-alias rr='rm -r'
-alias rf='rm -rf'
+alias cdf='pydf -h'
 alias cp='cp -i'
 alias mv='mv -i'
-
-# Some tree aliasses
 alias tree='tree -CF -L 5'
-alias treeX='tree -X'
-alias treeJ='tree -J'
 
 # Some random aliases
-alias clear="clear && clear"
-alias ccc="clear"
 alias ping='ping -c 5'
 alias openports='ss --all --numeric --processes --ipv4 --ipv6'
 alias ..='cd ..'
 alias q='exit'
-# alias rm='rm -I'
 alias scat='sudo cat'
 alias ccat='ccat --bg="dark" '
 alias ncat='nvimpager -c'
-alias vim='echo "Use \"e\" you idiot" && vim'
-alias svim='echo "use \"se\" you bloody idiot" && sudo vim'
-alias v='vim'
-alias sv='svim'
 alias todo='todo.sh'
 alias t='todo'
-alias pse='todo.sh -d ~/.todo/pse.todo.config'
 alias tobuy='todo.sh -d ~/.todo/tobuy.config'
 alias tb='tobuy'
 alias tailf='tail -f'
@@ -104,7 +75,6 @@ alias wordc='wc --words'
 alias linec='wc --lines'
 alias charc='wc --chars'
 alias bytec='wc --bytes'
-alias mux='tmuxinator'
 
 # Edit commands
 alias edit="$VISUAL"
@@ -124,12 +94,12 @@ alias page="$PAGER"
 alias filemanager="$FILEMANAGER"
 
 # Some aliases to quickly edit certain files
-alias zshrc='edit ~/.zshrc'
-alias zsh-aliases='edit ~/.zsh-aliases'
-alias zsh-functions='edit ~/.zsh-functions'
-alias zshenv='edit ~/.zshenv'
-alias vimrc='edit ~/.vimrc'
-alias fstab='se /etc/fstab'
+alias cfzrc='edit ~/.zshrc'
+alias cfalias='edit ~/.zsh-aliases'
+alias cffunc='edit ~/.zsh-functions'
+alias cfenv='edit ~/.zshenv'
+alias cfvrc='edit ~/.vimrc'
+alias cftab='se /etc/fstab'
 
 if [[ $0 == *"zsh"* ]]; then
     # Some global aliases
