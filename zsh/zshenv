@@ -1,4 +1,10 @@
-# ~/.zshenv
+#           _                     
+#   _______| |__   ___ _ ____   __
+#  |_  / __| '_ \ / _ \ '_ \ \ / /
+#   / /\__ \ | | |  __/ | | \ V / 
+#  /___|___/_| |_|\___|_| |_|\_/  
+#
+                               
 
 if hash ruby >/dev/null 2>&1; then
     PATH="$PATH:$(ruby -e 'print Gem.user_dir')/bin"
@@ -18,7 +24,7 @@ export GRAPHICAL=/usr/bin/gvim
 export PAGER=/usr/bin/nvimpager
 export PDFVIEW=/usr/bin/evince
 export IMAGEVIEW=/usr/bin/eog
-export FILEMANAGER=/usr/bin/fff
+export FILEMANAGER=/usr/bin/ranger
 
 export FZF_DEFAULT_OPTS='--height 50% --multi --border'
 
