@@ -49,6 +49,14 @@
     {
       "src": "yay.cfg",
       "dst": "~/.config/yay/config.json"
+    },
+    {
+      "src": "newsboat.cfg",
+      "dst": "~/.config/newsboat/config"
+    },
+    {
+      "src": "newsboat.urls",
+      "dst": "~/.config/newsboat/urls"
     }
   ],
   "directories": [
