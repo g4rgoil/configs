@@ -1,5 +1,9 @@
-"" Pascal Mehnert
-"" Version: 1 billion 
+""         _
+""  __   _(_)_ __ ___  _ __ ___ 
+""  \ \ / / | '_ ` _ \| '__/ __|
+""   \ V /| | | | | | | | | (__ 
+""    \_/ |_|_| |_| |_|_|  \___|
+""                              
 
 
 set nocompatible
@@ -64,7 +68,8 @@ endif
 "" General
 set ruler                       " Show row and column ruler information
 set number                      " Show line numbers
-set listchars=tab:>-,trail:-    " Show tabs as >--- and trailing spaces as -
+set list
+set lcs=tab:>-,trail:-,extends:>,precedes:<    " Show tabs as >--- and trailing spaces as -
 set linebreak                   " Break lines at work
 set showbreak=+++               " Wrap-broken line prefix
 set textwidth=120               " Line wrap (after cols)
