@@ -1,9 +1,9 @@
 ""         _
-""  __   _(_)_ __ ___  _ __ ___ 
+""  __   _(_)_ __ ___  _ __ ___
 ""  \ \ / / | '_ ` _ \| '__/ __|
-""   \ V /| | | | | | | | | (__ 
+""   \ V /| | | | | | | | | (__
 ""    \_/ |_|_| |_| |_|_|  \___|
-""                              
+""
 
 
 set nocompatible
@@ -35,7 +35,8 @@ if filereadable(expand("~/.vim/bundle/Vundle.vim/autoload/vundle.vim"))
         Plugin 'vim-airline/vim-airline'
         Plugin 'vim-airline/vim-airline-themes'
         Plugin 'chriskempson/base16-vim'
-        
+        Plugin 'morhetz/gruvbox'
+
         Plugin 'SirVer/ultisnips'
         Plugin 'honza/vim-snippets'
         Plugin 'pgilad/vim-skeletons'
@@ -69,7 +70,7 @@ endif
 set ruler                       " Show row and column ruler information
 set number                      " Show line numbers
 set list
-set lcs=tab:>-,trail:-,extends:>,precedes:<    " Show tabs as >--- and trailing spaces as -
+set lcs=tab:>-,trail:-,extends:>,precedes:<,eol:¬
 set linebreak                   " Break lines at work
 set showbreak=+++               " Wrap-broken line prefix
 set textwidth=120               " Line wrap (after cols)
@@ -100,10 +101,10 @@ if has("termguicolors")
     set termguicolors
 endif
 
-"let base16colorspace=256  " Access colors present in 256 colorspace
-
 try
-    colorscheme base16-darktooth
+    " colorscheme base16-darktooth
+    let g:gruvbox_contrast_dark = 'hard'
+    colorscheme gruvbox
 catch /^Vim\%((\a\+)\)\=:E185/
     colorscheme slate
 endtry
@@ -138,10 +139,11 @@ nnoremap <S-T> :NERDTreeToggle<CR>
 set laststatus=2                                    " Always show status bar
 let g:airline#extensions#tabline#enabled = 1
 let g:airline_powerline_fonts = 1
-let g:airline_theme = 'luna'
+" let g:airline_theme = 'luna'
 
 let g:airline#extensions#whitespace#enabled = 0
 let g:airline#extensions#vimtex#enabled = 1
+
 
 "" Vimtex Configuration
 let g:vimtex_compiler_method = 'latexmk'
