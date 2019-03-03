@@ -3,8 +3,8 @@ documents:~/Documents
 downloads:~/Downloads
 dropbox:~/Dropbox
 uni:~/University
-configs:~/repositories/configs
-repositories:~/repositories
+cfg:~/repositories/configs
+repos:~/repositories
 media:/hdd/media
 mybook:/hdd/mybook
 usb:/mnt/usb
