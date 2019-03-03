@@ -95,11 +95,11 @@ alias filemanager="$FILEMANAGER"
 
 # Some aliases to quickly edit certain files
 alias cfzrc='edit ~/.zshrc'
-alias cfalias='edit ~/.zsh-aliases'
+alias cfal='edit ~/.zsh-aliases'
 alias cffunc='edit ~/.zsh-functions'
 alias cfenv='edit ~/.zshenv'
 alias cfvrc='edit ~/.vimrc'
-alias cftab='se /etc/fstab'
+alias cftab='sedit /etc/fstab'
 
 if [[ $0 == *"zsh"* ]]; then
     # Some global aliases

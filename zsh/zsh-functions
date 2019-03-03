@@ -1,9 +1,9 @@
-#           _            __                  _   _                 
-#   _______| |__        / _|_   _ _ __   ___| |_(_) ___  _ __  ___ 
+#           _            __                  _   _
+#   _______| |__        / _|_   _ _ __   ___| |_(_) ___  _ __  ___
 #  |_  / __| '_ \ _____| |_| | | | '_ \ / __| __| |/ _ \| '_ \/ __|
 #   / /\__ \ | | |_____|  _| |_| | | | | (__| |_| | (_) | | | \__ \
 #  /___|___/_| |_|     |_|  \__,_|_| |_|\___|\__|_|\___/|_| |_|___/
-#                                                                  
+#
 
 
 usb_mount="/mnt/usb"
@@ -51,18 +51,6 @@ function background-dl() {
     youtube-dl $1 >/dev/null &
 }
 
-# function pause_history() {
-#     export HISTFILE_BACKUP="$HISTFILE"
-#     export HISTFILE="/dev/null"
-# }
-
-# function resume_history() {
-#     if [[ -n "$HISTFILE_BACKUP" ]]; then
-#         export HISTFILE="$HISTFILE_BACKUP"
-#     fi
-#     unset HISTFILE_BACKUP
-# }
-
 function show_colors() {
     for i in {0..255}; do
         printf "\x1b[38;5;${i}mcolour%03d\x1b[0m " "$i"
@@ -71,4 +59,12 @@ function show_colors() {
             echo ""
         fi
     done
+}
+
+function sre() {
+    find /home/pascal /home/pascal/.config/** /home/pascal/repositories/configs/** -maxdepth 1 ! -path '*/.git/*' | fzf --height 100% | xargs -r "$EDITOR"
+}
+
+function vf() {
+    fzf --height 100% | xargs -r "$EDITOR"
 }

@@ -27,7 +27,7 @@ export IMAGEVIEW=/usr/bin/eog
 export FILEMANAGER=/usr/bin/ranger
 export SPREADSHEETS=/usr/bin/sc-im
 
-export FZF_DEFAULT_OPTS='--height 50% --multi --border'
+export FZF_DEFAULT_OPTS='--height 50% --multi'
 
 export LANG=en_US.UTF-8
 
