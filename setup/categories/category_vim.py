@@ -29,7 +29,7 @@ class CategoryVim(Category):
     def _install_plugins(self) -> None:
         self.utils.error("Installing plugins with Vundle...")
 
-        args = split("vim -c PluginInstall -c PluginUpdate "
+        args = split("nvim -c PluginInstall -c PluginUpdate "
                      "-c PluginClean -c quitall")
         proc = self.utils.run(args)
 

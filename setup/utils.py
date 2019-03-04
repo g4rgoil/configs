@@ -228,7 +228,15 @@ class SetupUtils(object):
 
         if path.exists():
             if path.joinpath(".git").exists():
-                return self.error("%s seems to already be installed" % name)
+                self.error("%s seems to already be installed, updating ..." % name)
+
+                args = ["git", "-C", str(path), "pull", "-v"]
+                process = self.run(args)
+
+                if process.returncode != 0:
+                    self.error("Failed to update %s: Exited with exit code %s"
+                            % (name, process.returncode))
+                return
 
             self.error("'%s' already exists, but is no git repo" % path)
             if not self.confirm("Clone into the existing directory?", False):
@@ -310,15 +318,6 @@ class SetupUtils(object):
 
     def print_move(self, src, dst) -> None:
         self.print("Moving file: '%s' -> '%s'" % (str(src), str(dst)))
-
-    def debian_install_nodejs(self) -> None:
-        src_url = "https://deb.nodesource.com/setup_9.x"
-        install_location = Path("~/nodesource_setup.sh")
-
-        self.run(["curl", "-sL", src_url, "-o", str(install_location)])
-        self.run(["sh", str(install_location)])
-
-        self.install_packages("debian", "nodejs")
 
 
 class FileMapping(object):
