@@ -57,6 +57,10 @@
     {
       "src": "newsboat.urls",
       "dst": "~/.config/newsboat/urls"
+    },
+    {
+      "src": "./run-setup-script.sh",
+      "dst": "~/scripts/run-setup-script.sh"
     }
   ],
   "directories": [

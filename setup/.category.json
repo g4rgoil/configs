@@ -1,0 +1,23 @@
+{
+  "category": {
+    "name": "setup",
+    "parser": {
+      "prog": "setup.py setup",
+      "usage": "setup.py setup [-h]",
+      "epilog": null,
+      "help": "set up files for the setup script",
+      "version": "1.0.0"
+    },
+    "install": [
+    ]
+  },
+  "files": [
+  ],
+  "directories": [
+    {
+      "src": ".",
+      "dst": "~/scripts/setup"
+    }
+  ]
+}
+
