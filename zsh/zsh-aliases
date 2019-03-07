@@ -26,6 +26,8 @@ alias vim2ps='/usr/bin/vim -c "hardcopy > output.ps" -c quit'
 
 # Some power aliases
 alias die='shutdown now'
+alias sc-suspend='systemctl suspend'
+alias sc-hibernate='systemctl hibernate'
 
 # Some Network aliases
 alias wifiedit='kde5-nm-connection-editor'
