@@ -231,6 +231,9 @@ class SetupUtils(object):
                 self.error("%s seems to already be installed, updating ..." % name)
 
                 args = ["git", "-C", str(path), "pull", "-v"]
+                if not self.verbose:
+                    args.remove("-v")
+
                 process = self.run(args)
 
                 if process.returncode != 0:
@@ -245,6 +248,9 @@ class SetupUtils(object):
         path.mkdir(parents=True, exist_ok=True)
 
         args = ["git", "clone", "-v", str(url), str(path)]
+        if not self.verbose:
+            args.remove("-v")
+
         process = self.run(args)
 
         if process.returncode != 0:
