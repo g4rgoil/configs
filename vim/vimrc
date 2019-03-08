@@ -9,6 +9,7 @@
 set nocompatible
 set encoding=utf-8
 set backupext=.bak
+let mapleader=','
 
 " Add ~/.vim to runtimepath and packpath
 if has('nvim')
@@ -28,13 +29,13 @@ if filereadable(expand("~/.vim/bundle/Vundle.vim/autoload/vundle.vim"))
 
         Plugin 'junegunn/goyo.vim'
         Plugin 'junegunn/vim-easy-align'
+        Plugin 'tpope/vim-commentary'
 
         Plugin 'tpope/vim-surround'
         Plugin 'tpope/vim-fugitive'
 
         Plugin 'vim-airline/vim-airline'
         Plugin 'vim-airline/vim-airline-themes'
-        Plugin 'chriskempson/base16-vim'
         Plugin 'morhetz/gruvbox'
 
         Plugin 'SirVer/ultisnips'
@@ -51,10 +52,7 @@ if filereadable(expand("~/.vim/bundle/Vundle.vim/autoload/vundle.vim"))
         Plugin 'vim-pandoc/vim-pandoc-syntax'
         Plugin 'vim-pandoc/vim-rmarkdown'
 
-        Plugin 'harenome/vim-mipssyntax'
         Plugin 'vim-syntastic/syntastic'
-        Plugin 'tfnico/vim-gradle'
-
         Plugin 'tmhedberg/SimpylFold'
         Plugin 'Konfekt/FastFold'
 
@@ -64,26 +62,37 @@ if filereadable(expand("~/.vim/bundle/Vundle.vim/autoload/vundle.vim"))
         Plugin 'Raimondi/delimitMate'
 endif
 
-"" Indentation
 if has('autocmd')
     filetype plugin indent on
-    autocmd FileType c,cpp,java,php,python,bash,sh autocmd BufWritePre <buffer> %s/\s\+$//e
+
+    "" Delete all trailing white spaces on save
+    autocmd BufWritePre * %s/\s\+$//e
+    autocmd BufWritePost ~/.vimrc,*vimrc source ~/.vimrc
 endif
 
 "" General
-set ruler                       " Show row and column ruler information
-set number                      " Show line numbers
+set ruler
+set number
 set list
 set lcs=tab:>-,trail:-,extends:>,precedes:<,eol:¬
-set linebreak                   " Break lines at work
-set showbreak=+++               " Wrap-broken line prefix
-set textwidth=120               " Line wrap (after cols)
+set linebreak
+set showbreak=+++
+set textwidth=120
 set wrap
-set showmatch                   " Highlight matching braces
-set cmdheight=1                 " Number of lines at bottom of screen
-set tw=0                        " Don't use automatic line breaks
-set backspace=indent,eol,start  " Set the backspace to delete by default
-syntax enable                   " Enable syntax highlighting
+set showmatch
+set wildmode=longest,list,full
+set cmdheight=1
+set textwidth=0
+set backspace=indent,eol,start
+set smarttab
+set tabstop=4
+set shiftwidth=4
+set expandtab
+set autoindent
+set splitbelow splitright
+set foldmethod=manual
+
+syntax enable
 
 "" Setting the cursor shape for vim and neovim
 if has('nvim')
@@ -106,55 +115,47 @@ if has("termguicolors")
 endif
 
 try
-    " colorscheme base16-darktooth
     let g:gruvbox_contrast_dark = 'hard'
     colorscheme gruvbox
 catch /^Vim\%((\a\+)\)\=:E185/
     colorscheme slate
 endtry
 
-set smarttab
-set tabstop=4                   " Number of hard-tabstop spaces
-set shiftwidth=4                " Number of auto-indent spaces
-set expandtab                   " Use spaces instead of tabs
-set autoindent
-
-"" Folding
-set foldmethod=manual
-
-"" Misc key mappings
-
-"" Configure split behaviour
-nnoremap <C-J> <C-W><C-J>
-nnoremap <C-K> <C-W><C-K>
-nnoremap <C-L> <C-W><C-L>
-nnoremap <C-H> <C-W><C-H>
-
-set splitbelow
-set splitright
-
-"" Configure tab behaviour
+"" Define key mappings for tabs and splits
+nnoremap <C-j> <C-w><C-j>
+nnoremap <C-k> <C-w><C-k>
+nnoremap <C-l> <C-w><C-l>
+nnoremap <C-h> <C-w><C-h>
 map <C-n> :tabp<CR>
 map <C-m> :tabn<CR>
 
-nnoremap <S-T> :NERDTreeToggle<CR>
+map <leader>hs :hsplit<CR>
+map <leader>vs :vsplit<CR>
+map <leader>c :tabnew<CR>
+
+" o for orthography
+map <leader>og :setlocal spell spelllang=de<CR>
+map <leader>oe :setlocal spell spelllang=en_us<CR>
+
+nnoremap <C-n> :NERDTreeToggle<CR>
+nnoremap <C-s> :%s//g<Left><Left>
+
+map <leader>w :w<CR>
+map <leader>q :q<CR>
 
 "" Airline Configuration
-set laststatus=2                                    " Always show status bar
+set laststatus=2
 let g:airline#extensions#tabline#enabled = 1
 let g:airline_powerline_fonts = 1
-" let g:airline_theme = 'luna'
-
+let g:airline_theme = 'luna'
 let g:airline#extensions#whitespace#enabled = 0
 let g:airline#extensions#vimtex#enabled = 1
-
 
 "" Vimtex Configuration
 let g:vimtex_compiler_method = 'latexmk'
 let g:vimtex_complete_close_braces = 1
 let g:vimtex_fold_enabled = 0
 let g:vimtex_fold_comments = 1
-
 let g:vimtex_view_general_viewer = 'evince'
 let g:vimtex_view_general_options = '--unique file:@pdf\#src:@line@tex'
 let g:vimtex_view_general_options_latexmk = '--unique'
@@ -173,9 +174,7 @@ let g:UltiSnipsSnippetDirectories=["UltiSnips"]
 
 "" ycm (you complete me) configuration
 let g:ycm_global_ycm_extra_conf='~/.vim/bundle/YouCompleteMe/third_party/ycmd/.ycm_extra_conf.py'
-
 let g:ycm_python_binary_path = '/usr/bin/python3'
-
 let g:syntastic_sh_shellcheck_args = "-x"
 
 "" File Type options
