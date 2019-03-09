@@ -21,7 +21,7 @@ endif
 filetype off
 
 "" Plugins
-set rtp+=~/.vim/bundle/Vundle.vim
+set runtimepath+=~/.vim/bundle/Vundle.vim
 
 if filereadable(expand("~/.vim/bundle/Vundle.vim/autoload/vundle.vim"))
     silent! call vundle#rc()
@@ -132,10 +132,6 @@ map <C-m> :tabn<CR>
 map <leader>hs :hsplit<CR>
 map <leader>vs :vsplit<CR>
 map <leader>c :tabnew<CR>
-
-" o for orthography
-map <leader>og :setlocal spell spelllang=de<CR>
-map <leader>oe :setlocal spell spelllang=en_us<CR>
 
 nnoremap <C-n> :NERDTreeToggle<CR>
 nnoremap <C-s> :%s//g<Left><Left>
