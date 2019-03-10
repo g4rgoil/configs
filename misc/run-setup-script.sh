@@ -9,7 +9,7 @@ function run_setup_script() {
         echo "Can't locate setup script."
     else
         date +%Y%m%d > "$SETUP_TIMESTAMP_FILE"
-        python "$SCRIPT_FILE" all --install all
+        python "$SCRIPT_FILE" -v all --install all
     fi
 }
 
@@ -25,7 +25,7 @@ if [[ $next -le $now ]]; then
     echo -n "Do you wish to run the setup script? [Y/n] "
     read -r answer
 
-    case $answer in
+    case "$answer" in
         [Yy]*|"" ) run_setup_script;;
         * ) ;;
     esac

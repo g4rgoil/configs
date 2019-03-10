@@ -27,16 +27,14 @@ if filereadable(expand("~/.vim/bundle/Vundle.vim/autoload/vundle.vim"))
     silent! call vundle#rc()
         Plugin 'VundleVim/Vundle.vim'
 
-        Plugin 'junegunn/goyo.vim'
-        Plugin 'junegunn/vim-easy-align'
         Plugin 'tpope/vim-commentary'
-
         Plugin 'tpope/vim-surround'
         Plugin 'tpope/vim-fugitive'
 
         Plugin 'vim-airline/vim-airline'
         Plugin 'vim-airline/vim-airline-themes'
         Plugin 'morhetz/gruvbox'
+        Plugin 'junegunn/goyo.vim'
 
         Plugin 'SirVer/ultisnips'
         Plugin 'honza/vim-snippets'
@@ -114,12 +112,13 @@ if has("termguicolors")
     set termguicolors
 endif
 
-try
-    let g:gruvbox_contrast_dark = 'hard'
+let g:gruvbox_contrast_dark = 'hard'
+
+if has('nvim')
     colorscheme gruvbox
-catch /^Vim\%((\a\+)\)\=:E185/
+else
     colorscheme slate
-endtry
+endif
 
 "" Define key mappings for tabs and splits
 nnoremap <C-j> <C-w><C-j>
