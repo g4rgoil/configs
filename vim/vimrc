@@ -132,11 +132,13 @@ map <leader>hs :hsplit<CR>
 map <leader>vs :vsplit<CR>
 map <leader>c :tabnew<CR>
 
-nnoremap <C-n> :NERDTreeToggle<CR>
+nnoremap <C-t> :NERDTreeToggle<CR>
 nnoremap <C-s> :%s//g<Left><Left>
 
 map <leader>w :w<CR>
 map <leader>q :q<CR>
+
+let g:vimtex_compiler_progname ='nvr'
 
 "" Airline Configuration
 set laststatus=2

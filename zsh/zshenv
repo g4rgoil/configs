@@ -1,10 +1,10 @@
-#           _                     
+#           _
 #   _______| |__   ___ _ ____   __
 #  |_  / __| '_ \ / _ \ '_ \ \ / /
-#   / /\__ \ | | |  __/ | | \ V / 
-#  /___|___/_| |_|\___|_| |_|\_/  
+#   / /\__ \ | | |  __/ | | \ V /
+#  /___|___/_| |_|\___|_| |_|\_/
 #
-                               
+
 
 if hash ruby >/dev/null 2>&1; then
     PATH="$PATH:$(ruby -e 'print Gem.user_dir')/bin"
@@ -13,7 +13,13 @@ fi
 
 export ZDOTDIR="$HOME"
 
-export TERM="xterm-256color"
+if [[ -n "$TMUX" ]]; then
+    export TERM="tmux-256color"
+else
+    export TERM="xterm-256color"
+fi
+
+
 export PLANTUML_LIMIT_SIZE=8192
 export MOPIDYSERVER="dasbier@raven2611:6680"
 
