@@ -69,15 +69,12 @@ if has('autocmd')
 endif
 
 "" General
-set ruler
-set number
-set list
+set ruler number list
 set lcs=tab:>-,trail:-,extends:>,precedes:<,eol:¬
 set linebreak
 set showbreak=+++
 set textwidth=120
-set wrap
-set showmatch
+set wrap showmatch
 set wildmode=longest,list,full
 set cmdheight=1
 set textwidth=0
@@ -85,10 +82,10 @@ set backspace=indent,eol,start
 set smarttab
 set tabstop=4
 set shiftwidth=4
-set expandtab
-set autoindent
+set expandtab autoindent
 set splitbelow splitright
 set foldmethod=manual
+set mouse=n
 
 syntax enable
 
