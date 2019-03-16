@@ -9,7 +9,7 @@ function run_setup_script() {
         echo "Can't locate setup script."
     else
         date +%Y%m%d > "$SETUP_TIMESTAMP_FILE"
-        python "$SCRIPT_FILE" -v all --install all
+        python "$SCRIPT_FILE" all --install all
     fi
 }
 

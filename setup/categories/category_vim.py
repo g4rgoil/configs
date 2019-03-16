@@ -31,7 +31,10 @@ class CategoryVim(Category):
 
         args = split("nvim -c PluginInstall -c PluginUpdate "
                      "-c PluginClean -c quitall")
+
+        self.utils.verbose = True
         proc = self.utils.run(args)
+        self.utils.verbose = False
 
         if proc.returncode != 0:
             self.utils.error("Failed to install plugins: Exited with code %s"
