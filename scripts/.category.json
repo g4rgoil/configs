@@ -1,0 +1,24 @@
+{
+  "category": {
+    "name": "scripts",
+    "parser": {
+      "prog": "setup.py scripts",
+      "usage": "setup.py scripts [-h]",
+      "epilog": null,
+      "help": "set up user specific scripts",
+      "version": "1.0.0"
+    },
+    "install": [
+    ]
+  },
+  "files": [
+    {
+      "src": "note.py",
+      "dst": "/usr/local/bin/note.py",
+      "root": true
+    }
+  ],
+  "directories": [
+  ]
+}
+
