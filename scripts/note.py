@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 
 
-#  TODO: Add dependencies for docopt, pandoc and entr <11-04-19, Pascal Mehnert> #
+#  TODO: Add dependencies for docopt, pandoc, infi.docopt_completion <11-04-19, Pascal Mehnert> #
+#  TODO: Automatically run docopt completion <11-04-19, Pascal Mehnert> #
 
 
 import getpass
@@ -33,10 +34,10 @@ Usage:
     note.py --version
 
 Commands:
-    create        Create a new note with the required pandoc header
-    list          List notes and corresponding information
-    gen-make  Create a Makefile that can compile the notes, using pandoc
-    gen-config    Write a default config file to '{config}' or stdout
+    create      Create a new note with the required pandoc header
+    list        List notes and corresponding information
+    gen-make    Create a Makefile that can compile the notes, using pandoc
+    gen-config  Write a default config file to '{config}' or stdout
 
 Arguments:
     <prefix>  String used to prefix the names of notes, defaults to 'lecture'
@@ -49,8 +50,9 @@ General Options:
                      or just '.', if the cwd ends in 'notes'
     --author=<name>  The author of the note, will be used in the header
     --edit           Open the note in an editor upon creation
-    --noedit         Don't open the note in an editor (aloways overrules --edit)
+    --noedit         Don't open the note in an editor (always overrules --edit)
     --editor=<prog>  Use the specified progam to edit notes
+    --               Write to stdout instead of a file
 
 Listing Options:
     -m, --modified  Print the date and time each note was last modified
@@ -59,7 +61,7 @@ Listing Options:
     -c, --chars     Print the number of characters in each note
     -a, --all       Print all the information listed above
     -r, --reverse   Invert the order, in which notes are listed
-"""
+""".format(config=__config_file__)
 
 
 __header__ = """---
@@ -102,6 +104,7 @@ def confirm(msg, default=True):
 
     return default if re.fullmatch("\s*", choice) \
             else re.fullmatch("[\sy]*y[\sy]*", choice)
+
 
 def get_directory(args):
     directory = args['--dir']
@@ -318,7 +321,7 @@ def generate_config(args):
 
 
 if __name__ == "__main__":
-    args = docopt(__doc__, version="note.py-0.5.0")
+    args = docopt(__doc__, version="note.py-0.5.1")
     config = load_config()
     args = merge(args, config)
     init_args(args)
