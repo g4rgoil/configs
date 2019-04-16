@@ -5,7 +5,7 @@
 #  /___|___/_| |_|\___|_| |_|\_/
 #
 
-PATH="$PATH:$HOME/scripts"
+PATH="$PATH:$HOME/.local/bin"
 
 if hash ruby >/dev/null 2>&1; then
     PATH="$PATH:$(ruby -e 'print Gem.user_dir')/bin"

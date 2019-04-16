@@ -19,36 +19,36 @@
   "files": [
     {
       "src": "note.py",
-      "dst": "~/scripts/note.py"
+      "dst": "~/.local/bin/note.py"
     },
     {
       "src": "./run-setup-script.sh",
-      "dst": "~/scripts/run-setup-script.sh"
+      "dst": "~/.local/bin/run-setup-script.sh"
     },
     {
       "root": true,
       "src": "./backups/desktop-backup.sh",
-      "dst": "/usr/bin/desktop-backup"
+      "dst": "/usr/local/bin/desktop-backup"
     },
     {
       "root": true,
       "src": "./backups/media-backup.sh",
-      "dst": "/usr/bin/media-backup"
+      "dst": "/usr/local/bin/media-backup"
     },
     {
       "root": true,
       "src": "./backups/xps13-backup.sh",
-      "dst": "/usr/bin/xps13-backup"
+      "dst": "/usr/local/bin/xps13-backup"
     },
     {
       "root": true,
       "src": "./backups/mybook-backup.sh",
-      "dst": "/usr/bin/mybook-backup"
+      "dst": "/usr/local/bin/mybook-backup"
     },
     {
       "root": true,
       "src": "./backups/usb-backup.sh",
-      "dst": "/usr/bin/usb-backup"
+      "dst": "/usr/local/bin/usb-backup"
     }
   ],
   "directories": [
