@@ -125,7 +125,7 @@ nnoremap <C-h> <C-w><C-h>
 map <C-n> :tabp<CR>
 map <C-m> :tabn<CR>
 
-map <leader>hs :hsplit<CR>
+map <leader>sp :split<CR>
 map <leader>vs :vsplit<CR>
 map <leader>c :tabnew<CR>
 
