@@ -22,6 +22,10 @@
       "dst": "~/scripts/note.py"
     },
     {
+      "src": "./run-setup-script.sh",
+      "dst": "~/scripts/run-setup-script.sh"
+    },
+    {
       "root": true,
       "src": "./backups/desktop-backup.sh",
       "dst": "/usr/bin/desktop-backup"
