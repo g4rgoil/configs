@@ -82,6 +82,6 @@ if [[ "$SSH_AGENT_PID" == "" ]]; then
     eval "$(<~/.ssh-agent-thing)" > /dev/null
 fi
 
-if [[ -e ~/scripts/run-setup-script.sh ]]; then
-    source ~/scripts/run-setup-script.sh
+if [[ -e ~/.local/bin/run-setup-script.sh ]]; then
+    source ~/.local/bin/run-setup-script.sh
 fi

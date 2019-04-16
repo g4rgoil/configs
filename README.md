@@ -1,15 +1,13 @@
 # Config files by Pascal Mehnert
 
-## setup
-
 ## zsh
 
 Configuration files for the Z Shell (zsh), oh-my-zsh and powerlevel9k.
 
 - [`zsh/zshrc`](zsh/zshrc) - main zsh configuration
-- [`zsh/zsh-aliases`](zsh/zsh-aliases) - alias definitions, gets sourced in `zshrc`
-- [`zsh/zsh-functions`](zsh/zsh-functions) - function definitions, gets sourced in `zshrc`
-- [`zsh/oh-my-zsh-config`](zsh/oh-my-zsh-config) - oh-my-zsh and powerlevel9k configuration, gets sourced in `zshrc`
+- [`zsh/zsh-aliases`](zsh/zsh-aliases) - alias definitions, gets sourced in _zshrc_
+- [`zsh/zsh-functions`](zsh/zsh-functions) - function definitions, gets sourced in _zshrc_
+- [`zsh/oh-my-zsh-config`](zsh/oh-my-zsh-config) - oh-my-zsh and powerlevel9k configuration, gets sourced in _zshrc_
 - [`zsh/zshenv`](zsh/zshenv) - envrionment variable definitions, gets automatically sourced by zsh
 
 ## bash
@@ -18,8 +16,8 @@ Configuration files for the Bourne-Again Shell (bash).
 
 - [`bash/bash-profile`](bash/bash-profile) - ensures bashrc is being sourced
 - [`bash/bashrc`](bash/bashrc) - main bash configuration
-- [`bash/bash-aliases`](bash/bash-aliases) - alias definitions, get sourced in `bashrc` (symlinked to `zsh/zsh-aliases`)
-- [`bash/bashenv`](bash/bashenv) - envrionment variable definitions, gets sourced in `bashrc` (symlinked to `zsh/zshenv`)
+- [`bash/bash-aliases`](bash/bash-aliases) - alias definitions, get sourced in _bashrc_ (symlinked to [zsh/zsh-aliases](zsh/zsh-aliases))
+- [`bash/bashenv`](bash/bashenv) - envrionment variable definitions, gets sourced in _bashrc_ (symlinked to [zsh/zshenv](zsh/zshenv))
 
 ## tmux
 
@@ -50,27 +48,33 @@ Configuration files for vim, neovim, gvim and ideavim.
 Miscellaneous configuration files for various applications.
 
 - [`misc/todo.cfg`](misc/todo.cfg) - configuration for main todo.txt file
-- [`misc/pse.todo.cfg`](misc/pse.todo.cfg) - configuration for pse todo.txt file
 - [`misc/tobuy.cfg`](misc/tobuy.cfg) - configuration for tobuy todo.txt file
 - [`misc/todo-actions/`](misc/todo-actions) - custom action for todo.txt
 - [`misc/cleanup.hook`](misc/cleanup.hook) - pacman hook that keeps the pacman package cache clean
 - [`misc/latexmkrc`](misc/latexmkrc) - basic configuration for latexmk
 - [`misc/neofetch.cfg`](misc/neofetch.cfg) - configuration for neofetch
-- [`misc/pycodestylerc`](misc/pycodestylerc) - configuration for pycodestyle
 - [`misc/warprc`](misc/warprc) - warp point definitions for the oh-my-zsh wd tool
 - [`misc/yay.cfg`](misc/yay.cfg) - main configuration for the yay yaourt helper
+
+## scripts
+
+Various user specific scripts
+
+- [`scripts/setup`](scripts/setup) - contains functionality to automatically set up the files in this repository on a system
+- [`scripts/note.py`](scripts/note.py) - automatically creates .Rmd files, for use with pandoc (see `note.py --help`)
+- [`scripts/run-setup-script.sh`](scripts/run-setup-script.sh) - regularly asks the user to run the setup script
 
 ## backup\_scripts
 
 Various backup scripts, mostly using borg to backup my systems and data.
 
-- [`backup_scripts/backup_library.sh`](backup_scripts/backup_library.sh) - contains reusable functionality used by one or more backup scripts
-- [`backup_scripts/desktop_backup.sh`](backup_scripts/desktop_backup.sh) - creates a root directory backup of my desktop on my external hard drive
-- [`backup_scripts/xps13_backup.sh`](backup_scripts/xps13_backup.sh) - creates a root directory backup of my laptop on my external hard drive
-- [`backup_scripts/media_backup.sh`](backup_scripts/media_backup.sh) -  creates a backup of my media hard drive on my my external hard drive
-- [`backup_scripts/mybook_backup.sh`](backup_scripts/mybook_backup.sh) - creates an _offsite_ backup of my external hard drive on our local server
-- [`backup_scripts/usb_backup.sh`](backup_scripts/usb_backup.sh) - creates a backup of a USB stick on my external hard drive
-- `backup_scripts/*.pattern` - contains patterns used by borg to include and exclude files
+- [`scripts/backups/backup-library.sh`](scripts/backups/backup-library.sh) - contains reusable functionality used by one or more backup scripts
+- [`scripts/backups/desktop-backup.sh`](scripts/backups/desktop-backup.sh) - creates a root directory backup of my desktop on my external hard drive
+- [`scripts/backups/xps13-backup.sh`](scripts/backups/xps13-backup.sh) - creates a root directory backup of my laptop on my external hard drive
+- [`scripts/backups/media-backup.sh`](scripts/backups/media-backup.sh) -  creates a backup of my media hard drive on my my external hard drive
+- [`scripts/backups/mybook-backup.sh`](scripts/backups/mybook-backup.sh) - creates an _offsite_ backup of my external hard drive on our local server
+- [`scripts/backups/usb-backup.sh`](scripts/backups/usb-backup.sh) - creates a backup of a USB stick on my external hard drive
+- `scripts/backup/*.pattern` - contains patterns used by borg to include and exclude files
 
 ## templates
 
