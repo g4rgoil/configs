@@ -3,22 +3,78 @@
     "name": "scripts",
     "parser": {
       "prog": "setup.py scripts",
-      "usage": "setup.py scripts [-h]",
+      "usage": "setup.py scripts [-h] [--install opt [opt ...]]",
       "epilog": null,
-      "help": "set up user specific scripts",
+      "help": "set up various scripts on this system",
       "version": "1.0.0"
     },
     "install": [
+      {
+        "name": "dependencies",
+        "help": "install dependencies required for the scripts in this repoistory",
+        "handler": "_install_dependencies"
+      }
     ]
   },
   "files": [
     {
       "src": "note.py",
-      "dst": "/usr/local/bin/note.py",
-      "root": true
+      "dst": "~/scripts/note.py"
+    },
+    {
+      "root": true,
+      "src": "./backups/desktop-backup.sh",
+      "dst": "/usr/bin/desktop-backup"
+    },
+    {
+      "root": true,
+      "src": "./backups/media-backup.sh",
+      "dst": "/usr/bin/media-backup"
+    },
+    {
+      "root": true,
+      "src": "./backups/xps13-backup.sh",
+      "dst": "/usr/bin/xps13-backup"
+    },
+    {
+      "root": true,
+      "src": "./backups/mybook-backup.sh",
+      "dst": "/usr/bin/mybook-backup"
+    },
+    {
+      "root": true,
+      "src": "./backups/usb-backup.sh",
+      "dst": "/usr/bin/usb-backup"
     }
   ],
   "directories": [
-  ]
+    {
+      "root": true,
+      "src": "./backups",
+      "dst": "/usr/lib/backup-scripts"
+    }
+  ],
+  "dependencies": {
+    "system": {
+      "arch": [
+        "pandoc",
+        "at",
+        "borg",
+        "curl",
+        "moreutils"
+      ],
+      "debian": [
+        "pandoc",
+        "at",
+        "borgbackup",
+        "curl",
+        "moreutlis"
+      ]
+    },
+    "pip": [
+      "docopt",
+      "infi.docopt-completion"
+    ]
+  }
 }
 
