@@ -56,6 +56,10 @@
       "root": true,
       "src": "./backups",
       "dst": "/usr/lib/backup-scripts"
+    },
+    {
+      "src": "./setup",
+      "dst": "~/.local/share/setup"
     }
   ],
   "dependencies": {

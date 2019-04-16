@@ -191,7 +191,7 @@ class CategoryAll(Category):
     directory = None
 
     def __init__(self):
-        path = Path(__repo_dir__, "setup", "resources", "category_all.json")
+        path = Path(__repo_dir__, "scripts/setup/resources/category_all.json")
         super().__init__(path)
 
     def set_up(self, namespace=None):

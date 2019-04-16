@@ -20,7 +20,7 @@ from typing import Callable, Optional
 
 __version__ = "1.2.0"
 
-__repo_dir__ = Path(__file__).parents[1]
+__repo_dir__ = Path(__file__).parents[2]
 
 
 def load_categories() -> None:

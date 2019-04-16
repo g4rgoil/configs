@@ -1,7 +1,7 @@
 #!/bin/bash
 
-SCRIPT_FILE="${HOME}/scripts/setup/setup.py"
-SETUP_TIMESTAMP_FILE="${HOME}/setup.ts"
+SCRIPT_FILE="${HOME}/.local/share/setup/setup.py"
+SETUP_TIMESTAMP_FILE="${HOME}/.setup.ts"
 SETUP_INTERVALL="7"
 
 function run_setup_script() {

@@ -19,7 +19,7 @@ class SetupArgParser(ArgumentParser):
     """ This class provides an argument parser for for the setup script """
 
     def __init__(self):
-        path = Path(__repo_dir__, "setup", "resources", "parser.json")
+        path = Path(__repo_dir__, "scripts/setup/resources/parser.json")
         self.descriptor = parse_json_descriptor(path)
 
         super().__init__(**self.descriptor["parser"],
