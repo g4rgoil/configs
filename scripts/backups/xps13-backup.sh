@@ -1,12 +1,12 @@
 #!/bin/bash
 
-script_directory="/etc/backup_scripts"
-library_file="${script_directory}/backup_library.sh"
+script_directory="/usr/lib/backup-scripts"
+library_file="${script_directory}/backup-library.sh"
 
-# shellcheck source=/etc/backup_scripts/backup_library.sh
+# shellcheck source=/usr/lib/backup-scripts/backup-library.sh
 source ${library_file}
 
-script_file="${script_directory}/xps13_backup.sh"
+script_file="${script_directory}/xps13-backup.sh"
 pattern_file="${script_directory}/root.pattern"
 
 log_directory="/var/log/backup_logs"

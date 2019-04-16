@@ -1,31 +1,36 @@
 #!/bin/bash
 
-script_directory="/etc/backup_scripts"
-library_file="${script_directory}/backup_library.sh"
+script_directory="/usr/lib/backup-scripts"
+library_file="${script_directory}/backup-library.sh"
 
-# shellcheck source=/etc/backup_scripts/backup_library.sh
+# shellcheck source=/usr/lib/backup-scripts/backup-library.sh
 source ${library_file}
 
-# script_file="${script_directory}/desktop_backup.sh"
-pattern_file="${script_directory}/root.pattern"
+# script_file="${script_directory}/media-backup.sh"
+pattern_file="${script_directory}/media.pattern"
 
 log_directory="/var/log/backup_logs"
-ts_file="${log_directory}/desktop.ts"
-log_file="${log_directory}/desktop.log"
+ts_file="${log_directory}/media.ts"
+log_file="${log_directory}/media.log"
 
-pid_file="/var/run/desktop-backup.pid"
+pid_file="/var/run/media-backup.pid"
 
-interval="-6 hours"
+interval="-12 hours"
 
 backup_dst="/hdd/mybook"
-backup_src="/"
+backup_src="/hdd/media"
+unmount_src=""
 unmount_dst=""
 
-export BORG_REPO="${backup_dst}/Borg_Backups/pascal_desktop"
+export BORG_REPO="${backup_dst}/Borg_Backups/pascal_media"
 export BORG_PASSPHRASE=""
-export BORG_KEY_FILE="/root/.config/borg/keys/mybook_desktop"
+export BORG_KEY_FILE="/root/.config/borg/keys/mybook_media"
 
 function unmount_backup_devices() {
+    if ensure_unmounted ${backup_src} ${unmount_src}; then
+        unmount_src=""
+    fi
+
     if ensure_unmounted ${backup_dst} ${unmount_dst}; then
         unmount_dst=""
     fi
@@ -41,7 +46,6 @@ function finish() {
         log "Finishing backup procedure"
     else
         log "Backup procedure failed with exit code $exit_code"
-        slack_message "Desktop backup failed"
     fi
 
     blank_line
@@ -80,24 +84,25 @@ if ! require_backup_interval ${ts_file} "$interval"; then
     exit ${insufficient_interval_exit}
 fi
 
+if ! ensure_mounted ${backup_src} unmount_src; then
+    exit ${mount_exit}
+fi
+
 if ! ensure_mounted ${backup_dst} unmount_dst; then
     exit ${mount_exit}
 fi
 
-create_backup ${backup_src} "pascal_desktop" "zstd,10"
+create_backup ${backup_src} "pascal_media" "lz4"
 backup_exit=$?
 
-if [[ ${backup_exit} -gt 0 ]]; then
-    log_error "Borg create exited with non-zero exit code $backup_exit"
-    exit ${borg_error_exit}
-fi
-
-prune_repository "pascal_desktop"
+prune_repository "pascal_media"
 prune_exit=$?
 
-if [[ ${backup_exit} -gt 0 ]]; then
-    log_error "Borg prune exited with non-zero exit code $prune_exit"
-    exit ${borg_error_exit}
+borg_exit=$(( backup_exit > prune_exit ? backup_exit : prune_exit ))
+
+if [[ ${borg_exit} -gt 0 ]]; then
+    log_error "Borg exited with non-zero exit code $borg_exit"
+    exit ${borg_exit}
 fi
 
 exit 0
