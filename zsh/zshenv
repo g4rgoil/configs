@@ -6,6 +6,7 @@
 #
 
 PATH="$PATH:$HOME/.local/bin"
+fpath=("$HOME"/.local/share/zsh/site-functions $fpath)
 
 if hash ruby >/dev/null 2>&1; then
     PATH="$PATH:$(ruby -e 'print Gem.user_dir')/bin"

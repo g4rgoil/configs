@@ -50,6 +50,13 @@ if [[ -f /etc/maven-bash-completion.bash ]]; then
     source /etc/maven-bash-completion.bash
 fi
 
+# Source user specific completions
+if [[ -d ~/.local/share/bash/completions ]]; then
+    for file in ~/.local/share/bash/completions/*.sh; do
+        source $file
+    done
+fi
+
 # Start the ssh-agent if it is not already running
 if ! pgrep -u "$USER" ssh-agent > /dev/null; then
     ssh-agent > ~/.ssh-agent-thing

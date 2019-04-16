@@ -48,5 +48,9 @@
     }
   ],
   "directories": [
+    {
+      "src": "completions",
+      "dst": "~/.local/share/zsh/site-functions"
+    }
   ]
 }

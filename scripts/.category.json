@@ -18,7 +18,7 @@
   },
   "files": [
     {
-      "src": "note.py",
+      "src": "./note.py",
       "dst": "~/.local/bin/note.py"
     },
     {
