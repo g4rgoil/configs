@@ -27,12 +27,12 @@
     {
       "src": "bash-aliases",
       "dst": "~/.bash-aliases"
+    },
+    {
+      "src": "completions/note.py.sh",
+      "dst": "~/.local/share/bash/completions/note.py.sh"
     }
   ],
   "directories": [
-    {
-      "src": "completions",
-      "dst": "~/.local/share/bash/completions"
-    }
   ]
 }

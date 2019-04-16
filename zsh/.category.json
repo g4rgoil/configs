@@ -45,12 +45,12 @@
     {
       "src": "zshenv",
       "dst": "~/.zshenv"
+    },
+    {
+      "src": "completions/_note.py",
+      "dst": "~/.local/share/zsh/site-functions/_note.py"
     }
   ],
   "directories": [
-    {
-      "src": "completions",
-      "dst": "~/.local/share/zsh/site-functions"
-    }
   ]
 }

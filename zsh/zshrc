@@ -44,7 +44,7 @@ if [[ -f ~/.oh-my-zsh-config ]]; then
     source ~/.oh-my-zsh-config
 fi
 
-compinit
+compinit -i
 promptinit
 
 # Enable zsh syntax highlighting

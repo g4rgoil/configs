@@ -24,7 +24,7 @@ plugins=(
     systemd
 )
 
-# Disable powerlevel9k if in virtual console 
+# Disable powerlevel9k if in virtual console
 if [[ "$TERM" == "linux" ]]; then
     unset ZSH_THEME
 fi
@@ -83,4 +83,5 @@ POWERLEVEL9K_TIME_FOREGROUND=255
 # Configure zsh-syntax-highlighting
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern)
 
+ZSH_DISABLE_COMPFIX=true
 source $ZSH/oh-my-zsh.sh
