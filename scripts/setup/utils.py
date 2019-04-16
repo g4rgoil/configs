@@ -149,7 +149,6 @@ class SetupUtils(object):
         self.quiet = args_dict.get("quiet", False)
         self.confirm = args_dict.get("confirm", True)  # TODO implement
 
-        self.suffix = "." + args_dict.get("suffix", ["old"])[0].lstrip(".")
         self.delete_backups = args_dict.get("delete_backups", False)
 
     @staticmethod
@@ -186,7 +185,7 @@ class SetupUtils(object):
         if not src.exists() and not src.is_symlink():
             return
 
-        dst = src.with_suffix(self.suffix)
+        dst = src.with_suffix(".old")
         self.print_move(src, dst)
         os.rename(str(src), str(dst))
 
@@ -204,7 +203,7 @@ class SetupUtils(object):
         if not self.delete_backups:
             return
 
-        backup = file.with_suffix(self.suffix)
+        backup = file.with_suffix(".old")
 
         if not backup.exists() and not backup.is_symlink():
             return
