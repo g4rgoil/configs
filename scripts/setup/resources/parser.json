@@ -1,7 +1,7 @@
 {
   "parser": {
     "prog": "setup.py",
-    "usage": "setup.py [-h] [-v | -q] [-l | -n] [-b | -d | -k] [-s <suffix>] <category> [<args>]",
+    "usage": "setup.py [-h] [-v | -q] [-l | -n] [-b | -d | -k] <category> [<args>]",
     "epilog": null,
     "add_help": false
   },
