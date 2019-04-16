@@ -26,6 +26,10 @@
       "dst": "~/.local/bin/run-setup-script.sh"
     },
     {
+      "src": "./setup/setup.py",
+      "dst": "~/.local/bin/setup.py"
+    },
+    {
       "root": true,
       "src": "./backups/desktop-backup.sh",
       "dst": "/usr/local/bin/desktop-backup"
