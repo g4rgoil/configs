@@ -64,6 +64,10 @@
     {
       "src": "./setup",
       "dst": "~/.local/share/setup"
+    },
+    {
+      "src": "todo-actions",
+      "dst": "~/.todo.actions.d"
     }
   ],
   "dependencies": {

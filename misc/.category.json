@@ -45,10 +45,6 @@
   ],
   "directories": [
     {
-      "src": "todo-actions",
-      "dst": "~/.todo.actions.d"
-    },
-    {
       "src": "ranger",
       "dst": "~/.config/ranger"
     }
