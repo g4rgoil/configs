@@ -96,18 +96,12 @@ _note.py-list ()
     if [[ $words[$CURRENT] == -* ]] ; then
         _arguments -C \
         ':command:->command' \
-		'(-m)-m[Print the date and time each note was last modified]' \
-		'(--modified)--modified[Print the date and time each note was last modified]' \
-		'(-l)-l[Print the number of lines in each note]' \
-		'(--lines)--lines[Print the number of lines in each note]' \
-		'(-w)-w[Print the number of words in each note]' \
-		'(--words)--words[Print the number of words in each note]' \
-		'(-c)-c[Print the number of characters in each note]' \
-		'(--chars)--chars[Print the number of characters in each note]' \
-		'(-a)-a[Print all the information listed above]' \
-		'(--all)--all[Print all the information listed above]' \
-		'(-r)-r[Invert the order, in which notes are listed]' \
-		'(--reverse)--reverse[Invert the order, in which notes are listed]' \
+		'(-c=-)-c=-' \
+		'(--columns=-)--columns=-' \
+		'(-s=-)-s=-' \
+		'(--sort=-)--sort=-' \
+		'(-r)-r' \
+		'(--reverse)--reverse' \
 
     else
         myargs=('<prefix>')

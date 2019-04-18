@@ -41,7 +41,7 @@ _notepy_list()
     cur="${COMP_WORDS[COMP_CWORD]}"
 
     if [ $COMP_CWORD -ge 2 ]; then
-        COMPREPLY=( $( compgen -fW '-m --modified -l --lines -w --words -c --chars -a --all -r --reverse ' -- $cur) )
+        COMPREPLY=( $( compgen -fW '-c= --columns= -s= --sort= -r --reverse ' -- $cur) )
     fi
 }
 

@@ -27,7 +27,7 @@ __doc__ = """note.py - Easily create notes using Rmarkdown and pandoc
 Usage:
     note.py [-d <dir>] create [<prefix>] [--author=<name>] [--edit | --noedit]
                               [--editor=<prog>]
-    note.py [-d <dir>] list [<prefix>] [-mlwca] [-r]
+    note.py [-d <dir>] list [<prefix>] [-c <cols>] [-s <col>] [-r]
     note.py [-d <dir>] gen-make [--]
     note.py gen-config [--]
     note.py (-h | --help)
@@ -52,16 +52,34 @@ General Options:
     --edit           Open the note in an editor upon creation
     --noedit         Don't open the note in an editor (always overrules --edit)
     --editor=<prog>  Use the specified progam to edit notes
+    -c <cols>, --columns=<cols>
+                     Display the the specified columns, <cols> may either be a
+                     comma separated list of column names or a string of column
+                     characters (defaults to 'index,name')
+    -s <col>, --sort=<col>
+                     Sort the notes by the specified column, <col> may be a
+                     column name or character (defaults to 'name')
+    -r, --reverse    Invert the order, in which notes are listed
     --               Write to stdout instead of a file
 
-Listing Options:
-    -m, --modified  Print the date and time each note was last modified
-    -l, --lines     Print the number of lines in each note
-    -w, --words     Print the number of words in each note
-    -c, --chars     Print the number of characters in each note
-    -a, --all       Print all the information listed above
-    -r, --reverse   Invert the order, in which notes are listed
+Available Columns:
+    i, index        Print the index of each note
+    n, name         Print the name of each note
+    m, modified     Print the date and time each note was last modified
+    l, lines        Print the number of lines in each note
+    w, words        Print the number of words in each note
+    c, chars        Print the number of characters in each note
 """.format(config=__config_file__)
+
+
+__columns__ = {
+        "i": "index",
+        "n": "name",
+        "m": "modified",
+        "l": "lines",
+        "w": "words",
+        "c": "chars"
+    }
 
 
 __header__ = """---
@@ -79,7 +97,7 @@ type = -t latex
 
 default : build
 
-clean:
+clean :
     rm -r build
 
 continuous :
@@ -96,6 +114,14 @@ build/%.pdf : %.Rmd
 
 def echo(*args, **kwargs):
     print("note.py:", *args, **kwargs)
+
+
+def warn(*args, **kwargs):
+    print("warning:", *args, **kwargs)
+
+
+def error(*args, **kwargs):
+    print("error:", *args, **kwargs)
 
 
 def confirm(msg, default=True):
@@ -166,10 +192,27 @@ def init_args(args):
     if not args['--author']:
         args['--author'] = getpass.getuser()
 
+    if not args['--columns']:
+        args['--columns'] = "index,name"
+
+    if not args['--sort']:
+        args['--sort'] = "name"
+
 
 def get_notes(prefix):
     return [n for n in os.listdir() if re.fullmatch("%s-[0-9]+\.Rmd"
         % (".*" if prefix is None else prefix), n)]
+
+
+def sorted_notes(args, notes):
+    sort_by = args['--sort']
+    if sort_by not in __columns__.values():
+        sort_by = __columns__[sort_by]
+    if sort_by == "modified":
+        sort_by = "date"
+
+    return sorted(notes, key=lambda n: n[sort_by] if sort_by != "index" else 0,
+            reverse=bool(args['--reverse']))
 
 
 def longest(notes, col, header=None):
@@ -180,34 +223,79 @@ def longest(notes, col, header=None):
             default={col: ""})[col]
 
 
-def print_header(args, widths, sep="   "):
-    print(widths['index'] * " ", end=sep)
-    print("Name".ljust(widths['name']), end=sep)
+def parse_columns(cols_string):
+    if not cols_string:
+        return error("cols must not be empty")
 
-    if args['--modified'] or args['--all']:
-        print("Modified".ljust(widths['date']), end=sep)
-    if args['--lines'] or args['--all']:
-        print("Lines".ljust(widths['lines']), end=sep)
-    if args['--words'] or args['--all']:
-        print("Words".ljust(widths['words']), end=sep)
-    if args['--chars'] or args['--all']:
-        print("Chars".ljust(widths['chars']), end=sep)
+    if "," in cols_string or cols_string in __columns__.values():
+        for col in cols_string.split(","):
+            if col not in __columns__.values():
+                return error("'%s' is not a valid column name" % col)
+
+        return cols_string.split(",")
+    else:
+        for char in cols_string:
+            if char not in __columns__.keys():
+                return error("'%s' is not a valid column character" % char)
+
+        return [__columns__[char] for char in cols_string]
+
+
+def get_note_info(note):
+    return {
+            "note":  note,
+            "name":  os.path.splitext(note)[0],
+            "date":  datetime.fromtimestamp(os.path.getmtime(note))
+                        .strftime("%d. %b %H:%M").lstrip("0"),
+            "lines": sum(1 for l in open(note)),
+            "words": sum(len(re.sub("\s+", " ", l).split()) for l in open(note)),
+            "chars": sum(len(l) for l in open(note))
+        }
+
+
+def get_column_widths(notes):
+    return {
+            "index": int(m.log10(len(notes))) + 1,
+            "name":  len(longest(notes, "name",  header="Name")),
+            "date":  len(longest(notes, "date",  header="Modified")),
+            "lines": len(longest(notes, "lines", header="Lines")),
+            "words": len(longest(notes, "words", header="Words")),
+            "chars": len(longest(notes, "chars", header="Chars"))
+        }
+
+
+def print_header(args, widths, columns, sep="   "):
+    for column in columns:
+        if column == "index":
+            print(widths['index'] * " ", end=sep)
+        elif column == "name":
+            print("Name".ljust(widths['name']), end=sep)
+        elif column == "modified":
+            print("Modified".ljust(widths['date']), end=sep)
+        elif column == "lines":
+            print("Lines".ljust(widths['lines']), end=sep)
+        elif column == "words":
+            print("Words".ljust(widths['words']), end=sep)
+        elif column == "chars":
+            print("Chars".ljust(widths['chars']), end=sep)
 
     print()
 
 
-def print_line(args, widths, note, index, sep="   "):
-    print(str(index).rjust(widths['index']), end=sep)
-    print(note['name'].ljust(widths['name']), end=sep)
-
-    if args['--modified'] or args['--all']:
-        print(note['date'].ljust(widths['date']), end=sep)
-    if args['--lines'] or args['--all']:
-        print(str(note['lines']).ljust(widths['lines']), end=sep)
-    if args['--words'] or args['--all']:
-        print(str(note['words']).ljust(widths['words']), end=sep)
-    if args['--chars'] or args['--all']:
-        print(str(note['chars']).ljust(widths['chars']), end=sep)
+def print_line(args, widths, columns, note, index, sep="   "):
+    for column in columns:
+        if column == "index":
+            print(str(index).rjust(widths['index']), end=sep)
+        elif column == "name":
+            print(note['name'].ljust(widths['name']), end=sep)
+        elif column == "modified":
+            print(note['date'].ljust(widths['date']), end=sep)
+        elif column == "lines":
+            print(str(note['lines']).ljust(widths['lines']), end=sep)
+        elif column == "words":
+            print(str(note['words']).ljust(widths['words']), end=sep)
+        elif column == "chars":
+            print(str(note['chars']).ljust(widths['chars']), end=sep)
 
     print()
 
@@ -231,7 +319,7 @@ def create_note(directory, args):
                     file=f, end="\n\n")
     else:
         #  NOTE: This should never happen
-        return echo("Note '%s' already exists" % file_name)
+        return warn("Note '%s' already exists" % file_name)
 
     if args['--edit']:
         echo("Opening note in '%s'" % os.path.basename(args['--editor']))
@@ -240,40 +328,25 @@ def create_note(directory, args):
 
 def list_notes(directory, args):
     if not change_directory(directory, create=False):
-        return echo("'%s' doesn't exist" % directory)
+        return error("'%s' doesn't exist" % directory)
 
     # NOTE: Defaults to listing all notes, regardless of prefix
-    notes = [
-        {
-            "note":  note,
-            "name":  os.path.splitext(note)[0],
-            "date":  datetime.fromtimestamp(os.path.getmtime(note))
-                        .strftime("%d. %b %H:%M").lstrip("0"),
-            "lines": sum(1 for l in open(note)),
-            "words": sum(len(re.sub("\s+", " ", l).split()) for l in open(note)),
-            "chars": sum(len(l) for l in open(note))
-        } for note in get_notes(args['<prefix>'])]
-
-    notes = sorted(notes, key=lambda n: n['name'], reverse=args['--reverse'])
+    notes = sorted_notes(args, [get_note_info(n)
+        for n in get_notes(args['<prefix>'])])
 
     if not notes:
-        echo("No matching notes exist in '%s'" % os.getcwd())
+        return warn("No matching notes exist in '%s'" % os.getcwd())
+
+    widths = get_column_widths(notes)
+    columns = parse_columns(args['--columns'])
+
+    if not columns:
         return
 
-    widths = {
-            "index": int(m.log10(len(notes))) + 1,
-            "name":  len(longest(notes, "name",  header="Name")),
-            "date":  len(longest(notes, "date",  header="Modified")),
-            "lines": len(longest(notes, "lines", header="Lines")),
-            "words": len(longest(notes, "words", header="Words")),
-            "chars": len(longest(notes, "chars", header="Chars"))
-        }
+    print_header(args, widths, columns)
 
-    print_header(args, widths)
-
-    # TODO: Add options for sorting the notes
     for index, note in enumerate(notes):
-        print_line(args, widths, note, index)
+        print_line(args, widths, columns, note, index)
 
 
 def generate_makefile(directory, args):
@@ -287,7 +360,7 @@ def generate_makefile(directory, args):
         path = os.path.join(os.getcwd(), file_name)
 
         if os.path.exists(file_name):
-            echo("'%s' already exists" % path)
+            warn("'%s' already exists" % path)
             if not confirm("Do you want to overwrite it?", default=False):
                 return
 
@@ -310,7 +383,7 @@ def generate_config(args):
         path = os.path.expanduser(__config_file__)
 
         if os.path.exists(path):
-            echo("'%s' already exists" % path)
+            warn("'%s' already exists" % path)
             if not confirm("Do you want to overwrite it?", default=False):
                 return
 
@@ -321,7 +394,7 @@ def generate_config(args):
 
 
 if __name__ == "__main__":
-    args = docopt(__doc__, version="note.py-0.5.1")
+    args = docopt(__doc__, version="note.py-0.6.0")
     config = load_config()
     args = merge(args, config)
     init_args(args)
