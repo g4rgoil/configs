@@ -174,3 +174,5 @@ let g:syntastic_sh_shellcheck_args = "-x"
 "" File Type options
 let g:markdown_fenced_languages = ['javascript', 'go', 'php']
 
+let vim_markdown_preview_github = 1
+

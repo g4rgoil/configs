@@ -2,10 +2,6 @@
 # -*- coding: utf-8 -*-
 
 
-#  TODO: Add dependencies for docopt, pandoc, infi.docopt_completion <11-04-19, Pascal Mehnert> #
-#  TODO: Automatically run docopt completion <11-04-19, Pascal Mehnert> #
-
-
 import getpass
 import json
 import math as m

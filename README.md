@@ -8,7 +8,7 @@ Configuration files for the Z Shell (zsh), oh-my-zsh and powerlevel9k.
 - [`zsh/zsh-aliases`](zsh/zsh-aliases) - alias definitions, gets sourced in _zshrc_
 - [`zsh/zsh-functions`](zsh/zsh-functions) - function definitions, gets sourced in _zshrc_
 - [`zsh/oh-my-zsh-config`](zsh/oh-my-zsh-config) - oh-my-zsh and powerlevel9k configuration, gets sourced in _zshrc_
-- [`zsh/zshenv`](zsh/zshenv) - envrionment variable definitions, gets automatically sourced by zsh
+- [`zsh/zshenv`](zsh/zshenv) - environment variable definitions, gets automatically sourced by zsh
 - [`zsh/completions`](zsh/completions) - various zsh autocompletion scripts
 
 ## bash
@@ -18,7 +18,7 @@ Configuration files for the Bourne-Again Shell (bash).
 - [`bash/bash-profile`](bash/bash-profile) - ensures bashrc is being sourced
 - [`bash/bashrc`](bash/bashrc) - main bash configuration
 - [`bash/bash-aliases`](bash/bash-aliases) - alias definitions, get sourced in _bashrc_ (symlinked to [zsh/zsh-aliases](zsh/zsh-aliases))
-- [`bash/bashenv`](bash/bashenv) - envrionment variable definitions, gets sourced in _bashrc_ (symlinked to [zsh/zshenv](zsh/zshenv))
+- [`bash/bashenv`](bash/bashenv) - environment variable definitions, gets sourced in _bashrc_ (symlinked to [zsh/zshenv](zsh/zshenv))
 - [`bash/completions`](bash/completions) - various bash autocompletion scripts
 
 ## tmux
