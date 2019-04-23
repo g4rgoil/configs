@@ -74,6 +74,7 @@
     "system": {
       "arch": [
         "pandoc",
+        "entr",
         "at",
         "borg",
         "curl",
@@ -81,6 +82,7 @@
       ],
       "debian": [
         "pandoc",
+        "entr",
         "at",
         "borgbackup",
         "curl",
