@@ -16,8 +16,9 @@ nfs:/mnt/nfs
 todo:~/MEGA/todo
 mega:~/MEGA
 hdd:/mnt/hdd
-hm:~/University/hm
-tgi:~/University/tgi
-wt:~/University/wt
-cg:~/University/cg
-borg:/hdd/mybook/Borg_Backups
+eior:~/University/eior
+eir:~/University/eir
+ezs:~/University/ezs
+glob:~/University/glob
+num:~/University/num
+plan:~/University/plan
