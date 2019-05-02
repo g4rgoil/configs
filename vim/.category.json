@@ -60,7 +60,7 @@
     },
     {
       "src": "snippets",
-      "dst": "~/.vim/user-snippets/UltiSnips"
+      "dst": "~/.vim/UltiSnips"
     },
     {
       "src": "ftdetect",
