@@ -79,7 +79,7 @@ __columns__ = {
 
 
 __header__ = """---
-vim: spelllang=de
+vim: spelllang=de:shiftwidth=2
 title: '{title}'
 author: '{author}'
 documentclass:
