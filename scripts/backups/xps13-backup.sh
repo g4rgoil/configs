@@ -23,9 +23,9 @@ backup_src="/"
 ssh_user="root"
 ssh_host="pascal_desktop"
 
-export BORG_REPO="ssh://${ssh_user}@${ssh_host}/hdd/mybook/borg/pascal_xps13"
+export BORG_REPO="ssh://${ssh_user}@${ssh_host}/hdd/mybook/borg/pascal-xps13"
 export BORG_PASSPHRASE=""
-export BORG_KEY_FILE="/root/.config/borg/keys/mybook_xps13"
+export BORG_KEY_FILE="/root/.config/borg/keys/mybook-xps13"
 
 
 function finish() {
@@ -82,7 +82,7 @@ fi
 create_backup ${backup_src} "pascal_xps13" "lz4"
 backup_exit=$?
 
-prune_repository "pascal_xps13-"
+prune_repository "pascal_xps13"
 prune_exit=$?
 
 borg_exit=$(( backup_exit > prune_exit ? backup_exit : prune_exit ))

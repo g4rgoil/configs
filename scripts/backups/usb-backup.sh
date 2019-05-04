@@ -14,8 +14,8 @@ prefix="${1:-unkown}"
 backup_src="${2:-/mnt/usb}"
 unmount_dst=""
 
-export BORG_REPO="${backup_dst}/borg/pascal_usb"
-export BORG_KEY_FILE="/root/.config/borg/keys/mybook_usb"
+export BORG_REPO="${backup_dst}/borg/pascal-usb"
+export BORG_KEY_FILE="/root/.config/borg/keys/mybook-usb"
 
 function unmount_backup_devices() {
     if ensure_unmounted ${backup_dst} ${unmount_dst}; then

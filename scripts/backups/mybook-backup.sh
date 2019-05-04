@@ -29,7 +29,7 @@ ssh_port="2222"
 
 export BORG_REPO="ssh://${ssh_user}@${ssh_host}:${ssh_port}${repo_path}"
 export BORG_PASSPHRASE=""
-export BORG_KEY_FILE="/root/.config/borg/keys/planck_mybook"
+export BORG_KEY_FILE="/root/.config/borg/keys/planck-mybook"
 
 declare original_size
 declare new_size

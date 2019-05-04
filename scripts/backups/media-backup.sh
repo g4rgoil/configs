@@ -22,9 +22,9 @@ backup_src="/hdd/media"
 unmount_src=""
 unmount_dst=""
 
-export BORG_REPO="${backup_dst}/borg/pascal_media"
+export BORG_REPO="${backup_dst}/borg/pascal-media"
 export BORG_PASSPHRASE=""
-export BORG_KEY_FILE="/root/.config/borg/keys/mybook_media"
+export BORG_KEY_FILE="/root/.config/borg/keys/mybook-media"
 
 function unmount_backup_devices() {
     if ensure_unmounted ${backup_src} ${unmount_src}; then

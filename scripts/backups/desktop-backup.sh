@@ -21,9 +21,9 @@ backup_dst="/hdd/mybook"
 backup_src="/"
 unmount_dst=""
 
-export BORG_REPO="${backup_dst}/borg/pascal_desktop"
+export BORG_REPO="${backup_dst}/borg/pascal-desktop"
 export BORG_PASSPHRASE=""
-export BORG_KEY_FILE="/root/.config/borg/keys/mybook_desktop"
+export BORG_KEY_FILE="/root/.config/borg/keys/mybook-desktop"
 
 function unmount_backup_devices() {
     if ensure_unmounted ${backup_dst} ${unmount_dst}; then
