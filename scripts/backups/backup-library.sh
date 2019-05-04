@@ -10,7 +10,6 @@ export permission_error=12
 
 
 declare log_file        # Contains the log for the current backup
-declare exclude_file    # Contains exclude patterns for borg (one per line) TODO Remove
 declare pattern_file    # Contains patterns for borg
 declare slack_url       # The variable to use as webhook, when sending messagaes to slack
 
@@ -286,7 +285,6 @@ function ensure_unmounted() {
 # Create a borg backup of the specified src directory, name the backup with the
 # specified prefix and compress it with the specified compression algorithm
 # This function uses the value in $BORG_REPO as the borg repository
-# The value in $exclude_file is used as file that contains exclude_patterns
 #
 # $1: the source directory for the backup
 # $2: the prefix used to name the backup
@@ -297,7 +295,6 @@ function create_backup() {
     local source_dir="${1?}"
     local prefix="${2?}"
     local compression="${3:-lz4}"
-    local excludes="${exclude_file:-$empty_file}"
     local patterns="${pattern_file:-$empty_file}"
 
     local rc
@@ -305,7 +302,6 @@ function create_backup() {
         --warning                       \
         --filter E                      \
         --compression "$compression"    \
-        --exclude-from "$excludes"      \
         --patterns-from "$patterns"     \
         --exclude-caches                \
                                         \
