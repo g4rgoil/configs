@@ -21,7 +21,7 @@ backup_dst="/hdd/mybook"
 backup_src="/"
 unmount_dst=""
 
-export BORG_REPO="${backup_dst}/Borg_Backups/pascal_desktop"
+export BORG_REPO="${backup_dst}/borg/pascal_desktop"
 export BORG_PASSPHRASE=""
 export BORG_KEY_FILE="/root/.config/borg/keys/mybook_desktop"
 

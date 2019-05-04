@@ -22,7 +22,7 @@ backup_src="/hdd/media"
 unmount_src=""
 unmount_dst=""
 
-export BORG_REPO="${backup_dst}/Borg_Backups/pascal_media"
+export BORG_REPO="${backup_dst}/borg/pascal_media"
 export BORG_PASSPHRASE=""
 export BORG_KEY_FILE="/root/.config/borg/keys/mybook_media"
 
