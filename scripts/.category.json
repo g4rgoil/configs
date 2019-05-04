@@ -90,7 +90,8 @@
       ]
     },
     "pip": [
-      "docopt"
+      "docopt",
+      "npyscreen"
     ]
   }
 }
