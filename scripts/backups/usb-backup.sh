@@ -6,7 +6,7 @@ library_file="${script_directory}/backup-library.sh"
 # shellcheck source=/usr/lib/backup-scripts/backup-library.sh
 source ${library_file}
 
-log_directory="/var/log/backup_logs"
+log_directory="/var/log/backups"
 log_file="${log_directory}/usb.log"
 
 backup_dst="/hdd/mybook"

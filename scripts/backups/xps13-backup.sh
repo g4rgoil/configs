@@ -9,7 +9,7 @@ source ${library_file}
 script_file="${script_directory}/xps13-backup.sh"
 pattern_file="${script_directory}/root.pattern"
 
-log_directory="/var/log/backup_logs"
+log_directory="/var/log/backups"
 ts_file="${log_directory}/xps13.ts"
 log_file="${log_directory}/xps13.log"
 job_file="${log_directory}/xps13.job"

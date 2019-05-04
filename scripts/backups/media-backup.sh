@@ -9,7 +9,7 @@ source ${library_file}
 # script_file="${script_directory}/media-backup.sh"
 pattern_file="${script_directory}/media.pattern"
 
-log_directory="/var/log/backup_logs"
+log_directory="/var/log/backups"
 ts_file="${log_directory}/media.ts"
 log_file="${log_directory}/media.log"
 
