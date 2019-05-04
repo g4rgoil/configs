@@ -4,6 +4,7 @@
 """ This modules provides a curses interface for the setup script """
 
 import npyscreen as nps
+import pprint as pp
 
 from category import CategoryCollection
 from utils import load_categories
@@ -14,7 +15,13 @@ class SelectCategoryForm(nps.Form):
         self.categories = self.create_categories()
         self.title = self.add(nps.TitleFixedText, use_two_lines=True,
                 name="Avaiable Setup Categories")
-        self.select = self.add(SelectCategoryWidget, values=list(self.categories))
+        self.select = self.add(SelectCategoryWidget,
+                values=list(self.categories))
+
+    def h_display_help(self, *args, **kwargs):
+        super().h_display_help(*args, **kwargs)
+        help_form = SelectCategoryHelp()
+        help_form.edit()
 
     @staticmethod
     def create_categories():
@@ -29,11 +36,14 @@ class SelectCategoryForm(nps.Form):
 
 
 class SelectCategoryWidget(nps.MultiSelect):
-    def create(self, *args, **kwargs):
-        super(*args, **kwargs)
-
     def display_value(self, category):
-        return category.name + " - " + category.help
+        name_width = len(max(self.values, key=lambda c: len(c.name)).name)
+        return category.name.ljust(name_width) + "  -  " + category.help
+
+
+class SelectCategoryHelp(nps.Popup):
+    def create(self):
+        self.title =  self.add(nps.TitleFixedText, name="Fooooooooobar")
 
 
 def wrapper_func(*args):
