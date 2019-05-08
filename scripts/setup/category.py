@@ -144,7 +144,7 @@ class Category(object):
             mapping = FileMapping(**dictionary)
         except ValueError as e:
             self.utils.error("Failed to parse mapping %s: %s"
-                             % (dictionary, str(e)))
+                    % (dictionary, str(e)), prefix="error:")
             raise e
 
         return mapping
@@ -182,7 +182,7 @@ class Category(object):
             try:
                 getattr(self, self.install_dict[key]["handler"])()
             except PermissionError as e:
-                self.utils.error("Install %s:" % key, str(e))
+                self.utils.error("Install %s:" % key, str(e), prefix="error:")
 
 
 class CategoryAll(Category):

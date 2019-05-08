@@ -227,7 +227,8 @@ class SetupUtils(object):
 
         if path.exists():
             if path.joinpath(".git").exists():
-                self.error("%s seems to already be installed, updating ..." % name)
+                self.error("%s seems to already be installed, updating ..."
+                        % name, prefix="warning:")
 
                 args = ["git", "-C", str(path), "pull", "-v"]
                 if not self.verbose:
@@ -237,12 +238,14 @@ class SetupUtils(object):
 
                 if process.returncode != 0:
                     self.error("Failed to update %s: Exited with exit code %s"
-                            % (name, process.returncode))
+                            % (name, process.returncode), prefix="error:")
                 return
 
-            self.error("'%s' already exists, but is no git repo" % path)
+            self.error("'%s' already exists, but is no git repo" % path,
+                    prefix="error:")
             if not self.confirm("Clone into the existing directory?", False):
-                return self.error("Skipping installation of %s" % name)
+                return self.error("Skipping installation of %s" % name,
+                        prefix="warning:")
 
         path.mkdir(parents=True, exist_ok=True)
 
@@ -254,13 +257,13 @@ class SetupUtils(object):
 
         if process.returncode != 0:
             self.error("Failed to install %s: Exited with code %s"
-                       % (name, process.returncode))
+                    % (name, process.returncode), prefix="error:")
 
     def try_execute(self, func) -> None:
         try:
             func()
         except (OSError, PermissionError) as e:
-            self.error(str(e))
+            self.error(str(e), prefix="error:")
 
     def install_packages(self, dist, *packages) -> None:
         if dist == "arch":
@@ -289,18 +292,19 @@ class SetupUtils(object):
         process = self.run(shlex.split(command % " ".join(packages)))
 
         if process.returncode != 0:
-            self.error("Failed to install packages '%s': Exited with "
-                       "code %s" % (", ".join(packages), process.returncode))
+            self.error("Failed to install packages '%s': Exited with code %s"
+                    % (", ".join(packages), process.returncode),
+                    prefix="error:")
 
-    def print(self, *args, **kwargs) -> None:
-        """ This method might be reassigned in the constructor """
+    def print(self, prefix=None, *args, **kwargs) -> None:
+        prefix = "setup.py:" if prefix is None else prefix
         if self.verbose:
-            print(*args, **kwargs)
+            print(prefix, *args, **kwargs)
 
-    def error(self, *args, **kwargs) -> None:
-        """ This method might be reassigned in the constructor """
+    def error(self, *args, prefix=None, **kwargs) -> None:
+        prefix = "setup.py:" if prefix is None else prefix
         if not self.quiet:
-            print("setup.py:", *args, file=sys.stderr, **kwargs)
+            print(prefix, *args, file=sys.stderr, **kwargs)
 
     def confirm(self, msg, default=True) -> bool:
         """ Waits for user input to confirm or uses the default. """

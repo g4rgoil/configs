@@ -38,7 +38,7 @@ class CategoryVim(Category):
 
         if proc.returncode != 0:
             self.utils.error("Failed to install plugins: Exited with code %s"
-                             % proc.returncode)
+                    % proc.returncode, prefix="error:")
 
     def _install_completion(self) -> None:
         self.utils.error("Installing YouCompleteMe...")
@@ -52,7 +52,7 @@ class CategoryVim(Category):
 
         if proc.returncode != 0:
             self.utils.error("Failed to install YouCompleteMe: "
-                             "Exited with code %s" % proc.returncode)
+                    "Exited with code %s" % proc.returncode, prefix="error:")
 
     @require_root
     def _install_linters(self) -> None:
