@@ -227,7 +227,7 @@ class SetupUtils(object):
 
         if path.exists():
             if path.joinpath(".git").exists():
-                self.error("%s seems to already be installed, updating ..."
+                self.error("%s is already installed, updating ..."
                         % name, prefix="warning:")
 
                 args = ["git", "-C", str(path), "pull", "-v"]
