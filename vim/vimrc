@@ -46,10 +46,6 @@ if filereadable(expand("~/.vim/bundle/Vundle.vim/autoload/vundle.vim"))
         Plugin 'lervag/vimtex'
         Plugin 'aklt/plantuml-syntax'
 
-        Plugin 'vim-pandoc/vim-pandoc'
-        Plugin 'vim-pandoc/vim-pandoc-syntax'
-        Plugin 'vim-pandoc/vim-rmarkdown'
-
         Plugin 'vim-syntastic/syntastic'
         Plugin 'tmhedberg/SimpylFold'
         Plugin 'Konfekt/FastFold'
