@@ -10,18 +10,12 @@ from category import CategoryCollection
 from utils import load_categories
 
 
-class SelectCategoryForm(nps.Form):
-    def create(self):
-        self.categories = self.create_categories()
-        self.title = self.add(nps.TitleFixedText, use_two_lines=True,
-                name="Avaiable Setup Categories")
-        self.select = self.add(SelectCategoryWidget,
-                values=list(self.categories))
+class SetupGui(nps.NPSAppManaged):
+    def onStart(self):
+        self.categories = list(self.create_categories())
 
-    def h_display_help(self, *args, **kwargs):
-        super().h_display_help(*args, **kwargs)
-        help_form = SelectCategoryHelp()
-        help_form.edit()
+        select_form = self.addForm("MAIN", SelectCategoryForm,
+                name="Available Setup Categories", minimum_lines=23)
 
     @staticmethod
     def create_categories():
@@ -35,22 +29,55 @@ class SelectCategoryForm(nps.Form):
         return categories
 
 
+class SelectCategoryForm(nps.FormBaseNew):
+    def afterEditing(self):
+        self.parentApp.setNextForm(None)
+
+    def create(self):
+        self.value = self.parentApp.categories
+
+        self.select = self.add(SelectCategoryWidget,
+                values=list(self.parentApp.categories),
+                scroll_exit=True)
+
+        self.nextrely += 2
+        self.nextrelx += 8
+        self.setup = self.add(nps.ButtonPress, name="Setup",
+                when_pressed_function=self.on_setup)
+
+        self.nextrely -= 1
+        self.nextrelx += self.setup.width + 2
+        self.install = self.add(nps.ButtonPress, name="Install",
+                when_pressed_function=self.on_install)
+
+        self.nextrely -= 1
+        self.nextrelx += self.install.width + 2
+        self.cancel = self.add(nps.ButtonPress, name="Cancel",
+                when_pressed_function=self.on_cancel)
+
+    def on_setup(self):
+        pass
+
+    def on_install(self):
+        pass
+
+    def on_cancel(self):
+        pass
+
+
 class SelectCategoryWidget(nps.MultiSelect):
+    def when_parent_changes_value(self):
+        self.values = self.parent.value
+
+    def calculate_area_needed(self):
+        return len(self.parent.value), 0
+
     def display_value(self, category):
         name_width = len(max(self.values, key=lambda c: len(c.name)).name)
         return category.name.ljust(name_width) + "  -  " + category.help
 
 
-class SelectCategoryHelp(nps.Popup):
-    def create(self):
-        self.title =  self.add(nps.TitleFixedText, name="Fooooooooobar")
-
-
-def wrapper_func(*args):
-    form = SelectCategoryForm()
-    form.edit()
-
-
 if __name__ == "__main__":
     load_categories()
-    nps.wrapper_basic(wrapper_func)
+    setup_gui = SetupGui().run()
+
