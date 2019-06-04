@@ -45,6 +45,7 @@ if filereadable(expand("~/.vim/bundle/Vundle.vim/autoload/vundle.vim"))
         Plugin 'ap/vim-css-color'
         Plugin 'lervag/vimtex'
         Plugin 'aklt/plantuml-syntax'
+        Plugin 'petrbroz/vim-glsl'
 
         Plugin 'vim-syntastic/syntastic'
         Plugin 'tmhedberg/SimpylFold'
