@@ -55,7 +55,7 @@ alias lcgit='colorls --git-status'
 # Some filesystem aliases
 alias du='du -hs'
 alias df='df -h'
-alias cdf='pydf -h'
+alias cdf='dfc -w -W -T -t -tmpfs'
 alias cp='cp -i'
 alias mv='mv -i'
 alias tree='tree -CF -L 5'
