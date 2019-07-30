@@ -53,6 +53,7 @@ Miscellaneous configuration files for various applications.
 - [`misc/tobuy.cfg`](misc/tobuy.cfg) - configuration for tobuy todo.txt file
 - [`misc/todo-actions/`](misc/todo-actions) - custom action for todo.txt
 - [`misc/cleanup.hook`](misc/cleanup.hook) - pacman hook that keeps the pacman package cache clean
+- [`misc/cleanup.hook`](misc/systemd-boot.hook) - pacman hook that keeps systemd-boot up to date
 - [`misc/latexmkrc`](misc/latexmkrc) - basic configuration for latexmk
 - [`misc/neofetch.cfg`](misc/neofetch.cfg) - configuration for neofetch
 - [`misc/warprc`](misc/warprc) - warp point definitions for the oh-my-zsh wd tool
