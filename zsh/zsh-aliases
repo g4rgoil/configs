@@ -59,6 +59,7 @@ alias cdf='dfc -w -W -T -t -tmpfs'
 alias cp='cp -i'
 alias mv='mv -i'
 alias tree='tree -CF -L 5'
+alias lsblk='lsblk -o NAME,LABEL,MAJ:MIN,SIZE,RO,TYPE,FSTYPE,MOUNTPOINT'
 
 # Some random aliases
 alias ping='ping -c 5'
