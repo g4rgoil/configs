@@ -51,7 +51,7 @@ if filereadable(expand("~/.vim/bundle/Vundle.vim/autoload/vundle.vim"))
         Plugin 'tmhedberg/SimpylFold'
         Plugin 'Konfekt/FastFold'
 
-        Plugin 'Valloric/YouCompleteMe'
+        Plugin 'ycm-core/YouCompleteMe'
         Plugin 'rdnetto/YCM-Generator'
         Plugin 'freitass/todo.txt-vim'
         Plugin 'Raimondi/delimitMate'
