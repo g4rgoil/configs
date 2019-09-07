@@ -1,0 +1,13 @@
+# /etc/systemd/system/mega-cmd-server.service
+
+[Unit]
+Description=Mega Cmd Server
+
+[Service]
+User=pascal
+Group=users
+ExecStart=/usr/bin/mega-cmd-server
+
+[Install]
+WantedBy=multi-user.target
+
