@@ -9,5 +9,6 @@ Group=users
 ExecStart=/usr/bin/mega-cmd-server
 
 [Install]
+After=basic.target
 WantedBy=multi-user.target
 
