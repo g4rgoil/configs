@@ -11,17 +11,18 @@ hdd_mount="/mnt/hdd"
 tmp_mount="/mnt/tmp"
 luks_dev="/dev/mapper"
 
+mount_options="--options=rw,user,umask=000"
 
 function mount.usb() {
-    sudo mount $1 $usb_mount
+    sudo mount $mount_options $1 $usb_mount
 }
 
 function mount.hdd() {
-    sudo mount $1 $hdd_mount
+    sudo mount $mount_options $1 $hdd_mount
 }
 
 function mount.tmp() {
-    sudo mount $1 $tmp_mount
+    sudo mount $mount_options $1 $tmp_mount
 }
 
 function umount.usb() {
