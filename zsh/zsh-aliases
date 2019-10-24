@@ -15,7 +15,6 @@ fi
 alias holdmybeer='sudo'
 
 # Some handy aliasses for everyday commands
-alias update='yay -Syu'
 alias wttr='curl https://wttr.in/Karlsruhe'
 alias neofetch='neofetch --config ~/.neofetch-config'
 alias cpumonitor='sudo s-tui'
