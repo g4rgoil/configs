@@ -35,13 +35,15 @@ alias wifistat='nmcli general'
 alias wifion='nmcli radio wifi on && nmcli radio wwan on'
 alias wifioff='nmcli radio wifi off && nmcli radio wwan off'
 alias wanip='dig +short myip.opendns.com @resolver1.opendns.com'
+alias pia='piactl'
 
 # Some Hardware aliases
 alias dim="xbacklight -dec 10"
 alias brighten="xbacklight -inc 10"
 
 # Some ls aliasses
-alias ls='ls -hNCF --color=auto --group-directories-first'
+# alias ls='ls -hNCF --color=auto --group-directories-first'
+alias ls='exa'
 alias colorls='colorls --group-directories-first'
 alias lc='colorls'
 alias lca='colorls --almost-all'
@@ -50,6 +52,8 @@ alias lct='colorls --tree'
 alias lcd='colorls --dirs'
 alias lcf='colorls --files'
 alias lcgit='colorls --git-status'
+
+alias exa='exa -Fgh --color=auto --color-scale --level 3 --git --time-style iso --group-directories-first'
 
 # Some filesystem aliases
 alias du='du -hs'
