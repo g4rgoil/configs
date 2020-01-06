@@ -1,0 +1,5 @@
+docopt
+pyyaml
+slack-logger
+tendo
+apscheduler

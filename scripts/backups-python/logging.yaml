@@ -1,0 +1,63 @@
+version: 1
+disable_existing_loggers: False
+
+formatters:
+  brief:
+    format: '%(levelname)s: %(message)s'
+  default:
+    format: '[%(asctime)s,%(msecs)3d] %(levelname)-7s - %(message)s - %(name)s@{%(filename)s::%(funcName)s}'
+    datefmt: '%Y-%m-%d %H:%M:%S'
+  slack:
+    class: slack_logger.SlackFormatter 
+    format: '{} - %(message)s'  # {} will be replaced with name of the backup
+  clean:
+    format: '%(message)s'
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    formatter: brief
+    level: WARNING
+    stream: ext://sys.stdout
+
+  log:
+    class: logging.handlers.RotatingFileHandler
+    formatter: default
+    level: DEBUG
+    filename:       # Needs to be set by the program
+    maxBytes: 1048576  # = 1MB
+    backupCount: 1
+    encoding: utf8
+
+  clean:
+    class: logging.FileHandler
+    formatter: clean
+    level: DEBUG
+    filename:       # Needs to be set by the program
+
+  slack:
+    class: slack_logger.SlackHandler
+    formatter: slack
+    level: INFO
+    url:            # Needs to be set by the program
+
+  null-handler:
+    class: logging.NullHandler
+
+loggers:
+  slack:
+    level: INFO
+    handlers: [slack]
+    propagate: no
+  log:
+    level: DEBUG
+    handlers: [log]
+    propagate: no
+  clean:
+    handlers: [clean]
+    propagate: no
+
+root:
+  level: DEBUG
+  handlers: [console,log]
+  

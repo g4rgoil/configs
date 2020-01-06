@@ -1,0 +1,47 @@
+logging:
+  name:               # default: backup
+  directory:          # default: /var/log/backups
+  slack-hook:         # default: null
+  slack-hook-file:    # default: null, whill take precedence over slack-hook
+  log-file:           # default: ${logging-dir}/${logging-name}.log
+  borg-log:           # default: ${logging-dir}/${logging-name}.borg
+
+backup:
+  paths:              # mandatory, can be single value or list
+  prefix:             # default: {hostname}
+  suffix:             # default: -{now}
+  compression:        # default: lz4
+  ratelimit:          # default: 0 (=unlimited), specified in kiByte/s
+  patterns-from:      # can be a file containing pattern
+  patterns:           # can be single value or list of values
+  lock-file:          # default: /var/run/${logging-name}-backup.lock
+  delay:              # default: 0, specified in minutes
+  moved_repo_ok:      # default: yes, see `man borg` Environment Variables 
+  unknown_repo_ok:    # default: yes, see `man borg` Environment Variables 
+
+  repository:
+    path:             # mandatory
+    key-file:         # default: null
+    passphrase:       # default: null
+    passphrase-file:  # default: null, takes precedence over [ask-]passphrase
+    ask-passphrase:   # default: no, takes precedence over specified passphrase
+    use-ssh:          # default: no
+
+  ssh:                # Only takes affect if use-ssh ist set to true
+    host:             # default: null
+    port:             # default: null
+    user:             # default: null
+    key-file:         # default: null, path to ssh private key
+
+  keep:               # repository will only be pruned if at least on option is non-null
+    within:           # default: null, see `man borg-prune` for info on format
+    last:             # default: 0
+    secondly:         # default: 0
+    minutely:         # default: 0
+    hourly:           # default: 0
+    daily:            # default: 0
+    weekly:           # default: 0
+    monthly:          # default: 0
+    yearly:           # default: 0
+
+
