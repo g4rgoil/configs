@@ -10,7 +10,7 @@ Usage:
   backup.py --version
 
 Arguments:
-  CONFIG            path to the backup config file
+  CONFIG               path to the backup config file
 
 General Options:
   -h --help            show this message and exit
@@ -25,11 +25,10 @@ General Options:
   --no-schedule        don't schedule a rerun if the ssh host can't be reached
   --comment COMMENT    add a comment text to the archive
 
-Log levels refer to what is printed to command line, lowest specified log
+Log levels refer to what is printed to stdout, lowest specified log
 level takes precedence (i.e. DEBUG < INFO < ... < CRITICAL).
 """
 
-# TODO: Ensure mounted option in config file
 # TODO: Launch backup scripts with nice
 # TODO: backup.py [server/create/...]???
 
@@ -59,6 +58,9 @@ slack = logging.getLogger("slack")
 def prepare_backup(config, arguments) -> singleton.SingleInstance:
     if (lock := utils.ensure_single_instance(config.lock_file)) is None:
         raise utils.SingleInstanceError()
+
+    if not all(map(utils.ensure_mounted, config.ensure_mounted)):
+        raise utils.MountPointError()
 
     if config.use_ssh and not utils.test_connection(
         config.ssh_user, config.ssh_host, config.ssh_port, config.ssh_key_file):
@@ -127,7 +129,7 @@ def main(config, arguments):
     backup_exit = 0
 
     if arguments['--no-create']:
-        logger.info("No backup archive will be created, --no-create option set")
+        logger.info("No backup archive will be created, --no-create option is set")
     elif (backup_exit := create_backup(config, command_gen, env)) > 1:
         raise utils.BorgCommandError(exit_code=backup_exit)
 

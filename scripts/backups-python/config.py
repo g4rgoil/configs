@@ -26,11 +26,10 @@ class Config(object):
             raise ValueError("If use-ssh ist True, ssh host and user must not be null")
 
         any(self.expand_user(*keys) for keys in [
-            ('logging', 'directory'), ('logging', 'log-file'), ('logging', 'borg-log'), 
-            ('logging', 'slack-hook-file'), ('backup', 'paths'),
-            ('backup', 'repository', 'key-file'), ('backup', 'lock-file'), 
-            ('backup', 'repository', 'path'), ('backup', 'repository', 'passphrase-file'),
-            ('backup', 'patterns-from'), ('backup', 'ssh', 'key-file')])
+            ('backup', 'paths'), ('backup', 'ensure-mounted'), ('backup', 'lock-file'), 
+            ('backup', 'patterns-from'), ('repository', 'path'), ('repository', 'key-file'),
+            ('repository', 'passphrase-file'), ('ssh', 'key-file'), ('logging', 'directory'),
+            ('logging', 'log-file'), ('logging', 'borg-log'), ('logging', 'slack-hook-file')])
 
         self.set([x for p in self.backup_paths for x in glob.glob(p)], 'backup', 'paths')
 
@@ -72,43 +71,43 @@ class Config(object):
 
     @property
     def ssh_host(self):
-        return self.get('backup', 'ssh', 'host')
+        return self.get('ssh', 'host')
 
     @property
     def ssh_port(self):
-        return self.get('backup', 'ssh', 'port')
+        return self.get('ssh', 'port')
 
     @property
     def ssh_user(self):
-        return self.get('backup', 'ssh', 'user')
+        return self.get('ssh', 'user')
 
     @property
     def ssh_key_file(self):
-       return self.get('backup', 'ssh', 'key-file')
+       return self.get('ssh', 'key-file')
 
     @property
     def repo_path(self):
-        return self.get('backup', 'repository', 'path')
+        return self.get('repository', 'path')
 
     @property
     def repo_key(self):
-        return self.get('backup', 'repository', 'key-file')
+        return self.get('repository', 'key-file')
 
     @property
     def repo_passphrase(self):
-        return self.get('backup', 'repository', 'passphrase')
+        return self.get('repository', 'passphrase')
 
     @property
     def repo_passphrase_file(self):
-        return self.get('backup', 'repository', 'passphrase-file')
+        return self.get('repository', 'passphrase-file')
 
     @property
     def ask_repo_passphrase(self):
-        return self.get('backup', 'repository', 'ask-passphrase', default=False)
+        return self.get('repository', 'ask-passphrase', default=False)
 
     @property
     def use_ssh(self):
-        return self.get('backup', 'repository', 'use-ssh', default=False)
+        return self.get('repository', 'use-ssh', default=False)
 
     @property
     def backup_paths(self):
@@ -118,8 +117,15 @@ class Config(object):
             return self.get('backup', 'paths')
 
     @property
-    def backup_ratelimit(self):
-        return self.get('backup', 'ratelimit', default=0)
+    def ensure_mounted(self):
+        if isinstance(self.get('backup', 'ensure-mounted'), str):
+            return [self.get('backup', 'ensure-mounted')]
+        else:
+            return self.get('backup', 'ensure-mounted', default=[])
+
+    @property
+    def remote_ratelimit(self):
+        return self.get('repository', 'ratelimit', default=0)
 
     @property
     def backup_delay(self):
@@ -131,11 +137,11 @@ class Config(object):
 
     @property
     def moved_repo_ok(self):
-       return self.get('backup', 'moved_repo_ok', default=True)
+       return self.get('moved_repo_ok', default=True)
 
     @property
     def unknown_repo_ok(self):
-       return self.get('backup', 'unknown_repo_ok', default=True)
+       return self.get('unknown_repo_ok', default=True)
 
     @property
     def archive_name(self):
@@ -165,18 +171,18 @@ class Config(object):
 
     @property
     def do_prune(self):
-        return any(v is not None for k, v in self.get('backup', 'keep', default={}).items())
+        return any(v is not None for k, v in self.get('keep', default={}).items())
 
     @property
     def keep_within(self):
-        return self.get('backup', 'keep', 'within')
+        return self.get('keep', 'within')
 
     @property
     def keep_last(self):
-       return self.get('backup', 'keep', 'last', default=0)
+       return self.get('keep', 'last', default=0)
 
     def keep_unit(self, unit):
-        return self.get('backup', 'keep', unit, default=0)
+        return self.get('keep', unit, default=0)
 
     def get(self, *keys, default=None):
         value = self.config

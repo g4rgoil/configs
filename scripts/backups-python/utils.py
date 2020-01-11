@@ -47,7 +47,7 @@ class CommandGenerator(object):
         return f"--compression '{self.config.archive_compression}'"
 
     def ratelimit(self):
-        return  "" if (x := self.config.backup_ratelimit) == 0 else f"--remote-ratelimit {x}"
+        return  "" if (x := self.config.remote_ratelimit) == 0 else f"--remote-ratelimit {x}"
 
     def patterns_from(self):
         return "" if (x := self.config.patterns_from) is None else f"--patterns-from '{x}'"
@@ -150,6 +150,29 @@ def ensure_single_instance(lock_file: str) -> singleton.SingleInstance:
     return None
 
 
+def ensure_mounted(mount_point):
+    logger.info(f"Making sure device is mounted, mount_point='{mount_point}'")
+
+    if os.path.ismount(mount_point):
+        logger.debug("A device is already mounted at the mount point, proceeding with backup")
+        return True
+
+    try:
+        sp.check_output(shlex.split(f"mount '{mount_point}'"), stderr=sp.STDOUT)
+    except sp.CalledProcessError as e:
+        logger.error(f"An error occurred while mounting the device, exit_code={e.returncode}")
+        logger.debug(appendix("mount produced the following output", e.output.decode().rstrip()))
+        slack.error(f"Failed to mount the device at '{mount_point}'")
+        return False
+
+    if not os.path.ismount(mount_point):
+        logger.critical(f"The device still doesn't seem to be mounted")
+        slack.critical(f"There seems to be a serious issue with the mount point at {mount_point}")
+        return False
+
+    return False
+    
+
 def test_connection(user, host, port=None, identity_file=None):
     logger.info(f"Trying to reach ssh host, host='{host}'")
 
@@ -185,6 +208,10 @@ class ConnectionError(Exception):
 
 
 class SingleInstanceError(Exception):
+    pass
+
+
+class MountPointError(Exception):
     pass
 
 

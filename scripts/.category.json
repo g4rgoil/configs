@@ -62,6 +62,11 @@
       "dst": "/usr/lib/backup-scripts"
     },
     {
+      "root": true,
+      "src": "./backups-python",
+      "dst": "/usr/lib/backups-python"
+    },
+    {
       "src": "./setup",
       "dst": "~/.local/share/setup"
     },
