@@ -13,6 +13,8 @@ else
 fi
 
 alias holdmybeer='sudo'
+# alias yay='yay 2>&1 | tee /home/pascal/yay.log'
+alias dh='dirs -v'
 
 # Some handy aliasses for everyday commands
 alias wttr='curl https://wttr.in/Karlsruhe'

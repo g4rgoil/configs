@@ -34,6 +34,9 @@ setopt appendhistory autocd extendedglob notify
 unsetopt beep nomatch
 bindkey -v
 
+DIRSTACKSIZE=8
+setopt autopushd pushdminus pushdsilent pushdtohome
+
 # Enable git completion
 zstyle ':completion:*:*:git:*' script /usr/share/git/completion/git-completion.zsh
 
