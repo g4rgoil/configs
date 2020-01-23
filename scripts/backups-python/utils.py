@@ -41,7 +41,7 @@ class CommandGenerator(object):
         return "--info --stats --show-version --show-rc --exclude-caches --list --filter E"
 
     def prune_options(self):
-        return "--info --stats --show-version --show-rc"
+        return "--info --stats --show-version --show-rc --list"
 
     def compression(self):
         return f"--compression '{self.config.archive_compression}'"

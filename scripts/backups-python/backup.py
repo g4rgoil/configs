@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""Tool for creating borg backups 
+"""Tool for creating borg backups
 
 Usage:
   backup.py [--critical] [--error] [--warning] [--info] [--debug] [--no-create]
@@ -31,6 +31,7 @@ level takes precedence (i.e. DEBUG < INFO < ... < CRITICAL).
 
 # TODO: Launch backup scripts with nice
 # TODO: backup.py [server/create/...]???
+# TODO: improve format for delay config option
 
 import logging
 import os
@@ -82,14 +83,14 @@ def create_backup(config, command_gen, environment) -> int:
         logger.warning("Continuing backup procedure, consult the borg log for further information")
         slack.warning("Borg produced a warning while creating the archive")
     else:
-        logger.error(f"Borg produced an error while creating the archive, exit_code={e.exit_code}")
+        logger.error(f"Borg produced an error while creating the archive, exit_code={exit_code}")
         slack.error("Backup procedure failed: An error occurred while creating the archive")
 
     return exit_code
 
 def prune_repository(config, command_gen, environment) -> int:
     logger.info(f"Pruning the repository, borg_log='{config.borg_log}'")
-    
+
     if (exit_code := run_borg_command(command_gen.prune(), config.borg_log, environment)) == 0:
         logger.debug("Successfully pruned the repository")
     elif exit_code == 1:
