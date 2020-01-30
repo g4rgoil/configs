@@ -22,6 +22,8 @@ alias jml='java -classpath $OJ/jmlspecs.jar:$OJ/jmlruntime.jar:.'
 
 export xps13-mybook-backup='python /usr/lib/backups-python/backup.py /etc/backup-configs/xps13-mybook.yaml'
 export xps13-raspberry-backup='python /usr/lib/backups-python/backup.py /etc/backup-configs/xps13-raspberry-home.yaml'
+export desktop-mybook-backup='python /usr/lib/backups-python/backup.py /etc/backup-configs/desktop-mybook.yaml'
+export desktop-raspberry-backup='python /usr/lib/backups-python/backup.py /etc/backup-configs/desktop-raspberry-home.yaml'
 
 # Some handy aliasses for everyday commands
 alias wttr='curl https://wttr.in/Karlsruhe'
