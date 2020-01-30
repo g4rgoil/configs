@@ -20,10 +20,10 @@ export OJ='/usr/lib/openjml'
 alias jmlc='java -jar $OJ/openjml.jar'
 alias jml='java -classpath $OJ/jmlspecs.jar:$OJ/jmlruntime.jar:.'
 
-alias xps13-mybook-backup='python /usr/lib/backups-python/backup.py /etc/backup-configs/xps13-mybook.yaml'
-alias xps13-raspberry-backup='python /usr/lib/backups-python/backup.py /etc/backup-configs/xps13-raspberry-home.yaml'
-alias desktop-mybook-backup='python /usr/lib/backups-python/backup.py /etc/backup-configs/desktop-mybook.yaml'
-alias desktop-raspberry-backup='python /usr/lib/backups-python/backup.py /etc/backup-configs/desktop-raspberry-home.yaml'
+alias xps13-mybook-backup='sudo python /usr/lib/backups-python/backup.py /etc/backup-configs/xps13-mybook.yaml'
+alias xps13-raspberry-backup='sudo python /usr/lib/backups-python/backup.py /etc/backup-configs/xps13-raspberry-home.yaml'
+alias desktop-mybook-backup='sudo python /usr/lib/backups-python/backup.py /etc/backup-configs/desktop-mybook.yaml'
+alias desktop-raspberry-backup='sudo python /usr/lib/backups-python/backup.py /etc/backup-configs/desktop-raspberry-home.yaml'
 
 # Some handy aliasses for everyday commands
 alias wttr='curl https://wttr.in/Karlsruhe'
