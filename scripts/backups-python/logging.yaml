@@ -9,7 +9,7 @@ formatters:
     datefmt: '%Y-%m-%d %H:%M:%S'
   slack:
     class: slack_logger.SlackFormatter 
-    format: '{} - %(message)s'  # {} will be replaced with name of the backup
+    format: '{}: %(message)s'  # {} will be replaced with name of the backup
   clean:
     format: '%(message)s'
 
