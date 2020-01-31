@@ -13,7 +13,6 @@ else
 fi
 
 alias holdmybeer='sudo'
-# alias yay='yay 2>&1 | tee /home/pascal/yay.log'
 alias dh='dirs -v'
 
 export OJ='/usr/lib/openjml'
@@ -24,6 +23,7 @@ alias xps13-mybook-backup='sudo python /usr/lib/backups-python/backup.py --debug
 alias xps13-raspberry-backup='sudo python /usr/lib/backups-python/backup.py --debug /etc/backup-configs/xps13-raspberry-home.yaml'
 alias desktop-mybook-backup='sudo python /usr/lib/backups-python/backup.py --debug /etc/backup-configs/desktop-mybook.yaml'
 alias desktop-raspberry-backup='sudo python /usr/lib/backups-python/backup.py --debug /etc/backup-configs/desktop-raspberry-home.yaml'
+alias media-mybook-backup='sudo python /usr/lib/backups-python/backup.py --debug /etc/backup-configs/media-mybook.yaml'
 
 # Some handy aliasses for everyday commands
 alias wttr='curl https://wttr.in/Karlsruhe'
