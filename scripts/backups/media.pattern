@@ -1,8 +1,0 @@
-# Set default pattern style
-P sh
-
-# Set pattern root
-# R /hdd/media/
-
-- /hdd/media/System Volume Information
-- /hdd/media/lib
