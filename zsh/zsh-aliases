@@ -13,6 +13,7 @@ else
 fi
 
 alias holdmybeer='sudo'
+alias sudo='sudo '
 alias dh='dirs -v'
 
 export OJ='/usr/lib/openjml'
