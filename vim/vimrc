@@ -130,7 +130,9 @@ nnoremap <C-t> :NERDTreeToggle<CR>
 nnoremap <C-s> :%s//g<Left><Left>
 
 map <leader>w :w<CR>
-map <leader>q :q<CR>
+map <leader>qw :wq<CR>
+map <leader>qq :q<CR>
+map <leader>qa :qa<CR>
 map <leader>n :next<CR>
 map <leader>p :previous<CR>
 

@@ -5,8 +5,15 @@
 #  /___|___/_| |_|\___|_| |_|\_/
 #
 
-PATH="$PATH:$HOME/.local/bin"
+export PATH="$PATH:$HOME/.local/bin"
 fpath=("$HOME"/.local/share/zsh/site-functions $fpath)
+
+export GUROBI_HOME="/opt/gurobi902/linux64"
+# export PATH="$PATH:${GUROBI_HOME}/bin"
+export LD_LIBRARY_PATH="${GUROBI_HOME}/lib"
+export GRB_LICENSE_FILE=/home/pascal/gurobi.lic
+
+export JAVA_HOME="/usr/lib/jvm/default"
 
 if hash ruby >/dev/null 2>&1; then
     PATH="$PATH:$(ruby -e 'print Gem.user_dir')/bin"
