@@ -12,13 +12,11 @@ else
     alias tmux='tmux -L local'
 fi
 
+alias reset-ethernet='sudo ip link set enp3s0f0 down && sudo ip link set enp3s0f0 up'
+
 alias holdmybeer='sudo'
 alias sudo='sudo '
 alias dh='dirs -v'
-
-export OJ='/usr/lib/openjml'
-alias jmlc='java -jar $OJ/openjml.jar'
-alias jml='java -classpath $OJ/jmlspecs.jar:$OJ/jmlruntime.jar:.'
 
 alias xps13-mybook-backup='sudo python /usr/lib/backups-python/backup.py --debug /etc/backup-configs/xps13-mybook.yaml'
 alias xps13-raspberry-backup='sudo python /usr/lib/backups-python/backup.py --debug /etc/backup-configs/xps13-raspberry-home.yaml'
