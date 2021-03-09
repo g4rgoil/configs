@@ -30,6 +30,12 @@ class CategoryZsh(Category):
 
         self.utils.clone_repo(src_url, install_location, name="Powerlevel9k")
 
+    def _install_powerlevel10k(self) -> None:
+        install_location = Path("~/.oh-my-zsh/custom/themes/powerlevel10k")
+        src_url = "https://github.com/romkatv/powerlevel10k"
+
+        self.utils.clone_repo(src_url, install_location, name="Powerlevel10k")
+
     def _install_syntax_highlighting(self) -> None:
         install_location = Path("~/.oh-my-zsh/custom/plugins/"
                                 "zsh-syntax-highlighting")

@@ -45,10 +45,6 @@
         "dst": "~/.tmux/layouts"
       },
       {
-        "src": "tmuxinator",
-        "dst": "~/.config/tmuxinator"
-      },
-      {
         "src": "powerline-themes",
         "dst": "~/.tmux/powerline-themes"
       },

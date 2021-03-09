@@ -137,6 +137,7 @@ map <leader>n :next<CR>
 map <leader>p :previous<CR>
 
 let g:vimtex_compiler_progname ='nvr'
+let g:tex_flavor = 'latex'
 
 "" Airline Configuration
 set laststatus=2

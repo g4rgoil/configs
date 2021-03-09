@@ -20,6 +20,11 @@
         "handler": "_install_powerlevel9k"
       },
       {
+        "name": "powerlevel10k",
+        "help": "install powerlevel10k, the powerline theme for zsh",
+        "handler": "_install_powerlevel10k"
+      },
+      {
         "name": "fish",
         "help": "install Fish Shell like syntax highlighting for zsh",
         "handler": "_install_syntax_highlighting"
