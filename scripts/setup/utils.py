@@ -267,7 +267,7 @@ class SetupUtils(object):
 
     def install_packages(self, dist, *packages) -> None:
         if dist == "arch":
-            command = "pacman -S --noconfirm %s"
+            command = "pacman -S --needed --noconfirm %s"
         elif dist == "debian":
             command = "apt --assume-yes install %s"
         else:
